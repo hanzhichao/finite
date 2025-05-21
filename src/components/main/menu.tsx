@@ -25,8 +25,6 @@ export const Menu = () => {
     }
   }
 
-
-
   return (
     <div>
       <DropdownMenu>
@@ -40,10 +38,10 @@ export const Menu = () => {
             <Trash className="h-4 w-4 mr-2"/>
             Delete
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={onArchiveNote}>
-            <Download className="h-4 w-4 mr-2"/>
-            Export as markdown
-          </DropdownMenuItem>
+          {/*<DropdownMenuItem onClick={()=>{}}>*/}
+          {/*  <Download className="h-4 w-4 mr-2"/>*/}
+          {/*  Export*/}
+          {/*</DropdownMenuItem>*/}
           <DropdownMenuSeparator />
           <div className="text-xs text-muted-foreground p-2">
             updated at: {updateAt}

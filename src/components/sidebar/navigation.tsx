@@ -32,6 +32,7 @@ import { createNote } from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {FavoriteNotes} from "@/components/sidebar/favorite-notes";
 import {useSidebar} from "@/hooks/use-sidebar";
+import {NavItem} from "@/components/sidebar/nav-item";
 
 export function Navigation() {
   const settings = useSettings();
@@ -154,9 +155,9 @@ export function Navigation() {
           </div>
           <div>
             <UserItem />
-            <Item label="Search" icon={Search} isSearch onClick={search.onOpen}/>
-            <Item label="Settings" icon={Settings} onClick={settings.onOpen} />
-            <Item onClick={onCreateNote} label="New page" icon={PlusCircle} />
+            <NavItem label="Search" icon={Search} hotkey="K" onClick={search.onOpen}/>
+            <NavItem label="Settings" icon={Settings} onClick={settings.onOpen} />
+            <NavItem onClick={onCreateNote} label="New page" icon={PlusCircle} />
           </div>
           <div className="mt-4">
             <span className="pl-3.5 min-h-[27px] text-xs py-1 pr-3 w-full flex items-center text-muted-foreground font-medium">Favorites</span>
@@ -170,7 +171,7 @@ export function Navigation() {
           <div className="mt-4">
             <Popover>
               <PopoverTrigger className="w-full mt-4">
-                <Item label="Trash" icon={Trash} />
+                <NavItem label="Trash" icon={Trash} />
               </PopoverTrigger>
               <PopoverContent className="p-0 w-72 " side={isMobile ? "bottom" : "right"}>
                 <TrashBox />

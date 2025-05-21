@@ -79,10 +79,10 @@ export async function getNotes(parent?: string) {
   let result: Note[] = [];
   if (typeof parent !== "undefined") {
     console.log(`db查询Note列表: parent=${parent}`);
-    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND parent = $1 ORDER BY create_at DESC", [parent]);
+    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND parent = $1 ORDER BY create_at", [parent]);
   } else {
     console.log(`db查询Note列表`);
-    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND parent IS NULL ORDER BY create_at DESC;");
+    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND parent IS NULL ORDER BY create_at;");
   }
   return result;
 }

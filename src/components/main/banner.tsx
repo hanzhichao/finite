@@ -7,6 +7,7 @@ import {useActiveNote} from "@/hooks/use-active-note";
 export const Banner = () => {
   const activeNoteId = useActiveNote((store) => store.activeNoteId)
   const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId)
+  const restoreActiveNote = useActiveNote((store) => store.restoreActiveNote)
 
   // 彻底删除笔记
   const onRemoveNote = () => {
@@ -25,12 +26,13 @@ export const Banner = () => {
   // 恢复笔记
   const onRestoreNote = () => {
     if (typeof activeNoteId !== "undefined") {
-      const promise = restoreNote(activeNoteId);
+      const promise = restoreNote(activeNoteId)
       toast.promise(promise, {
         loading: "Restoring note...",
         success: "Note resotred!",
         error: "Failed to restore note."
       })
+      restoreActiveNote()
     }
   }
 

@@ -18,6 +18,7 @@ interface activeNoteStore {
   favoriteNote: () => void;
   unFavoriteNote: () => void;
   updateAt: string,
+  restoreActiveNote: () => void;
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -48,4 +49,5 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
     { set({ activeNoteContent: content }); },
   favoriteNote: () => { set({ isFavorite: 1 }); },
   unFavoriteNote: () => { set({ isFavorite: 0 }); },
-}));
+  restoreActiveNote: ()=> { set({ isArchived: 0 }); },
+  }));
