@@ -7,6 +7,25 @@ import {updateNoteCover} from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {toast} from "sonner";
 
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+export interface Artwork {
+  artist: string
+  art: string
+}
+
+const COLOR_GRADIENTS = [
+  "linear-gradient(to right, #ff9a9e, #fad0c4)",
+  "linear-gradient(to right, #a1c4fd, #c2e9fb)",
+  "linear-gradient(to right, #ffecd2, #fcb69f)",
+  "linear-gradient(to right, #84fab0, #8fd3f4)",
+  "linear-gradient(to right, #cfd9df, #e2ebf0)",
+  "linear-gradient(to right, #a6c0fe, #f68084)",
+  "linear-gradient(to right, #fccb90, #d57eeb)",
+  "linear-gradient(to right, #e0c3fc, #8ec5fc)",
+]
+
+
 export function CoverImageModal() {
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
   const updateActiveNoteCover = useActiveNote((store) => store.updateActiveNoteCover);
@@ -20,7 +39,7 @@ export function CoverImageModal() {
     coverImage.onClose();
   };
 
-  const onChangeCover =  (file?: File) => {
+  const onUploadCover =  (file?: File) => {
     if (file) {
       setIsSubmitting(true);
       setFile(file);
@@ -51,6 +70,11 @@ export function CoverImageModal() {
     }
   };
 
+  const onSelectCover = (url: string )=> {
+    updateActiveNoteCover(url)
+    onClose();
+  }
+
   return (
     <Dialog open={coverImage.isOpen} onOpenChange={coverImage.onClose}>
       <DialogTitle>
@@ -63,8 +87,25 @@ export function CoverImageModal() {
           className="w-full outline-none"
           disabled={isSubmitting}
           value={file}
-          onChange={onChangeCover}
+          onChange={onUploadCover}
         />
+        <ScrollArea className="h-60">
+          <h3 className="text-sm font-medium mt-4 mb-2">Gradients</h3>
+          <div className="grid grid-cols-2 gap-4">
+            {COLOR_GRADIENTS.map((gradient, index) => (
+              <div
+                key={`gradient-${index}`}
+                className="h-24 rounded-md overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary"
+                style={{ background: gradient }}
+                onClick={() =>
+                { onSelectCover(
+                  `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200" style="background:${encodeURIComponent(gradient)}"></svg>`,
+                ); }
+                }
+              />
+            ))}
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

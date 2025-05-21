@@ -1,4 +1,4 @@
-import { IconPicker } from "./icon-picker";
+import { IconPicker } from "../dialogs/icon-picker";
 import { Button } from "../ui/button";
 import { ImageIcon, Smile, X } from "lucide-react";
 import React, { ComponentRef, useRef, useState } from "react";
@@ -83,7 +83,7 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
         {!activeNoteIcon && !preview && (
           <IconPicker onChange={onIconSelect} asChild>
             <Button
-              className="text-muted-foreground text-xs"
+              className="text-muted-foreground text-xs "
               variant="outline"
               size="sm"
             >
