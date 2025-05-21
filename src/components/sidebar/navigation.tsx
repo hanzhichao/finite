@@ -46,8 +46,7 @@ export function Navigation() {
   const navbarRef = useRef<ComponentRef<"div">>(null);
   const [isResetting, setIsResetting] = useState(false);
   // const [isCollapsed, setIsCollapsed] = useState(isMobile);
-  const isCollapsed = useSidebar((store)=>store.isCollapsed)
-  const setIsCollapsed = useSidebar((store)=>store.setIsCollapsed)
+  const [isCollapsed, setIsCollapsed] = useState(isMobile);
 
   useEffect(() => {
     console.log("加载Navigation组件")
@@ -195,7 +194,7 @@ export function Navigation() {
         ref={navbarRef}
       >
         {activeNoteId!=undefined ? (
-          <Navbar />
+          <Navbar isCollapsed={isCollapsed} onResetWidth={resetSidebarWidth} />
         ) : (
           <nav className="bg-transparent px-3 py-2 w-full">
             {isCollapsed && (

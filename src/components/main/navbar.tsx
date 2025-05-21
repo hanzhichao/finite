@@ -12,15 +12,15 @@ interface NavbarProps {
   onResetWidth: () => void;
 }
 
-export const Navbar = () => {
+export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
   const isArchived = useActiveNote((store) => store.isArchived);
   const isFavorite = useActiveNote((store) => store.isFavorite);
   const favoriteNote = useActiveNote((store) => store.favoriteNote);
   const unFavoriteNote = useActiveNote((store) => store.unFavoriteNote);
 
-  const isCollapsed = useSidebar((store)=>store.isCollapsed)
-  const onResetWidth = useSidebar((store)=>store.onResetWidth)
+  // const isCollapsed = useSidebar((store)=>store.isCollapsed)
+  // const onResetWidth = useSidebar((store)=>store.onResetWidth)
 
   const onFavoriteNote = () => {
     if (typeof activeNoteId !== "undefined"){
@@ -42,7 +42,7 @@ export const Navbar = () => {
         {isCollapsed && (
           <MenuIcon
             role="button"
-            onClick={()=> {onResetWidth()}}
+            onClick={onResetWidth}
             className="h-6 w-6 text-muted-foreground"
           />
         )}
