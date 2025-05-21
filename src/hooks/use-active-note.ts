@@ -9,6 +9,7 @@ interface activeNoteStore {
   activeNoteContent: string;
   isFavorite: number;
   isArchived: number;
+  isLocked: number;
   setActiveNoteId: (id?: string) => void;
   setActiveNote: (note: Note) => void;
   updateActiveNoteTitle: (title: string) => void;
@@ -19,6 +20,8 @@ interface activeNoteStore {
   unFavoriteNote: () => void;
   updateAt: string,
   restoreActiveNote: () => void;
+  lockNote: () => void;
+  unLockNote: () => void;
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -30,6 +33,7 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   isFavorite: 0,
   isArchived: 0,
   updateAt: "",
+  isLocked: 0,
   setActiveNoteId: (id?: string) => { set({ activeNoteId: id }); },
   setActiveNote: (note: Note) =>
     { set({
@@ -41,6 +45,7 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
       isFavorite: note.is_favorite,
       isArchived: note.is_archived,
       updateAt: note.update_at,
+      isLocked: note.is_locked,
     }); },
   updateActiveNoteTitle: (title: string) => { set({ activeNoteTitle: title }); },
   updateActiveNoteIcon: (icon: string) => { set({ activeNoteIcon: icon }); },
@@ -50,4 +55,6 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   favoriteNote: () => { set({ isFavorite: 1 }); },
   unFavoriteNote: () => { set({ isFavorite: 0 }); },
   restoreActiveNote: ()=> { set({ isArchived: 0 }); },
+  lockNote: ()=> { set({ isLocked: 1 }); },
+  unLockNote: ()=> { set({ isLocked: 0 }); },
   }));

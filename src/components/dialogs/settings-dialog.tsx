@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { ModeToggle } from "@/components/sidebar/mode-toggle";
+import { ModeToggle } from "@/components/settings/mode-toggle";
 import { useSettings } from "@/hooks/use-settings";
 import { DialogTitle } from "@radix-ui/react-dialog";
 

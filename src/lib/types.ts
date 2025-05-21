@@ -7,6 +7,7 @@ export interface Note {
     parent?: number,
     is_archived?: number,
     is_favorite?: number,
+    is_locked?: number,
     create_at?: string,
     update_at?: string
 }

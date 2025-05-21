@@ -4,7 +4,7 @@ import {ConfirmModal} from "@/components/dialogs/confirm-dialog";
 import {deleteNote, restoreNote} from "@/lib/notes";
 import {useActiveNote} from "@/hooks/use-active-note";
 
-export const Banner = () => {
+export const NoteBanner = () => {
   const activeNoteId = useActiveNote((store) => store.activeNoteId)
   const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId)
   const restoreActiveNote = useActiveNote((store) => store.restoreActiveNote)

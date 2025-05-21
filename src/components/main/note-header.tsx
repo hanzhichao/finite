@@ -8,12 +8,12 @@ import { updateNoteIcon, updateNoteTitle } from "@/lib/notes";
 import { Note } from "@/lib/types";
 import { useActiveNote } from "@/hooks/use-active-note";
 
-interface ToolbarProps {
+interface NoteHeaderProps {
   initialData: Note;
   preview?: boolean;
 }
 
-export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
+export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
   const inputRef = useRef<ComponentRef<"textarea">>(null);
   const [isEditing, setIsEditing] = useState(false);
   const activeNoteIcon = useActiveNote((store)=>store.activeNoteIcon)
@@ -58,7 +58,7 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
   };
 
   return (
-    <div className="pl-[54px] group relative">
+    <header className="pl-[54px] group relative">
       {!!activeNoteIcon && !preview && (
         <div className="flex items-center gap-x-2 group/icon pt-2">
           <IconPicker onChange={onIconSelect}>
@@ -77,7 +77,7 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
         </div>
       )}
       {!!activeNoteIcon && preview && (
-        <p className="text-6xl pt-6">{activeNoteIcon}</p>
+        <p className="text-6xl pt-2">{activeNoteIcon}</p>
       )}
       <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-4">
         {!activeNoteIcon && !preview && (
@@ -119,6 +119,6 @@ export const Toolbar = ({ initialData, preview }: ToolbarProps) => {
           {activeNoteTitle}
         </div>
       )}
-    </div>
+    </header>
   );
 };

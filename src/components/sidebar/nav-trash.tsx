@@ -4,12 +4,14 @@ import { ConfirmModal } from "@/components/dialogs/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { deleteNote, getArchivedNotes, restoreNote } from "@/lib/notes";
 import { Search, Trash, Undo } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Note } from "@/lib/types";
 import { useActiveNote } from "@/hooks/use-active-note";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {NavItem} from "@/components/sidebar/nav-item";
 
-export const TrashBox = () => {
+const TrashBox = () => {
   const [archiveNotes, setArchivedNotes] = useState<Note[]>([]);
   const activeNoteId = useActiveNote((store)=> store.activeNoteId)
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
@@ -89,6 +91,25 @@ export const TrashBox = () => {
           </div>
         ))}
       </div>
+    </div>
+  )
+}
+
+interface NavTrashProps {
+  isMobile: boolean
+}
+
+export const NavTrash = ({isMobile}: NavTrashProps) => {
+  return (
+    <div className="mt-4">
+      <Popover>
+        <PopoverTrigger className="w-full mt-4">
+          <NavItem label="Trash" icon={Trash} />
+        </PopoverTrigger>
+        <PopoverContent className="p-0 w-72 " side={isMobile ? "bottom" : "right"}>
+          <TrashBox />
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }

@@ -8,9 +8,7 @@ import { updateNoteTitle } from "@/lib/notes";
 import { Note } from "@/lib/types";
 import { useRef, useState } from "react";
 
-// interface TitleProps {initialData: Note}
-
-export const Title = () => {
+export const NavbarTitle = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
   const activeNoteTitle = useActiveNote((store) => store.activeNoteTitle);
@@ -63,7 +61,7 @@ export const Title = () => {
   )
 }
 
-Title.Skeleton = function TitleSkeleton() {
+NavbarTitle.Skeleton = function TitleSkeleton() {
   return (
     <Skeleton className="h-9 w-20 rouded-md" />
   )

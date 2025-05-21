@@ -12,18 +12,12 @@ interface CoverProps {
   preview?: boolean;
 }
 
-export const Cover = ({url, preview}: CoverProps) => {
+export const NoteCover = ({url, preview}: CoverProps) => {
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
-  // const url = useActiveNote((store) => store.activeNoteCover);
   const updateActiveNoteCover = useActiveNote((store) => store.updateActiveNoteCover);
   const coverImage = useCoverImage();
 
   const onRemoveCover = () => {
-    // if (url){
-    //   // edgestore.publicFiles.delete({
-    //   //   url: url
-    //   // })
-    // }
     if (typeof activeNoteId !== "undefined"){
       void updateNoteCover(activeNoteId, "").then(r => {updateActiveNoteCover("")});
     }
@@ -34,7 +28,7 @@ export const Cover = ({url, preview}: CoverProps) => {
       , !url && "h-[12vh]"
       , url && "bg-muted")}>
       {!!url && (
-        <Image src={url} fill alt="Cover" className="object-cover"/>
+        <Image src={url} fill alt="NoteCover" className="object-cover"/>
       )}
       {url && !preview &&  (
         <div className="opacity-0 group-hover:opacity-100 absolute bottom-5 right-5 flex items-center gap-x-2">
@@ -52,7 +46,7 @@ export const Cover = ({url, preview}: CoverProps) => {
   )
 }
 
-Cover.Skeleton = function CoverSkeleton() {
+NoteCover.Skeleton = function CoverSkeleton() {
   return (
     <Skeleton className="w-full h-[12vh]"/>
   )

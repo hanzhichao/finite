@@ -2,24 +2,40 @@ import Database from "@tauri-apps/plugin-sql";
 import {Note} from "./types";
 import {generateUUID} from "./utils";
 import * as path from "@tauri-apps/api/path";
-import {create, exists, mkdir} from "@tauri-apps/plugin-fs";
+import {create, exists, mkdir, BaseDirectory} from "@tauri-apps/plugin-fs";
+
+const DB_DIR_NAME = "Finite"
+const DB_FILE_NAME = "notes.db"
+
+async function createDbDir(dbDir: string ) {
+  const dbDirExists = await exists(DB_DIR_NAME, {
+    baseDir: BaseDirectory.Home,
+  });
+  if (!dbDirExists) {
+    console.log(`创建db目录：${dbDir}`)
+    await mkdir(DB_DIR_NAME, {
+      baseDir: BaseDirectory.Home,
+    });
+  }
+}
 
 async function createTable() {
   console.log("db创建表: notes")
   const homeDir = await path.homeDir();
-  const dbFile = await path.join(homeDir, "Finite/notes.db");
+  const dbFile = await path.join(homeDir, `${DB_DIR_NAME}/${DB_FILE_NAME}`);
   const db = await Database.load("sqlite:" + dbFile);
   await db.execute(
     `CREATE TABLE IF NOT EXISTS "notes"
      (
-         id          VARCHAR(255) PRIMARY KEY,
-         parent      VARCHAR(255),
+         id          VARCHAR(64) PRIMARY KEY,
+         parent      VARCHAR(64),
          title       VARCHAR(255) NOT NULL,
          icon        CHAR(1),
          cover       TEXT,
          content     TEXT,
          is_archived BOOLEAN  DEFAULT 0,
          is_favorite BOOLEAN  DEFAULT 0,
+         is_locked   BOOLEAN  DEFAULT 0,
          create_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
          update_at   DATETIME DEFAULT CURRENT_TIMESTAMP
      );`);
@@ -30,14 +46,10 @@ async function createTable() {
 
 async function connDb(): Promise<Database> {
   const homeDir = await path.homeDir();
-  const dbDir = await path.join(homeDir, "Finite");
+  const dbDir = await path.join(homeDir, DB_DIR_NAME);
+  await createDbDir(dbDir)
   let shouldInitTable = false;
-  const dbDirExists = await exists(dbDir);
-
-  if (!dbDirExists) {
-    await mkdir(dbDir);
-  }
-  const dbFile = await path.join(dbDir, "notes.db");
+  const dbFile = await path.join(dbDir, DB_FILE_NAME);
   const dbFileExists = await exists(dbFile);
   if (!dbFileExists) {
     shouldInitTable = true
@@ -179,11 +191,18 @@ export async function updateNoteIcon(id: string, icon: string) {
   await db.execute("UPDATE notes SET icon = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [icon, id]);
 }
 
-export async function updateNoteFavorite(id: string, is_favorite: number) {
+export async function updateNoteIsFavorite(id: string, is_favorite: number) {
   console.log(`db更新Note是否收藏: id=${id}, is_favorite=${is_favorite}"`);
   const db = await connDb();
   await db.execute("UPDATE notes SET is_favorite = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [is_favorite, id]);
 }
+
+export async function updateNoteIsLocked(id: string, is_locked: number) {
+  console.log(`db更新Note是否锁定: id=${id}, is_locked=${is_locked}"`);
+  const db = await connDb();
+  await db.execute("UPDATE notes SET is_locked = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [is_locked, id]);
+}
+
 
 export async function updateNoteContent(id: string, content: string) {
   console.log(`db更新Note内容: id=${id}`);

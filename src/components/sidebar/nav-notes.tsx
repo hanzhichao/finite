@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Item } from "@/components/sidebar/item";
-import { FileIcon } from "lucide-react";
+import { NoteItem } from "@/components/sidebar/note-item";
+import {FileIcon, Plus} from "lucide-react";
 import { useActiveNote } from "@/hooks/use-active-note";
 import { getNotes } from "@/lib/notes";
 import { Note } from "@/lib/types";
@@ -12,7 +12,12 @@ interface NoteListProps {
   level?: number;
 }
 
-export function NoteList({parentId,level = 0}: NoteListProps) {
+interface NavNotesProps {
+  onCreateNote: () => void;
+}
+
+
+const NoteList = ({parentId,level = 0}: NoteListProps) => {
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
   const activeNoteTitle = useActiveNote((store) => store.activeNoteTitle);
   const activeNoteIcon = useActiveNote((store) => store.activeNoteIcon);
@@ -50,11 +55,11 @@ export function NoteList({parentId,level = 0}: NoteListProps) {
   if (notes === undefined) {
     return (
       <>
-        <Item.Skeleton level={level} />
+        <NoteItem.Skeleton level={level} />
         {level === 0 && (
           <>
-            <Item.Skeleton level={level} />
-            <Item.Skeleton level={level} />
+            <NoteItem.Skeleton level={level} />
+            <NoteItem.Skeleton level={level} />
           </>
         )}
       </>
@@ -68,16 +73,16 @@ export function NoteList({parentId,level = 0}: NoteListProps) {
       </p>
       {notes.map((note) => (
         <div key={note.id}>
-          <Item id={note.id}
-            onClick={() => { onSelectNote(note.id); }}
-            label={note.title}
-            icon={FileIcon}
-            noteIcon={note.icon}
-            active={activeNoteId === note.id}
-            level={level}
-            onExpand={() => { onExpand(note.id); }}
-            expanded={expanded[note.id]}
-            updateAt={note.update_at}
+          <NoteItem id={note.id}
+                    onClick={() => { onSelectNote(note.id); }}
+                    label={note.title}
+                    icon={FileIcon}
+                    noteIcon={note.icon}
+                    active={activeNoteId === note.id}
+                    level={level}
+                    onExpand={() => { onExpand(note.id); }}
+                    expanded={expanded[note.id]}
+                    updateAt={note.update_at}
           />
           {expanded[note.id] && (
             <NoteList parentId={note.id} level={level + 1} />
@@ -86,4 +91,14 @@ export function NoteList({parentId,level = 0}: NoteListProps) {
       ))}
     </>
   );
+}
+
+export function NavNotes ({onCreateNote}: NavNotesProps) {
+  return (
+    <div className="mt-4">
+      <span className="pl-3.5 min-h-[27px] text-xs py-1 pr-3 w-full flex items-center text-muted-foreground font-medium">Notes</span>
+      <NoteList />
+      <NoteItem onClick={onCreateNote} icon={Plus} label="Add a page" />
+    </div>
+  )
 }

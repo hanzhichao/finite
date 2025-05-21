@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import {useEditor} from "@/hooks/use-editor";
 
 
-export const Menu = () => {
+export const NavbarMenu = () => {
   const activeNoteId = useActiveNote((store)=> store.activeNoteId)
   const updateAt = useActiveNote((store)=> store.updateAt)
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
@@ -52,7 +52,7 @@ export const Menu = () => {
   )
 }
 
-Menu.Skeleton = function MenuSkeleton () {
+NavbarMenu.Skeleton = function MenuSkeleton () {
   return (
     <Skeleton className="h-10 w-10" />
   )

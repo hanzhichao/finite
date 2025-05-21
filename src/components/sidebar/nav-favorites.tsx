@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Item } from "@/components/sidebar/item";
+import { NoteItem } from "@/components/sidebar/note-item";
 import { FileIcon } from "lucide-react";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {getFavoriteNotes, getNotes} from "@/lib/notes";
@@ -8,9 +8,8 @@ import { Note } from "@/lib/types";
 import { useChangedNotes } from "@/hooks/use-changed-notes";
 
 
-export function FavoriteNotes() {
+export function NavFavorites() {
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
-  const isFavorite = useActiveNote((store) => store.isFavorite);
   const activeNoteTitle = useActiveNote((store) => store.activeNoteTitle);
   const activeNoteIcon = useActiveNote((store) => store.activeNoteIcon);
   const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId);
@@ -34,10 +33,11 @@ export function FavoriteNotes() {
   };
 
   return (
-    <>
+    <div className="mt-4">
+      <span className="pl-3.5 min-h-[27px] text-xs py-1 pr-3 w-full flex items-center text-muted-foreground font-medium">Favorites</span>
       {favoriteNotes?.map((note) => (
         <div key={note.id}>
-          <Item
+          <NoteItem
             onClick={() => { onSelectNote(note.id); }}
             label={note.title}
             icon={FileIcon}
@@ -46,6 +46,6 @@ export function FavoriteNotes() {
           />
         </div>
       ))}
-    </>
+    </div>
   );
 }
