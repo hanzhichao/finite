@@ -3,11 +3,11 @@ import { Cover } from "@/components/main/cover";
 import { Toolbar } from "@/components/main/toolbar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveNote } from "@/hooks/use-active-note";
-import { createNote, getNote, updateNoteContent } from "@/lib/notes";
+import {createNote, getNote, saveMarkdown, updateNoteContent} from "@/lib/notes";
 import { Note } from "@/lib/types";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import {useEffect, useMemo, useState} from "react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -107,7 +107,7 @@ const DocumentIdPage = () => {
       <Cover url={activeNoteCover}/>
       <div className="md:max-w-3xl lg:md-max-w-4xl mx-auto">
         <Toolbar initialData={note} />
-        <Editor onChange={onContentChange} initialContent={note.content} />
+        <Editor noteId={activeNoteId} onChange={onContentChange} initialContent={note.content}/>
       </div>
     </div>
   );

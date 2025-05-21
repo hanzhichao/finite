@@ -2,15 +2,17 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveNote } from "@/hooks/use-active-note";
-import { archiveNote } from "@/lib/notes";
-import { MoreHorizontal, Trash } from "lucide-react";
+import {archiveNote, saveMarkdown} from "@/lib/notes";
+import {Download, MoreHorizontal, Trash} from "lucide-react";
 import { toast } from "sonner";
+import {useEditor} from "@/hooks/use-editor";
 
 
 export const Menu = () => {
   const activeNoteId = useActiveNote((store)=> store.activeNoteId)
   const updateAt = useActiveNote((store)=> store.updateAt)
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
+
   const onArchiveNote = () => {
     if (typeof activeNoteId !== "undefined"){
       const promise = archiveNote(activeNoteId)
@@ -22,6 +24,9 @@ export const Menu = () => {
       setActiveNoteId(undefined)
     }
   }
+
+
+
   return (
     <div>
       <DropdownMenu>
@@ -34,6 +39,10 @@ export const Menu = () => {
           <DropdownMenuItem onClick={onArchiveNote}>
             <Trash className="h-4 w-4 mr-2"/>
             Delete
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={onArchiveNote}>
+            <Download className="h-4 w-4 mr-2"/>
+            Export as markdown
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <div className="text-xs text-muted-foreground p-2">
