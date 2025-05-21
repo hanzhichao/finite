@@ -9,11 +9,13 @@ import { useChangedNotes } from "@/hooks/use-changed-notes";
 
 
 export function NavFavorites() {
-  const activeNoteId = useActiveNote((store) => store.activeNoteId);
-  const activeNoteTitle = useActiveNote((store) => store.activeNoteTitle);
-  const activeNoteIcon = useActiveNote((store) => store.activeNoteIcon);
-  const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId);
-
+  const {activeNoteId,activeNoteTitle,activeNoteIcon,setActiveNoteId,isFavorite} =  useActiveNote((store) => ({
+    activeNoteId: store.activeNoteId,
+    activeNoteTitle: store.activeNoteTitle,
+    activeNoteIcon: store.activeNoteIcon,
+    setActiveNoteId: store.setActiveNoteId,
+    isFavorite: store.isFavorite,
+  }))
   const [favoriteNotes, setFavoriteNotes] = useState<Note[]>();
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export function NavFavorites() {
       setFavoriteNotes(notes);
     };
     void fetchData();
-  }, [activeNoteId, activeNoteTitle, activeNoteIcon]);
+  }, [activeNoteId, activeNoteTitle, activeNoteIcon, isFavorite]);
 
   // 选择笔记
   const onSelectNote = (noteId: string) => {

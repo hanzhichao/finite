@@ -3,6 +3,7 @@ export interface Note {
     title: string,
     icon?: string,
     cover?: string,
+    tags?: string,
     content?: string,
     parent?: number,
     is_archived?: number,

@@ -1,6 +1,6 @@
 # Finite
 
-Notion like markdown note-taking app base on [Tauri](https://v2.tauri.app/) and [Next.js]((https://nextjs.org/).
+Notion like markdown note-taking app base on [Tauri](https://v2.tauri.app/) and [Next.js](https://nextjs.org/).
 
 ![finite](docs/finite.png)
 

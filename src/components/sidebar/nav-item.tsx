@@ -1,28 +1,10 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  ChevronDown,
-  ChevronRight,
   LucideIcon,
-  MoreHorizontal,
-  Plus,
-  Trash,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { archiveNote, createNote } from "@/lib/notes";
-import { useActiveNote } from "@/hooks/use-active-note";
-import { useChangedNotes } from "@/hooks/use-changed-notes";
-import { useEffect } from "react";
 
 interface NavItemProps {
   label: string;
@@ -36,7 +18,7 @@ export const NavItem = ({label, icon: Icon, hotkey, onClick}: NavItemProps) => {
     <a href="#" onClick={onClick}
       role="button"
       style={{ paddingLeft: "12px" }}
-      className="group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium">
+      className="group min-h-[27px] text-sm py-1.5 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium">
       {/* 显示note图标或Item图标 */}
       <Icon className="shrink-0 h-[18px] w-[18px] mr-2 text-muted-foreground" />
       {/* 显示item文本--note标题 */}

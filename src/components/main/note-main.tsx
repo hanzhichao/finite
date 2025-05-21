@@ -12,9 +12,13 @@ interface NoteMainProps {
 }
 
 export const NoteMain = ({noteId}: NoteMainProps)=> {
-  const setActiveNote = useActiveNote((store) => store.setActiveNote);
-  const isLocked = useActiveNote((store) => store.isLocked);
-  const activeNoteCover = useActiveNote((store) => store.activeNoteCover);
+  const {activeNoteCover,isLocked,setActiveNote} = useActiveNote((store) => (
+  { activeNoteCover: store.activeNoteCover,
+    isLocked: store.isLocked,
+    setActiveNote: store.setActiveNote}
+  ));
+
+
   const [note, setNote] = useState<Note>();
 
   useEffect(() => {

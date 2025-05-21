@@ -31,6 +31,7 @@ async function createTable() {
          parent      VARCHAR(64),
          title       VARCHAR(255) NOT NULL,
          icon        CHAR(1),
+         tags        VARCHAR(255),
          cover       TEXT,
          content     TEXT,
          is_archived BOOLEAN  DEFAULT 0,
@@ -209,6 +210,14 @@ export async function updateNoteContent(id: string, content: string) {
   const db = await connDb();
   await db.execute("UPDATE notes SET content = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [content, id]);
 }
+
+
+export async function updateNoteTags(id: string, tags: string[]) {
+  console.log(`db更新Note内容: id=${id}`);
+  const db = await connDb();
+  await db.execute("UPDATE notes SET tags = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [tags.join(","), id]);
+}
+
 
 export async function saveMarkdown(title: string, markdown: string){
   const homeDir = await path.homeDir();

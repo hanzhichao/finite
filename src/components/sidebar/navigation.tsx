@@ -103,11 +103,11 @@ export function Navigation() {
         isMobile && "w-0"
       )} ref={sidebarRef}>
         {/*折叠按钮*/}
-        <div className={cn( `w-6 h-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute
+        <a href="#" className={cn( `w-6 h-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute
     top-3 right-2 opacity-0 group-hover/sidebar:opacity-100 transition`,isMobile && "opacity-100")}
              onClick={collapseSidebar}  role="button">
           <ChevronsLeft className="w-6 h-6" />
-        </div>
+        </a>
         <NavHeader />
         <NavMain />
 

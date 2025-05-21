@@ -1,13 +1,15 @@
 "use client"
-import { SettingsModal } from "@/components/dialogs/settings-dialog";
-import { useEffect, useState } from "react";
-import { CoverImageModal } from "../dialogs/cover-image-dialog";
 
-export const ModalProvider = () => {
+import { useEffect, useState } from "react";
+import { SettingsModal } from "@/components/dialogs/settings-dialog";
+import {CoverPicker} from "@/components/dialogs/cover-picker";
+
+export const DialogProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
-    setIsMounted(true), [];
-  });
+    setIsMounted(true);
+  }, []);
 
   if (!isMounted) {
     return null;
@@ -16,7 +18,7 @@ export const ModalProvider = () => {
   return (
     <>
       <SettingsModal />
-      <CoverImageModal />
+      <CoverPicker />
     </>
   );
 };

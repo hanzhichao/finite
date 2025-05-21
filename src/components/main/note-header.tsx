@@ -4,9 +4,10 @@ import { ImageIcon, Smile, X } from "lucide-react";
 import React, { ComponentRef, useRef, useState } from "react";
 import TextAreaAutoSize from "react-textarea-autosize";
 import { useCoverImage } from "@/hooks/use-cover-image";
-import { updateNoteIcon, updateNoteTitle } from "@/lib/notes";
+import {updateNoteIcon, updateNoteTags, updateNoteTitle} from "@/lib/notes";
 import { Note } from "@/lib/types";
 import { useActiveNote } from "@/hooks/use-active-note";
+import {NoteTags} from "@/components/main/note-tags";
 
 interface NoteHeaderProps {
   initialData: Note;
@@ -16,15 +17,29 @@ interface NoteHeaderProps {
 export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
   const inputRef = useRef<ComponentRef<"textarea">>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const activeNoteIcon = useActiveNote((store)=>store.activeNoteIcon)
-  const activeNoteCover = useActiveNote((store)=>store.activeNoteCover)
-  const activeNoteTitle = useActiveNote((store)=>store.activeNoteTitle)
-  const updateActiveNoteTitle = useActiveNote((store)=>store.updateActiveNoteTitle)
-  const updateActiveNoteIcon = useActiveNote((store)=>store.updateActiveNoteIcon)
 
+  const {activeNoteId,activeNoteIcon,activeNoteCover,activeNoteTitle,updateActiveNoteTitle,updateActiveNoteIcon,updateActiveNoteTags,tags } = useActiveNote((store)=>({
+    activeNoteId: store.activeNoteId,
+    activeNoteIcon: store.activeNoteIcon,
+    activeNoteCover: store.activeNoteCover,
+    activeNoteTitle: store.activeNoteTitle,
+    tags: store.tags,
+    updateActiveNoteTitle: store.updateActiveNoteTitle,
+    updateActiveNoteIcon: store.updateActiveNoteIcon,
+    updateActiveNoteTags: store.updateActiveNoteTags,
+  }))
+
+  const [allTags, setAllTags] = useState<string[]>([])
+  // const [tags, setTags] = useState<string[]>([])
   const [value, setValue] = useState(activeNoteTitle);
-
   const coverImage = useCoverImage();
+
+  const handleTagsChange = (newTags: string[]) => {
+    if (typeof activeNoteId !== "undefined"){
+      updateActiveNoteTags(newTags)
+      void updateNoteTags(activeNoteId, newTags)
+    }
+  }
 
   const enableInput = () => {
     if (preview) return;
@@ -119,6 +134,9 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
           {activeNoteTitle}
         </div>
       )}
+      <div className="mb-4">
+        <NoteTags tags={tags} onChange={handleTagsChange} suggestions={allTags} preview={preview}/>
+      </div>
     </header>
   );
 };

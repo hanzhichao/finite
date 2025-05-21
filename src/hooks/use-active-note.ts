@@ -22,6 +22,8 @@ interface activeNoteStore {
   restoreActiveNote: () => void;
   lockNote: () => void;
   unLockNote: () => void;
+  tags: string[],
+  updateActiveNoteTags: (tags: string[])=> void;
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -34,6 +36,7 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   isArchived: 0,
   updateAt: "",
   isLocked: 0,
+  tags: [],
   setActiveNoteId: (id?: string) => { set({ activeNoteId: id }); },
   setActiveNote: (note: Note) =>
     { set({
@@ -46,6 +49,7 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
       isArchived: note.is_archived,
       updateAt: note.update_at,
       isLocked: note.is_locked,
+      tags: note.tags ? note.tags.split(",") : []
     }); },
   updateActiveNoteTitle: (title: string) => { set({ activeNoteTitle: title }); },
   updateActiveNoteIcon: (icon: string) => { set({ activeNoteIcon: icon }); },
@@ -57,4 +61,5 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   restoreActiveNote: ()=> { set({ isArchived: 0 }); },
   lockNote: ()=> { set({ isLocked: 1 }); },
   unLockNote: ()=> { set({ isLocked: 0 }); },
+  updateActiveNoteTags: (value: string[]) => { set({ tags: value }); },
   }));

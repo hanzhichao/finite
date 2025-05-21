@@ -14,7 +14,7 @@ export const NavbarLock = () => {
   return (
     <>
       {isLocked==1 ? (
-        <Button size="sm" variant="ghost" onClick={() => {
+        <Button size="sm" variant="ghost" className="cursor-pointer" onClick={() => {
           if (typeof activeNoteId !== "undefined") {
             unLockNote()
             void updateNoteIsLocked(activeNoteId, 0)
@@ -23,7 +23,7 @@ export const NavbarLock = () => {
           <Lock className="w-4 h-4"/>
         </Button>
       ) : (
-        <Button size="sm" variant="ghost" onClick={() => {
+        <Button size="sm" variant="ghost" className="cursor-pointer" onClick={() => {
           if (typeof activeNoteId !== "undefined") {
             lockNote()
             void updateNoteIsLocked(activeNoteId, 1)

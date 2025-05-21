@@ -9,10 +9,6 @@ import {toast} from "sonner";
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-export interface Artwork {
-  artist: string
-  art: string
-}
 
 const COLOR_GRADIENTS = [
   "linear-gradient(to right, #ff9a9e, #fad0c4)",
@@ -26,7 +22,7 @@ const COLOR_GRADIENTS = [
 ]
 
 
-export function CoverImageModal() {
+export function CoverPicker() {
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
   const updateActiveNoteCover = useActiveNote((store) => store.updateActiveNoteCover);
   const [file, setFile] = useState<File>();
@@ -95,7 +91,7 @@ export function CoverImageModal() {
             {COLOR_GRADIENTS.map((gradient, index) => (
               <div
                 key={`gradient-${index}`}
-                className="h-24 rounded-md overflow-hidden cursor-pointer hover:ring-1 hover:ring-primary"
+                className="h-24 rounded-md overflow-hidden cursor-pointer hover:ring-1"
                 style={{ background: gradient }}
                 onClick={() =>
                 { onSelectCover(

@@ -8,7 +8,7 @@ import { Note } from "@/lib/types";
 import {getRecentUpdatedNotes} from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
 
-export const SearchCommand = () => {
+export const SearchDialog = () => {
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
   const [notes, setNotes] = useState<Note[]>([]);
   const [isMounted, setIsMounted] = useState(false);

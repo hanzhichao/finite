@@ -1,8 +1,4 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenu } from "@/components/ui/dropdown-menu";
-import { DropdownMenuContent,DropdownMenuItem,DropdownMenuSeparator,DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
-import {ChevronsLeftRight, GalleryVerticalEnd, Tent} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {Tent} from "lucide-react";
 
 export const NavHeader = () => {
   return (

@@ -1,9 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { ModalProvider } from "@/components/providers/modal-provider";
+import { DialogProvider } from "@/components/providers/dialog-provider";
 import "@/styles/globals.css";
-import { SearchCommand } from "@/components/dialogs/search-command";
+import { SearchDialog } from "@/components/dialogs/search-dialog";
 import { Navigation } from "@/components/sidebar/navigation";
 
 const geistSans = Geist({
@@ -28,11 +28,11 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Toaster position="bottom-center" />
-          <ModalProvider />
+          <DialogProvider />
           <div className="h-full flex dark:bg-[#1F1F1F]">
             <Navigation />
             <main className="flex-1 h-full overflow-y-auto">
-              <SearchCommand />
+              <SearchDialog />
               {children}
             </main>
           </div>
