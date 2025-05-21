@@ -77,6 +77,7 @@ export function NoteList({parentId,level = 0}: NoteListProps) {
             level={level}
             onExpand={() => { onExpand(note.id); }}
             expanded={expanded[note.id]}
+            updateAt={note.update_at}
           />
           {expanded[note.id] && (
             <NoteList parentId={note.id} level={level + 1} />

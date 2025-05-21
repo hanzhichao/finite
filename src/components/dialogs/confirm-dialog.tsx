@@ -19,7 +19,7 @@ interface ConfirmModalProps {
 
 export const ConfirmModal = ({ children, onConfirm }: ConfirmModalProps) => {
   const handleConfirm = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.stopPropagation();
     onConfirm();
@@ -27,7 +27,7 @@ export const ConfirmModal = ({ children, onConfirm }: ConfirmModalProps) => {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger onClick={(e) => e.stopPropagation()} asChild>
+      <AlertDialogTrigger onClick={(e) => { e.stopPropagation(); }} asChild>
         {children}
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -38,7 +38,7 @@ export const ConfirmModal = ({ children, onConfirm }: ConfirmModalProps) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={(e) => e.stopPropagation()}>
+          <AlertDialogCancel onClick={(e) => { e.stopPropagation(); }}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction onClick={handleConfirm}>Confirm</AlertDialogAction>

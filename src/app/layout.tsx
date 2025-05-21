@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ModalProvider } from "@/components/providers/modal-provider";
 import "@/styles/globals.css";
-import { SearchCommand } from "@/components/common/search-command";
+import { SearchCommand } from "@/components/dialogs/search-command";
 import { Navigation } from "@/components/sidebar/navigation";
 
 const geistSans = Geist({

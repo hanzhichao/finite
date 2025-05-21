@@ -35,6 +35,7 @@ interface ItemProps {
   label: string;
   onClick?: () => void;
   icon: LucideIcon;
+  updateAt?: string,
 }
 
 export const Item = ({
@@ -48,6 +49,7 @@ export const Item = ({
   level = 0,
   onExpand,
   expanded,
+  updateAt,
 }: ItemProps) => {
   const activeNoteId  = useActiveNote((store)=>store.activeNoteId)
   const activeNoteIcon  = useActiveNote((store)=>store.activeNoteIcon)
@@ -96,8 +98,6 @@ export const Item = ({
   };
 
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
-  // const curNoteIcon = !!id && id == activeNoteId? activeNoteIcon : noteIcon
-  // const curNoteTitle = !!id && id == activeNoteId? activeNoteTitle : label
 
   return (
     <a href="#" onClick={onClick}
@@ -118,7 +118,6 @@ export const Item = ({
           <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
         </div>
       )}
-
       {/* 显示note图标或Item图标 */}
       {noteIcon ? (
         <div className="shrink-0 mr-2 text-[16px]">{noteIcon}</div>
@@ -146,14 +145,14 @@ export const Item = ({
                 <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-60" align="start" side="right" forceMount>
+            <DropdownMenuContent className="w-64" align="start" side="right" forceMount>
               <DropdownMenuItem onClick={onArchiveNote}>
-                <Trash className="h-4 w-4 mr-2"/> 
+                <Trash className="h-4 w-4 mr-2"/>
                 Delete
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <div className="text-sm text-muted-foreground p-2">
-                Last edited by: Kevin
+                updated at: {updateAt}
               </div>
             </DropdownMenuContent>
           </DropdownMenu>

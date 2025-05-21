@@ -1,11 +1,11 @@
 import Database from "@tauri-apps/plugin-sql";
 import {Note} from "./types";
-import {fileToBase64, generateUUID} from "./utils";
+import {generateUUID} from "./utils";
 import * as path from "@tauri-apps/api/path";
 import {exists, mkdir} from "@tauri-apps/plugin-fs";
 
 async function createTable() {
-  console.log("创建表notes")
+  console.log("db创建表: notes")
   const homeDir = await path.homeDir();
   const dbFile = await path.join(homeDir, "Finite/notes.db");
   const db = await Database.load("sqlite:" + dbFile);
@@ -23,7 +23,7 @@ async function createTable() {
          create_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
          update_at   DATETIME DEFAULT CURRENT_TIMESTAMP
      );`);
-  console.log("创建索引")
+  console.log("db创建索引: notes.parent")
   await db.execute(`CREATE INDEX IF NOT EXISTS "by_parent" ON notes (parent)`);
   await db.close()
 }
@@ -48,13 +48,29 @@ async function connDb(): Promise<Database> {
   return await Database.load("sqlite:" + dbFile);
 }
 
-export async function getAllNotes() {
+export async function getRecentUpdatedNotes(limit?: number) {
   const db = await connDb();
-  console.log(`查询所有Note列表`);
-  const result: Note[] = await db.select(
-    "SELECT id,title,icon FROM notes WHERE is_archived = 0",
-    []
-  );
+  let result: Note[];
+  if (typeof limit !== "undefined"){
+    console.log(`db查询最近更新Note列表: limit=${limit}`);
+    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 ORDER BY update_at DESC LIMIT $1;", [limit]);
+  } else {
+    console.log(`db查询最近更新Note列表`);
+    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 ORDER BY update_at DESC;");
+  }
+  return result;
+}
+
+export async function searchNotes(keyword: string, limit?: number) {
+  const db = await connDb();
+  let result: Note[];
+  if (typeof limit !== "undefined") {
+    console.log(`db查询笔记：keyword=${keyword}, limit=${limit}`);
+    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE title LIKE $1 ORDER BY update_at DESC LIMIT $2;", [`%${keyword}%`, limit]);
+  } else {
+    console.log(`db查询笔记：keyword=${keyword}`);
+    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE title LIKE $1 ORDER BY update_at DESC;", [`%${keyword}%`]);
+  }
   return result;
 }
 
@@ -62,79 +78,75 @@ export async function getNotes(parent?: string) {
   const db = await connDb();
   let result: Note[] = [];
   if (typeof parent !== "undefined") {
-    console.log(`查询Note列表: parent=${parent}`);
-    result = await db.select(
-      "SELECT id,title,icon FROM notes WHERE is_archived = 0 AND parent = $1",
-      [parent ? parent : null]
-    );
+    console.log(`db查询Note列表: parent=${parent}`);
+    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND parent = $1 ORDER BY create_at DESC", [parent]);
   } else {
-    console.log(`查询Note列表`);
-    result = await db.select(
-      "SELECT id,title,icon FROM notes WHERE is_archived = 0 AND parent IS NULL",
-      []
-    );
+    console.log(`db查询Note列表`);
+    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND parent IS NULL ORDER BY create_at DESC;");
   }
   return result;
 }
 
-export async function getArchivedNotes() {
-  console.log("查询已归档Note列表");
+export async function getArchivedNotes(limit?: number) {
   const db = await connDb();
-  const result: Note[] = await db.select(
-    "SELECT id,title,icon FROM notes WHERE is_archived = $1",
-    [1]
-  );
-  console.log(result);
+  let result: Note[] = [];
+  if (typeof limit !== "undefined") {
+    console.log(`db查询已归档Note列表: limit=${limit}`);
+    result = await db.select("SELECT id,title,icon FROM notes WHERE is_archived = 1 ORDER BY update_at DESC LIMIT $1;", [limit]);
+  } else {
+    console.log(`db查询已归档Note列表`);
+    result = await db.select("SELECT id,title,icon FROM notes WHERE is_archived = 1 ORDER BY update_at DESC;")
+  }
   return result;
 }
 
-export async function getFavoriteNotes() {
-  console.log("查询收藏Note列表");
+export async function getFavoriteNotes(limit?: number) {
   const db = await connDb();
-  const result: Note[] = await db.select(
-    "SELECT id,title,icon FROM notes WHERE is_favorite = $1",
-    [1]
-  );
-  console.log(result);
+  let result: Note[] = [];
+  if (typeof limit !== "undefined") {
+    console.log("db查询收藏Note列表: limit=${limit}");
+    result = await db.select("SELECT id,title,icon FROM notes WHERE is_favorite = 1 ORDER BY update_at DESC LIMIT $1;", [limit])
+  } else {
+    console.log("db查询收藏Note列表");
+    result = await db.select("SELECT id,title,icon FROM notes WHERE is_favorite = 1 ORDER BY update_at DESC;")
+  }
   return result;
 }
 
 export async function getNote(id: string) {
-  console.log(`查询Note: id=${id}`);
+  console.log(`db查询Note: id=${id}`);
   const db = await connDb();
-  const result: Note[] = await db.select("SELECT * FROM notes WHERE id = $1", [
-    id,
-  ]);
-  return result[0];
+  let note: Note = {id: "", title: "", icon: ""};
+  const result: Note[] = await db.select("SELECT * FROM notes WHERE id = $1", [id]);
+  if (result.length > 0){
+    note = result[0];
+  }
+  return note
 }
 
 export async function createNote(title: string, parent?: string) {
-  if (typeof parent == "undefined") {
-    console.log(`创建Note: title=${title}`);
-  } else {
-    console.log(`创建Note: title=${title}, parent=${parent}`);
-  }
   const db = await connDb();
   const id = generateUUID();
-  await db.execute(
-    "INSERT INTO notes (id, title,parent) VALUES ($1,$2,$3)",
-    [id, title, parent]
-  );
+  if (typeof parent == "undefined") {
+    console.log(`db创建Note: title=${title}`);
+    await db.execute("INSERT INTO notes (id, title) VALUES ($1,$2)", [id, title]);
+  } else {
+    console.log(`db创建Note: title=${title}, parent=${parent}`);
+    await db.execute("INSERT INTO notes (id, title,parent) VALUES ($1,$2,$3)", [id, title, parent]
+    );
+  }
   return id;
 }
 
 export async function archiveNote(id: string) {
-  console.log(`归档Note: id=${id}`);
+  console.log(`db归档Note及子Note: id=${id}`);
   const db = await connDb();
-  await db.execute(
-    "UPDATE notes SET is_archived = 1 WHERE id = $1 OR parent = $1",
-    [id]
+  await db.execute("UPDATE notes SET is_archived = 1 WHERE id = $1 OR parent = $1", [id]
   );
-  // await db.close()
 }
 
 export async function restoreNote(id: string) {
-  console.log(`恢复Note: id=${id}`);
+  console.log(`db恢复Note及子Note: id=${id}`);
   const db = await connDb();
   await db.execute(
     "UPDATE notes SET is_archived = 0 WHERE id = $1 OR parent = $1",
@@ -143,55 +155,38 @@ export async function restoreNote(id: string) {
 }
 
 export async function deleteNote(id: string) {
-  console.log(`删除Note: id=${id}`);
+  console.log(`db删除Note: id=${id}`);
   const db = await connDb();
   await db.execute("DELETE FROM notes WHERE id = $1 OR parent = $1", [id]);
-  await db.close()
 }
 
 export async function updateNoteTitle(id: string, title: string) {
-  console.log(`更新Note标题: id=${id}, title=${title}`);
+  console.log(`db更新Note标题: id=${id}, title=${title}`);
   const db = await connDb();
-  await db.execute("UPDATE notes SET title = $1 WHERE id = $2", [
-    title,
-    id,
-  ]);
+  await db.execute("UPDATE notes SET title = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [title, id]);
 }
 
 export async function updateNoteCover(id: string, cover: string) {
-  console.log(`更新Note封面: id=${id}`);
+  console.log(`db更新Note封面: id=${id}`);
   const db = await connDb();
-  await db.execute("UPDATE notes SET cover = $1 WHERE id = $2", [
-    cover,
-    id,
-  ]);
+  await db.execute("UPDATE notes SET cover = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [cover, id,]);
   return cover;
 }
 
 export async function updateNoteIcon(id: string, icon: string) {
-  console.log(`更新Note图标: id=${id}, icon=${icon}`);
+  console.log(`db更新Note图标: id=${id}, icon=${icon}`);
   const db = await connDb();
-  await db.execute("UPDATE notes SET icon = $1 WHERE id = $2", [
-    icon,
-    id,
-  ]);
-
+  await db.execute("UPDATE notes SET icon = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [icon, id]);
 }
 
 export async function updateNoteFavorite(id: string, is_favorite: number) {
-  console.log(`更新Note是否收藏: id=${id}, is_favorite=${is_favorite}"`);
+  console.log(`db更新Note是否收藏: id=${id}, is_favorite=${is_favorite}"`);
   const db = await connDb();
-  await db.execute("UPDATE notes SET is_favorite = $1 WHERE id = $2", [
-    is_favorite,
-    id,
-  ]);
+  await db.execute("UPDATE notes SET is_favorite = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [is_favorite, id]);
 }
 
 export async function updateNoteContent(id: string, content: string) {
-  console.log(`更新Note内容: id=${id}`);
+  console.log(`db更新Note内容: id=${id}`);
   const db = await connDb();
-  await db.execute("UPDATE notes SET content = $1 WHERE id = $2", [
-    content,
-    id,
-  ]);
+  await db.execute("UPDATE notes SET content = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [content, id]);
 }

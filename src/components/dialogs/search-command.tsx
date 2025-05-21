@@ -5,7 +5,7 @@ import {File} from "lucide-react"
 import { useSearch } from "@/hooks/use-search";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Note } from "@/lib/types";
-import {getAllNotes, getNotes} from "@/lib/notes";
+import {getRecentUpdatedNotes} from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
 
 export const SearchCommand = () => {
@@ -19,7 +19,7 @@ export const SearchCommand = () => {
   useEffect(()=> {
     console.log("加载SearchCommand组件");
     const fetchData = async () => {
-      const notes: Note[] = await getAllNotes();
+      const notes: Note[] = await getRecentUpdatedNotes(20);
       setNotes(notes);
     };
     void fetchData();

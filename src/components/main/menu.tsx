@@ -9,6 +9,7 @@ import { toast } from "sonner";
 
 export const Menu = () => {
   const activeNoteId = useActiveNote((store)=> store.activeNoteId)
+  const updateAt = useActiveNote((store)=> store.updateAt)
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
   const onArchiveNote = () => {
     if (typeof activeNoteId !== "undefined"){
@@ -36,7 +37,7 @@ export const Menu = () => {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <div className="text-xs text-muted-foreground p-2">
-            Last edited by: Kevin
+            updated at: {updateAt}
           </div>
         </DropdownMenuContent>
       </DropdownMenu>

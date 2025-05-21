@@ -20,7 +20,9 @@ export function FavoriteNotes() {
   useEffect(() => {
     console.log("加载FavoriteNotes组件");
     const fetchData = async () => {
-      const notes: Note[] = await getFavoriteNotes();
+      const notes = await getFavoriteNotes();
+      console.log("getFavoriteNotes")
+      console.log(notes)
       setFavoriteNotes(notes);
     };
     void fetchData();

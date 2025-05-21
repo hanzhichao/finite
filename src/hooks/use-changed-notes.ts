@@ -1,17 +1,17 @@
 import { Note } from "@/lib/types";
 import { create } from "zustand";
 
-type changedNotesStore = {
+interface changedNotesStore {
   changedNotes: Map<string, Note>;
   updateChangedNote: (noteId: string, title: string, icon:  string|undefined) => void;
   getChangedNote: (noteId: string) => Note | null;
   clearChangedNotes: () => void;
-};
+}
 
 export const useChangedNotes = create<changedNotesStore>((set, get) => ({
   changedNotes: new Map<string, Note>(),
   updateChangedNote: (noteId: string, title: string, icon: string|undefined) =>
-    set((state) => {
+    { set((state) => {
       const changedNotes = { ...state.changedNotes }
       const originNote = state.changedNotes.get(noteId);
       if (originNote != null) {
@@ -22,11 +22,11 @@ export const useChangedNotes = create<changedNotesStore>((set, get) => ({
         state.changedNotes.set(noteId, newNote);
       }
       return {changedNotes}
-}),
+}); },
   getChangedNote: (noteId: string) => {
     const state = get();
-    return state.changedNotes.get(noteId) || null; // 如果学生不存在，返回 null
+    return state.changedNotes.get(noteId) ?? null; // 如果学生不存在，返回 null
   },
-  clearChangedNotes: () => set({changedNotes: new Map<string, Note>()} )
-  
+  clearChangedNotes: () => { set({changedNotes: new Map<string, Note>()} ); }
+
 }));

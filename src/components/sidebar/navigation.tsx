@@ -1,6 +1,7 @@
 "use client"
+
 import React, { ComponentRef, useEffect, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   ChevronsLeft,
   MenuIcon,
@@ -30,9 +31,9 @@ import { Navbar } from "@/components/main/navbar";
 import { createNote } from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {FavoriteNotes} from "@/components/sidebar/favorite-notes";
+import {useSidebar} from "@/hooks/use-sidebar";
 
 export function Navigation() {
-  const router = useRouter();
   const settings = useSettings();
   const search = useSearch();
   const activeNoteId = useActiveNote((store)=> store.activeNoteId);
@@ -44,7 +45,9 @@ export function Navigation() {
   const sidebarRef = useRef<ComponentRef<"aside">>(null);
   const navbarRef = useRef<ComponentRef<"div">>(null);
   const [isResetting, setIsResetting] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(isMobile);
+  // const [isCollapsed, setIsCollapsed] = useState(isMobile);
+  const isCollapsed = useSidebar((store)=>store.isCollapsed)
+  const setIsCollapsed = useSidebar((store)=>store.setIsCollapsed)
 
   useEffect(() => {
     console.log("加载Navigation组件")
@@ -192,7 +195,7 @@ export function Navigation() {
         ref={navbarRef}
       >
         {activeNoteId!=undefined ? (
-          <Navbar isCollapsed={isCollapsed} onResetWidth={resetSidebarWidth} />
+          <Navbar />
         ) : (
           <nav className="bg-transparent px-3 py-2 w-full">
             {isCollapsed && (

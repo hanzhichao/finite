@@ -1,17 +1,6 @@
 import { Note } from "@/lib/types";
 import { create } from "zustand";
 
-// const defaultNote: Note = {
-//   id: 0,
-//   title: "homepage",
-//   parent: 0,
-//   content: "",
-//   icon: "🏠",
-//   cover: "",
-//   is_archived: 0,
-//   is_favourite: 0,
-// };
-
 interface activeNoteStore {
   activeNoteId?: string;
   activeNoteTitle: string;
@@ -28,6 +17,7 @@ interface activeNoteStore {
   updateActiveNoteContent: (content: string) => void;
   favoriteNote: () => void;
   unFavoriteNote: () => void;
+  updateAt: string,
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -38,6 +28,7 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   activeNoteContent: "",
   isFavorite: 0,
   isArchived: 0,
+  updateAt: "",
   setActiveNoteId: (id?: string) => { set({ activeNoteId: id }); },
   setActiveNote: (note: Note) =>
     { set({
@@ -48,6 +39,7 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
       activeNoteContent: note.content,
       isFavorite: note.is_favorite,
       isArchived: note.is_archived,
+      updateAt: note.update_at,
     }); },
   updateActiveNoteTitle: (title: string) => { set({ activeNoteTitle: title }); },
   updateActiveNoteIcon: (icon: string) => { set({ activeNoteIcon: icon }); },

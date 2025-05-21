@@ -1,4 +1,5 @@
 "use client"
+
 import { ConfirmModal } from "@/components/dialogs/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { deleteNote, getArchivedNotes, restoreNote } from "@/lib/notes";
