@@ -1,7 +1,7 @@
 import { IconPicker } from "../dialogs/icon-picker";
 import { Button } from "../ui/button";
 import { ImageIcon, Smile, X } from "lucide-react";
-import React, { ComponentRef, useRef, useState } from "react";
+import React, {ComponentRef, useEffect, useRef, useState} from "react";
 import TextAreaAutoSize from "react-textarea-autosize";
 import { useCoverImage } from "@/hooks/use-cover-image";
 import {updateNoteIcon, updateNoteTags, updateNoteTitle} from "@/lib/notes";
@@ -30,9 +30,9 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
   }))
 
   const [allTags, setAllTags] = useState<string[]>([])
-  // const [tags, setTags] = useState<string[]>([])
   const [value, setValue] = useState(activeNoteTitle);
   const coverImage = useCoverImage();
+
 
   const handleTagsChange = (newTags: string[]) => {
     if (typeof activeNoteId !== "undefined"){
@@ -43,14 +43,14 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
 
   const enableInput = () => {
     if (preview) return;
+    setValue(activeNoteTitle);
     setIsEditing(true);
     setTimeout(() => {
-      setValue(activeNoteTitle);
       inputRef.current?.focus();
-    }, 300);
+    }, 0);
   };
 
-  const disableInput = () => { setIsEditing(false); };
+  const disableInput = () => { setIsEditing(false);  };
 
   const onInput = (value: string) => {
     setValue(value);
