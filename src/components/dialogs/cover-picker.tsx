@@ -67,7 +67,15 @@ export function CoverPicker() {
   };
 
   const onSelectCover = (url: string )=> {
-    updateActiveNoteCover(url)
+    if (typeof activeNoteId !== "undefined"){
+      updateActiveNoteCover(url)
+      const promise = updateNoteCover(activeNoteId, url);
+      toast.promise(promise, {
+        loading: "Upload cover...",
+        success: "Cover uploaded!",
+        error: "Failed to upload cover.",
+      });
+    }
     onClose();
   }
 
