@@ -5,20 +5,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   LucideIcon,
 } from "lucide-react";
+import {cn} from "@/lib/utils";
 
 interface NavItemProps {
   label: string;
   icon: LucideIcon;
   hotkey?: string;
   onClick?: () => void;
+  active?: boolean
 }
 
-export const NavItem = ({label, icon: Icon, hotkey, onClick}: NavItemProps) => {
+export const NavItem = ({label, icon: Icon, hotkey, onClick, active}: NavItemProps) => {
   return (
     <a href="#" onClick={onClick}
       role="button"
       style={{ paddingLeft: "12px" }}
-      className="group min-h-[27px] text-sm py-1.5 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium">
+      className={cn("group min-h-[27px] text-sm py-1.5 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium", active && "bg-primary/5 text-primary")}>
       {/* 显示note图标或Item图标 */}
       <Icon className="shrink-0 h-[18px] w-[18px] mr-2 text-muted-foreground" />
       {/* 显示item文本--note标题 */}

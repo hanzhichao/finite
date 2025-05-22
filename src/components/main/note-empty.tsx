@@ -10,7 +10,6 @@ import React, {useEffect, useState} from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -19,9 +18,7 @@ import {Note} from "@/lib/types";
 import {Badge} from "@/components/ui/badge";
 
 export const NoteEmpty = () => {
-  const activeNoteId = useActiveNote((store) => store.activeNoteId);
   const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId);
-  const restoreActiveNote = useActiveNote((store) => store.restoreActiveNote);
   const [notes, setNotes] = useState<Note[]>([])
 
   const onCreateNote = () => {
@@ -86,7 +83,6 @@ export const NoteEmpty = () => {
                     </Badge>
                   ))
                 )}</div>
-
             </CardContent>
             <CardFooter>
               <span className="text-xs text-muted-foreground">updated at: {note.update_at}</span>

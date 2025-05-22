@@ -13,13 +13,12 @@ interface NavItemsProps {
 export const NavItems = ({onCreateNote}: NavItemsProps)=> {
   const settings = useSettings();
   const search = useSearch();
-  const route = useRouter();
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
+  const activeNoteId = useActiveNote((store)=> store.activeNoteId)
 
   const showHomePage = () => {
     // route.push("/home")
     setActiveNoteId(undefined)
-
   }
 
 
@@ -27,7 +26,7 @@ export const NavItems = ({onCreateNote}: NavItemsProps)=> {
     <div className="mt-4">
       <NavItem label="Search" icon={Search} hotkey="K" onClick={search.onOpen}/>
       <NavItem label="Settings" icon={Settings} onClick={settings.onOpen} />
-      <NavItem label="Home" icon={Home} onClick={()=>{showHomePage()}} />
+      <NavItem label="Home" icon={Home} onClick={()=>{showHomePage()}} active={typeof activeNoteId=== "undefined"}/>
       <NavItem label="New page" icon={PlusCircle} hotkey="N" onClick={onCreateNote} />
     </div>
   )
