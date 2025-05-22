@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Dialog, DialogTitle, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { useCoverImage } from "@/hooks/use-cover-image";
-import { SingleImageDropzone } from "@/components/main/single-image-dropzone";
+import { SingleImageDropzone } from "@/components/ui/single-image-dropzone";
 import {updateNoteCover} from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {toast} from "sonner";
