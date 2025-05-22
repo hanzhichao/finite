@@ -95,7 +95,7 @@ export function NoteTags({ tags, onChange, suggestions = [], preview }: NoteTags
 
       <div className="flex flex-wrap gap-2 p-0 focus-within:ring-0 focus-within:ring-ring">
         {tags.map((tag, index) => (
-          <Badge key={index} variant="outline" className="h-8 flex items-center gap-1 min-w-[42px] hover:bg-neutral-300 dark:hover:bg-neutral-600 transition">
+          <Badge key={index} variant="outline" className="cursor-pointer h-6 flex items-center gap-1 min-w-[42px] hover:bg-neutral-300 dark:hover:bg-neutral-600 transition">
             {tag}
             {!preview && (<button
               type="button"

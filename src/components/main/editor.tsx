@@ -26,6 +26,7 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
 
   const editor: BlockNoteEditor = useCreateBlockNote({
     codeBlock,
+    animations: false,
     initialContent: initialContent ? JSON.parse(initialContent) as PartialBlock[] : undefined,
     uploadFile: handelUpload
   });
@@ -50,9 +51,9 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
 
   return (
     <div>
-      <BlockNoteView 
-      editor={editor} 
-      editable={editable} 
+      <BlockNoteView
+      editor={editor}
+      editable={editable}
       theme={resolvedTheme == "dark" ? "dark": "light"}
       onChange={()=>{ onChange(JSON.stringify(editor.document, null, 2)); }}/>
     </div>

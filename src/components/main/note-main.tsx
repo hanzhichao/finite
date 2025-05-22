@@ -41,8 +41,10 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
   );
 
   const onContentChange = (content: string) => {
-    console.log("处理Note内容更新");
-    void updateNoteContent(noteId, content);
+    setTimeout(()=> {
+      console.log("处理Note内容更新");
+      void updateNoteContent(noteId, content)
+    }, 300)
   };
 
   // Skeleton
@@ -67,6 +69,7 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
       <NoteCover url={activeNoteCover} preview={isLocked==1}/>
       <div className="md:max-w-3xl lg:md-max-w-4xl mx-auto">
         <NoteHeader initialData={note} preview={isLocked==1}/>
+        {/*<Editor2 noteId={noteId} onChange={onContentChange} initialContent={note.content} editable={isLocked==0}/>*/}
         <Editor noteId={noteId} onChange={onContentChange} initialContent={note.content} editable={isLocked==0}/>
       </div>
     </main>
