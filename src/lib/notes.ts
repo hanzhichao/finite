@@ -66,10 +66,10 @@ export async function getRecentUpdatedNotes(limit?: number) {
   let result: Note[];
   if (typeof limit !== "undefined"){
     console.log(`db查询最近更新Note列表: limit=${limit}`);
-    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 ORDER BY update_at DESC LIMIT $1;", [limit]);
+    result = await db.select("SELECT id,title,icon,update_at,tags,cover FROM notes WHERE is_archived = 0 ORDER BY update_at DESC LIMIT $1;", [limit]);
   } else {
     console.log(`db查询最近更新Note列表`);
-    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 ORDER BY update_at DESC;");
+    result = await db.select("SELECT id,title,icon,update_at,tags,cover FROM notes WHERE is_archived = 0 ORDER BY update_at DESC;");
   }
   return result;
 }

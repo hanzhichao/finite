@@ -22,8 +22,6 @@ export function NavFavorites() {
     console.log("加载FavoriteNotes组件");
     const fetchData = async () => {
       const notes = await getFavoriteNotes();
-      console.log("getFavoriteNotes")
-      console.log(notes)
       setFavoriteNotes(notes);
     };
     void fetchData();
