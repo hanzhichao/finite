@@ -9,7 +9,7 @@ export const NavHeader = () => {
         </div>
         <div className="pt-1 flex flex-col gap-0.5 leading-none">
           <span className="font-semibold">Finite</span>
-          <span className="text-xs text-muted-foreground">v0.01</span>
+          <span className="text-xs text-muted-foreground">v0.02</span>
         </div>
       </div>
     </div>
