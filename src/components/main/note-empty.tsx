@@ -41,7 +41,7 @@ export const NoteEmpty = () => {
   useEffect(() => {
     console.log("加载NoteEmpty页面");
     const fetchData = async () => {
-      const result = await getRecentUpdatedNotes();
+      const result = await getRecentUpdatedNotes(8);
       setNotes(result);
     };
     void fetchData();

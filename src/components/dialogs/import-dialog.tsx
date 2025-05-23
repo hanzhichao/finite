@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import {useImport} from "@/hooks/use-import";
-import {BlockNoteEditor, PartialBlock} from "@blocknote/core";
+import {BlockNoteEditor, BlockSchemaFromSpecs, PartialBlock} from "@blocknote/core";
 import {useCreateBlockNote} from "@blocknote/react";
 import {createNoteWithContent} from "@/lib/notes";
 import {toast} from "sonner";
@@ -23,7 +23,7 @@ export const ImportDialog = () => {
     setTimeout(()=>{
       setActiveNoteId(noteIds[noteIds.length-1])
       importDialog.onClose()
-    }, 3000)
+    }, 1000)
   }
 
   const uploadFile = async (file?: File) => {
@@ -32,10 +32,21 @@ export const ImportDialog = () => {
       const id = generateUUID();
       noteIds.push(id)
       const title = path.basename(file.name, path.extname(file.name));
-      console.log(`title: ${title}`)
+      const ext = path.extname(file.name).slice(1).toLowerCase()
       const fileBody = await readFile(file);
-      const blocks = await editor.tryParseMarkdownToBlocks(fileBody);
-      const content = JSON.stringify(blocks, null, 2)
+      if (ext !== "md" && ext !== "html"){
+        return ""
+      }
+
+      let content: string;
+      if (ext === "md"){
+        const blocks = await editor.tryParseMarkdownToBlocks(fileBody);
+        content = JSON.stringify(blocks, null, 2);
+      } else {
+        const blocks = await editor.tryParseHTMLToBlocks(fileBody);
+        content = JSON.stringify(blocks, null, 2)
+      }
+
       const promise = createNoteWithContent(title, content, id)
       toast.promise(promise, {
         loading: "Importing note...",

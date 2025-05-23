@@ -101,7 +101,7 @@ export function FileUploader({uploadFile, callback}: FileUploaderProps) {
       {files.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-lg font-medium">Imported Files</h3>
-          <ScrollArea className="h-60">
+          <ScrollArea className="max-h-60">
             <div className="space-y-3">
               {files.map((fileWithStatus) => (
                 <div key={fileWithStatus.id} className="flex items-center gap-4 p-3 border rounded-md">
@@ -135,7 +135,6 @@ export function FileUploader({uploadFile, callback}: FileUploaderProps) {
               ))}
             </div>
           </ScrollArea>
-
         </div>
       )}
     </div>
