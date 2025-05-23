@@ -217,13 +217,3 @@ export async function updateNoteTags(id: string, tags: string[]) {
   const db = await connDb();
   await db.execute("UPDATE notes SET tags = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [tags.join(","), id]);
 }
-
-
-export async function saveMarkdown(title: string, markdown: string){
-  const homeDir = await path.homeDir();
-  const filePath = await path.join(homeDir, `Finite/${title}.md`);
-  const file = await create(filePath);
-  await file.write(new TextEncoder().encode(markdown));
-  await file.close();
-  return filePath
-}

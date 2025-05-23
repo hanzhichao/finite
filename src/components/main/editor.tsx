@@ -7,8 +7,7 @@ import {BlockNoteView} from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useTheme } from "next-themes";
 import { codeBlock } from "@blocknote/code-block";
-import {saveMarkdown} from "@/lib/notes";
-import {toast} from "sonner";
+import {useEditor} from "@/hooks/use-editor";
 
 interface EditorProps {
   noteId?: string,
@@ -19,6 +18,7 @@ interface EditorProps {
 
 const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
   const {resolvedTheme} = useTheme();
+  const setEditor = useEditor((store)=>store.setEditor)
 
   const handelUpload = async (file: File) => {
     return ""; // TODO
@@ -31,23 +31,7 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
     uploadFile: handelUpload
   });
 
-  const exportMarkdown = async (noteId: string) => {
-    const markdown = await editor.blocksToMarkdownLossy(editor.document);
-    const filePath =  await saveMarkdown(noteId, markdown)
-    console.log(`导出markdown成功：${filePath}`)
-  }
-
-  const onExportNote = () => {
-    if (typeof noteId !== "undefined"){
-      const promise = exportMarkdown(noteId)
-      toast.promise(promise, {
-        loading: "Export note as markdown...",
-        success: "Note exported!",
-        error: "Failed to export note."
-      })
-    }
-  }
-
+  setEditor(editor)
 
   return (
     <div>
