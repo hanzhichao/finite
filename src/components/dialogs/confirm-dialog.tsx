@@ -12,12 +12,12 @@ import {
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
 
-interface ConfirmModalProps {
+interface ConfirmDialogProps {
   children: React.ReactNode;
   onConfirm: () => void;
 }
 
-export const ConfirmModal = ({ children, onConfirm }: ConfirmModalProps) => {
+export const ConfirmDialog = ({ children, onConfirm }: ConfirmDialogProps) => {
   const handleConfirm = (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -34,7 +34,7 @@ export const ConfirmModal = ({ children, onConfirm }: ConfirmModalProps) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Aure you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot b undone.
+            This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

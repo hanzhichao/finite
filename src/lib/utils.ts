@@ -21,3 +21,27 @@ export async function saveFile(fileName: string, content: string){
   await file.close();
   return filePath
 }
+
+
+export async function readFile(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    // 监听文件读取完成事件
+    reader.onload = (event: ProgressEvent<FileReader>) => {
+      if (event.target && typeof event.target.result === "string") {
+        resolve(event.target.result); // 成功读取后，将内容作为字符串返回
+      } else {
+        reject(new Error("Failed to read file content as string"));
+      }
+    };
+
+    // 监听文件读取错误事件
+    reader.onerror = (error: ProgressEvent<FileReader>) => {
+      console.log(error)
+    };
+
+    // 开始以文本形式读取文件内容
+    reader.readAsText(file);
+  });
+}

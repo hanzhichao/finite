@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { DialogProvider } from "@/components/providers/dialog-provider";
 import "@/styles/globals.css";
-import { SearchDialog } from "@/components/dialogs/search-dialog";
+import { SearchCommand } from "@/components/dialogs/search-command";
 import { Navigation } from "@/components/sidebar/navigation";
 
 const geistSans = Geist({
@@ -32,7 +32,7 @@ export default function RootLayout({
           <div className="h-full flex dark:bg-[#1F1F1F]">
             <Navigation />
             <main className="flex-1 h-full overflow-y-auto">
-              <SearchDialog />
+              <SearchCommand />
               {children}
             </main>
           </div>

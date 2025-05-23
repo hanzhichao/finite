@@ -8,12 +8,15 @@ import {
 } from "lucide-react";
 import { useMediaQuery } from "usehooks-ts";
 import { cn } from "@/lib/utils";
-
-
 import { Navbar } from "@/components/main/navbar";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {NavHeader} from "@/components/sidebar/nav-header";
 import {NavMain} from "@/components/sidebar/nav-main";
+import {NavFavorites} from "@/components/sidebar/nav-favorites";
+import {NavNotes} from "@/components/sidebar/nav-notes";
+import {NavSecondary} from "@/components/sidebar/nav-secondary";
+import {createNote} from "@/lib/notes";
+import {toast} from "sonner";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -24,6 +27,7 @@ export function Navigation() {
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const activeNoteId = useActiveNote((store)=> store.activeNoteId);
+  const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId);
 
   useEffect(() => {
     console.log("加载Navigation组件")
@@ -95,6 +99,28 @@ export function Navigation() {
     }
   };
 
+  useEffect(()=> {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "n" && (e.metaKey || e.ctrlKey)){
+        e.preventDefault();
+        onCreateNote();
+      }
+    }
+    document.addEventListener("keydown", down);
+    return () => { document.removeEventListener("keydown", down); };
+  }, []);
+
+  const onCreateNote = () => {
+    const promise = createNote("Untitled").then((noteId) =>
+      { setActiveNoteId(noteId); }
+    );
+    toast.promise(promise, {
+      loading: "Creating new note...",
+      success: "New note created!",
+      error: "Failed to create note.",
+    });
+  };
+
   return (
     <>
       <aside className={cn(
@@ -108,8 +134,12 @@ export function Navigation() {
              onClick={collapseSidebar}  role="button">
           <ChevronsLeft className="w-6 h-6" />
         </a>
+
         <NavHeader />
-        <NavMain />
+        <NavMain onCreateNote={onCreateNote}/>
+        <NavFavorites />
+        <NavNotes onCreateNote={onCreateNote}/>
+        <NavSecondary isMobile={isMobile} />
 
         {/*sidebar可拖拽边界*/}
         <div

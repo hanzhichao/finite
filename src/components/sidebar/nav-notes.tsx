@@ -5,7 +5,6 @@ import {FileIcon, Plus} from "lucide-react";
 import { useActiveNote } from "@/hooks/use-active-note";
 import { getNotes } from "@/lib/notes";
 import { Note } from "@/lib/types";
-import { useChangedNotes } from "@/hooks/use-changed-notes";
 
 interface NoteListProps {
   parentId?: string;

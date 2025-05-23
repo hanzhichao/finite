@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { SettingsModal } from "@/components/dialogs/settings-dialog";
-import {CoverPicker} from "@/components/dialogs/cover-picker";
+import { SettingsDialog } from "@/components/dialogs/settings-dialog";
+import {CoverPickerDialog} from "@/components/dialogs/cover-picker-dialog";
+import {ImportDialog} from "@/components/dialogs/import-dialog";
 
 export const DialogProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -17,8 +18,9 @@ export const DialogProvider = () => {
 
   return (
     <>
-      <SettingsModal />
-      <CoverPicker />
+      <SettingsDialog />
+      <CoverPickerDialog />
+      <ImportDialog />
     </>
   );
 };

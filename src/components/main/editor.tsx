@@ -7,7 +7,6 @@ import {BlockNoteView} from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useTheme } from "next-themes";
 import { codeBlock } from "@blocknote/code-block";
-import {useEditor} from "@/hooks/use-editor";
 
 interface EditorProps {
   noteId?: string,
@@ -18,7 +17,6 @@ interface EditorProps {
 
 const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
   const {resolvedTheme} = useTheme();
-  const setEditor = useEditor((store)=>store.setEditor)
 
   const handelUpload = async (file: File) => {
     return ""; // TODO
@@ -30,8 +28,6 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
     initialContent: initialContent ? JSON.parse(initialContent) as PartialBlock[] : undefined,
     uploadFile: handelUpload
   });
-
-  setEditor(editor)
 
   return (
     <div>

@@ -22,7 +22,7 @@ const COLOR_GRADIENTS = [
 ]
 
 
-export function CoverPicker() {
+export function CoverPickerDialog() {
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
   const updateActiveNoteCover = useActiveNote((store) => store.updateActiveNoteCover);
   const [file, setFile] = useState<File>();
@@ -93,13 +93,14 @@ export function CoverPicker() {
           value={file}
           onChange={onUploadCover}
         />
+
         <ScrollArea className="h-60">
           <h3 className="text-sm font-medium mt-4 mb-2">Gradients</h3>
           <div className="grid grid-cols-2 gap-4">
             {COLOR_GRADIENTS.map((gradient, index) => (
               <div
                 key={`gradient-${index}`}
-                className="h-24 rounded-md overflow-hidden cursor-pointer hover:ring-1"
+                className="h-24 rounded-md overflow-hidden cursor-pointer hover:border-2"
                 style={{ background: gradient }}
                 onClick={() =>
                 { onSelectCover(

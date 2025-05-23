@@ -1,6 +1,6 @@
 import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
-import {ConfirmModal} from "@/components/dialogs/confirm-dialog";
+import {ConfirmDialog} from "@/components/dialogs/confirm-dialog";
 import {deleteNote, restoreNote} from "@/lib/notes";
 import {useActiveNote} from "@/hooks/use-active-note";
 
@@ -45,12 +45,12 @@ export const NoteBanner = () => {
               className="border-white bg-transparent hover:bg-primary/5 text-white hover:text-white p-1 px-2 h-auto font-normal">
         Restore page
       </Button>
-      <ConfirmModal onConfirm={onRemoveNote}>
+      <ConfirmDialog onConfirm={onRemoveNote}>
         <Button size="sm" variant="outline"
                 className="border-white bg-transparent hover:bg-primary/5 text-white hover:text-white p-1 px-2 h-auto font-normal">
           Delete forever
         </Button>
-      </ConfirmModal>
+      </ConfirmDialog>
     </div>
   )
 }

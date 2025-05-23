@@ -4,7 +4,7 @@ import { ModeToggle } from "@/components/settings/mode-toggle";
 import { useSettings } from "@/hooks/use-settings";
 import { DialogTitle } from "@radix-ui/react-dialog";
 
-export const SettingsModal = () => {
+export const SettingsDialog = () => {
   const settings = useSettings();
   return (
     <Dialog open={settings.isOpen} onOpenChange={settings.onClose}>

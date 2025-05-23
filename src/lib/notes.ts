@@ -2,7 +2,7 @@ import Database from "@tauri-apps/plugin-sql";
 import {Note} from "./types";
 import {generateUUID} from "./utils";
 import * as path from "@tauri-apps/api/path";
-import {create, exists, mkdir, BaseDirectory} from "@tauri-apps/plugin-fs";
+import {exists, mkdir, BaseDirectory} from "@tauri-apps/plugin-fs";
 
 const DB_DIR_NAME = "Finite"
 const DB_FILE_NAME = "notes.db"
@@ -216,4 +216,14 @@ export async function updateNoteTags(id: string, tags: string[]) {
   console.log(`db更新Note内容: id=${id}`);
   const db = await connDb();
   await db.execute("UPDATE notes SET tags = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [tags.join(","), id]);
+}
+
+export async function createNoteWithContent(title: string, content: string, id?: string) {
+  const db = await connDb();
+  if (typeof id === "undefined"){
+    id = generateUUID();
+  }
+  console.log(`db导入Note: title=${title}`);
+  await db.execute("INSERT INTO notes (id, title, content) VALUES ($1,$2,$3)", [id, title, content]);
+  return id;
 }
