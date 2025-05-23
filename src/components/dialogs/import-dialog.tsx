@@ -9,13 +9,13 @@ import {createNoteWithContent} from "@/lib/notes";
 import {toast} from "sonner";
 import * as path from "path";
 import {FileWithStatus, FileUploader} from "@/components/common/file-uploader";
-import {readFile} from "@/lib/utils";
 import {useActiveNote} from "@/hooks/use-active-note";
-import {generateUUID} from "@/lib/utils";
+import {generateUUID, readFile} from "@/lib/utils";
 
 export const ImportDialog = () => {
   const importDialog = useImport();
   const editor: BlockNoteEditor = useCreateBlockNote();
+  const activeNoteId = useActiveNote((store)=>(store.activeNoteId))
   const setActiveNoteId = useActiveNote((store)=>(store.setActiveNoteId))
   const noteIds:string[] = []
 
@@ -47,7 +47,7 @@ export const ImportDialog = () => {
         content = JSON.stringify(blocks, null, 2)
       }
 
-      const promise = createNoteWithContent(title, content, id)
+      const promise = createNoteWithContent(title, content, activeNoteId, id)
       toast.promise(promise, {
         loading: "Importing note...",
         success: `Note imported: ${title}!`,

@@ -11,6 +11,7 @@ import {BlockNoteEditor, PartialBlock} from "@blocknote/core";
 import {useCreateBlockNote} from "@blocknote/react";
 import {codeBlock} from "@blocknote/code-block";
 import {saveFile} from "@/lib/utils"
+import {useWideMode} from "@/hooks/use-wide-mode";
 
 
 enum ExportType {
@@ -24,6 +25,7 @@ export function NavbarMenu (){
   const content = useActiveNote((store)=> store.content)
   const updateAt = useActiveNote((store)=> store.updateAt)
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
+  const toggleWideMode  = useWideMode((store)=> store.toggleWideMode)
 
   const editor: BlockNoteEditor = useCreateBlockNote({codeBlock,
     initialContent: content ? JSON.parse(content) as PartialBlock[] : undefined,
@@ -76,6 +78,10 @@ export function NavbarMenu (){
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-60" align="end" alignOffset={8} forceMount>
+          <DropdownMenuItem onClick={()=>{toggleWideMode()}}>
+            <Trash className="h-4 w-4 mr-2"/>
+            Toggle Wide Mode
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={onArchiveNote}>
             <Trash className="h-4 w-4 mr-2"/>
             Delete

@@ -218,12 +218,18 @@ export async function updateNoteTags(id: string, tags: string[]) {
   await db.execute("UPDATE notes SET tags = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [tags.join(","), id]);
 }
 
-export async function createNoteWithContent(title: string, content: string, id?: string) {
+export async function createNoteWithContent(title: string, content: string, parent?: string, id?: string) {
   const db = await connDb();
   if (typeof id === "undefined"){
     id = generateUUID();
   }
-  console.log(`db导入Note: title=${title}`);
-  await db.execute("INSERT INTO notes (id, title, content) VALUES ($1,$2,$3)", [id, title, content]);
+  if (typeof parent === "undefined"){
+    console.log(`db导入Note: title=${title}`);
+    await db.execute("INSERT INTO notes (id, title, content) VALUES ($1,$2,$3)", [id, title, content]);
+  } else {
+    console.log(`db导入Note: title=${title}`);
+    await db.execute("INSERT INTO notes (id, title, parent, content) VALUES ($1,$2,$3,$4)", [id, title, parent, content]);
+  }
+  
   return id;
 }

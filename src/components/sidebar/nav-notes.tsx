@@ -21,6 +21,7 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
   const activeNoteTitle = useActiveNote((store) => store.activeNoteTitle);
   const activeNoteIcon = useActiveNote((store) => store.activeNoteIcon);
   const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId);
+  const updateActiveNoteTitle = useActiveNote((store) => store.updateActiveNoteTitle);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState<Note[]>();
 
@@ -47,6 +48,7 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
 
   // 选择笔记
   const onSelectNote = (noteId: string) => {
+    updateActiveNoteTitle("")
     setActiveNoteId(noteId)
   };
 

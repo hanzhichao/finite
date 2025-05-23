@@ -26,6 +26,7 @@ interface activeNoteStore {
   updateActiveNoteTags: (tags: string[])=> void;
   content: string,
   updateContent: (content: string) => void;
+
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({

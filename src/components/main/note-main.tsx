@@ -6,6 +6,9 @@ import dynamic from "next/dynamic";
 import {NoteCover} from "@/components/main/note-cover";
 import {Skeleton} from "@/components/ui/skeleton";
 import {NoteHeader} from "@/components/main/note-header";
+import {cn} from "@/lib/utils"
+import {useWideMode} from "@/hooks/use-wide-mode";
+
 
 interface NoteMainProps {
   noteId: string;
@@ -17,7 +20,7 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
     isLocked: store.isLocked,
     setActiveNote: store.setActiveNote}
   ));
-
+  const wideMode = useWideMode((store)=>store.wideMode)
 
   const [note, setNote] = useState<Note>();
 
@@ -65,9 +68,10 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
   }
 
   return (
-    <main className="pb-40">
+    <main className="pb-30">
       <NoteCover url={activeNoteCover} preview={isLocked==1}/>
-      <div className="md:max-w-3xl lg:md-max-w-4xl mx-auto">
+      <div className={cn("mx-auto", !wideMode && "md:max-w-3xl lg:md-max-w-4xl")}>
+      {/*<div className="mx-auto">*/}
         <NoteHeader initialData={note} preview={isLocked==1}/>
         {/*<Editor2 noteId={noteId} onChange={onContentChange} initialContent={note.content} editable={isLocked==0}/>*/}
         <Editor noteId={noteId} onChange={onContentChange} initialContent={note.content} editable={isLocked==0}/>
