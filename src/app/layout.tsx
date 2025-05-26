@@ -1,3 +1,5 @@
+"use client"
+
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -5,6 +7,8 @@ import { DialogProvider } from "@/components/providers/dialog-provider";
 import "@/styles/globals.css";
 import { SearchCommand } from "@/components/dialogs/search-command";
 import { Navigation } from "@/components/sidebar/navigation";
+import { getCurrentWindow } from '@tauri-apps/api/window';
+import {useEffect} from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,23 +25,40 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  useEffect(()=>{
+    if (!(window === undefined)){
+      const appWindow = getCurrentWindow();
+      document
+        .getElementById('titlebar-minimize')
+        ?.addEventListener('click', () => appWindow.minimize());
+      document
+        .getElementById('titlebar-maximize')
+        ?.addEventListener('click', () => appWindow.toggleMaximize());
+      document
+        .getElementById('titlebar-close')
+        ?.addEventListener('click', () => appWindow.close());
+    }
+    },
+    [])
+
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Toaster position="bottom-center" />
-          <DialogProvider />
-          <div className="h-full flex dark:bg-[#1F1F1F]">
-            <Navigation />
-            <main className="flex-1 h-full overflow-y-auto">
-              <SearchCommand />
-              {children}
-            </main>
-          </div>
-        </ThemeProvider>
-      </body>
+    <body
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    >
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <Toaster position="bottom-center"/>
+      <DialogProvider/>
+      <div className="h-full flex dark:bg-[#1F1F1F]">
+        <Navigation/>
+        <main className="flex-1 h-full overflow-y-auto">
+          <SearchCommand/>
+          {children}
+        </main>
+      </div>
+    </ThemeProvider>
+    </body>
     </html>
   );
 }
