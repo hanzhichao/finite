@@ -1,4 +1,4 @@
-import { Note } from "@/lib/types";
+import { Note, Property } from "@/lib/types";
 import { create } from "zustand";
 
 interface activeNoteStore {
@@ -26,7 +26,8 @@ interface activeNoteStore {
   updateActiveNoteTags: (tags: string[])=> void;
   content: string,
   updateContent: (content: string) => void;
-
+  properties: Property[];
+  addProperty: (key: string, value?: string) => void;
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -40,6 +41,7 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   updateAt: "",
   isLocked: 0,
   tags: [],
+  properties: [],
   setActiveNoteId: (id?: string) => { set({ activeNoteId: id }); },
   setActiveNote: (note: Note) =>
     { set({
@@ -54,6 +56,7 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
       isLocked: note.is_locked,
       tags: note.tags ? note.tags.split(",") : [],
       content: note.content,
+      properties: note.properties,
     }); },
   updateActiveNoteTitle: (title: string) => { set({ activeNoteTitle: title }); },
   updateActiveNoteIcon: (icon: string) => { set({ activeNoteIcon: icon }); },
@@ -68,4 +71,5 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   updateActiveNoteTags: (value: string[]) => { set({ tags: value }); },
   content: "",
   updateContent: (content: string) => {set({content: content})},
+  addProperty: (key: string, value?: string) => {set((store)=>({properties: [...store.properties, {id: "xxx", note_id: store.activeNoteId ?? "", key: key, type: "string", value: value}]}))},
   }));

@@ -36,5 +36,5 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-./src-tauri/gen/
+/src-tauri/gen/*
 .idea/

@@ -3,6 +3,7 @@ import {Note} from "./types";
 import {generateUUID} from "./utils";
 import * as path from "@tauri-apps/api/path";
 import {exists, mkdir, BaseDirectory} from "@tauri-apps/plugin-fs";
+import {getProperties} from "@/lib/properties";
 
 const DB_DIR_NAME = "Finite"
 const DB_FILE_NAME = "notes.db"
@@ -20,10 +21,11 @@ async function createDbDir(dbDir: string ) {
 }
 
 async function createTable() {
-  console.log("db创建表: notes")
+
   const homeDir = await path.homeDir();
   const dbFile = await path.join(homeDir, `${DB_DIR_NAME}/${DB_FILE_NAME}`);
   const db = await Database.load("sqlite:" + dbFile);
+  console.log("db创建表: notes")
   await db.execute(
     `CREATE TABLE IF NOT EXISTS "notes"
      (
@@ -34,18 +36,32 @@ async function createTable() {
          tags        VARCHAR(255),
          cover       TEXT,
          content     TEXT,
-         is_archived BOOLEAN  DEFAULT 0,
-         is_favorite BOOLEAN  DEFAULT 0,
-         is_locked   BOOLEAN  DEFAULT 0,
+         is_archived BOOLEAN  DEFAULT false,
+         is_favorite BOOLEAN  DEFAULT false,
+         is_locked   BOOLEAN  DEFAULT false,
          create_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
          update_at   DATETIME DEFAULT CURRENT_TIMESTAMP
      );`);
+
+  console.log("db创建表: properties")
+  await db.execute(
+    `CREATE TABLE IF NOT EXISTS "properties"
+     (
+         id      VARCHAR(64) PRIMARY KEY,
+         note_id VARCHAR(64),
+         key     VARCHAR(255) NOT NULL,
+         type    VARCHAR(25),
+         value   VARCHAR(255),
+         FOREIGN KEY(note_id) REFERENCES notes(id)
+     );`);
+
+
   console.log("db创建索引: notes.parent")
   await db.execute(`CREATE INDEX IF NOT EXISTS "by_parent" ON notes (parent)`);
   await db.close()
 }
 
-async function connDb(): Promise<Database> {
+export async function connDb(): Promise<Database> {
   const homeDir = await path.homeDir();
   const dbDir = await path.join(homeDir, DB_DIR_NAME);
   await createDbDir(dbDir)
@@ -134,6 +150,8 @@ export async function getNote(id: string) {
   if (result.length > 0){
     note = result[0];
   }
+  const properties = await getProperties(note.id)
+  note.properties = properties
   return note
 }
 
