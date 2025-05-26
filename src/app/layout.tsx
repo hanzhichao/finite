@@ -50,9 +50,9 @@ export default function RootLayout({
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <Toaster position="bottom-center"/>
       <DialogProvider/>
-      <div className="h-full flex dark:bg-[#1F1F1F]">
+      <div className="h-full flex dark:bg-[#1F1F1F] rounded-t-2xl">
         <Navigation/>
-        <main className="flex-1 h-full overflow-y-auto">
+        <main className="mt-10 flex-1 overflow-y-auto">
           <SearchCommand/>
           {children}
         </main>

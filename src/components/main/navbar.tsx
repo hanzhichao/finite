@@ -5,6 +5,7 @@ import {NavbarMenu} from "@/components/main/navbar-menu";
 import {useActiveNote} from "@/hooks/use-active-note";
 import {NavbarFavorite} from "@/components/main/navbar-favorite";
 import {NavbarLock} from "@/components/main/navbar-lock";
+import {cn} from "@/lib/utils";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -16,7 +17,8 @@ export const Navbar = ({isCollapsed, onResetWidth}: NavbarProps) => {
 
   return (
     <>
-      <nav data-tauri-drag-region className="bg-background dark:bg-[#1F1F1F] px-3 py-2 w-full flex items-center gap-x-4">
+      <nav data-tauri-drag-region className={cn("bg-background dark:bg-[#1F1F1F] px-3 py-2 w-full flex items-center gap-x-4 rounded-t-2xl",
+        isCollapsed && "rounded-tl-2xl")}>
         {/*展开sidebar按钮*/}
         {isCollapsed && (
           <div className="cursor-pointer w-6 h-6 text-muted-foreground">

@@ -51,7 +51,7 @@ export const NoteEmpty = () => {
     <>
       <div data-tauri-drag-region className="h-10">
       </div>
-      <main className="h-full flex flex-col space-y-4 pt-40 px-10">
+      <main className="h-full flex flex-col space-y-4 pt-20 px-10">
         <div className="flex items-center justify-between w-full">
           <div>
           </div>

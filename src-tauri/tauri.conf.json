@@ -10,6 +10,7 @@
     "frontendDist": "../out"
   },
   "app": {
+    "macOSPrivateApi": true,
     "windows": [
       {
         "title": "Finite",
@@ -17,7 +18,8 @@
         "height": 900,
         "resizable": true,
         "fullscreen": false,
-        "decorations": false
+        "decorations": false,
+        "transparent": true
       }
     ],
     "security": {

@@ -5,9 +5,14 @@
 html,
 body,
 :root {
+  border-radius: 15px;
   height: 100%;
 }
 
+aside {
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
 
 @custom-variant dark (&:is(.dark *));
 
