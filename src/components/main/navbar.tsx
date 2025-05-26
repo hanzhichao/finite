@@ -1,11 +1,10 @@
-import {MenuIcon, Star} from "lucide-react";
+import {MenuIcon} from "lucide-react";
 import {NavbarTitle} from "@/components/main/navbar-title";
 import {NoteBanner} from "@/components/main/note-banner";
 import {NavbarMenu} from "@/components/main/navbar-menu";
 import {useActiveNote} from "@/hooks/use-active-note";
 import {NavbarFavorite} from "@/components/main/navbar-favorite";
 import {NavbarLock} from "@/components/main/navbar-lock";
-import {NavbarInfo} from "@/components/main/navbar-info";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -27,7 +26,6 @@ export const Navbar = ({isCollapsed, onResetWidth}: NavbarProps) => {
         <div data-tauri-drag-region className="flex items-center justify-between w-full">
           <NavbarTitle/>
           <div className="flex items-center">
-            <NavbarInfo />
             <NavbarLock />
             <NavbarFavorite />
             <NavbarMenu/>

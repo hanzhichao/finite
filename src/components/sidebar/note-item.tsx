@@ -3,26 +3,10 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   ChevronDown,
   ChevronRight,
   LucideIcon,
-  MoreHorizontal,
-  Plus,
-  Trash,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { archiveNote, createNote } from "@/lib/notes";
-import { useActiveNote } from "@/hooks/use-active-note";
-import { useChangedNotes } from "@/hooks/use-changed-notes";
-import { useEffect } from "react";
 import {NoteItemActions} from "@/components/sidebar/note-item-actions";
 
 interface ItemProps {

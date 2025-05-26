@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
 import { NoteItem } from "@/components/sidebar/note-item";
 import { FileIcon } from "lucide-react";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {getFavoriteNotes, getNotes} from "@/lib/notes";
 import { Note } from "@/lib/types";
-import { useChangedNotes } from "@/hooks/use-changed-notes";
 
 
 export function NavFavorites() {
