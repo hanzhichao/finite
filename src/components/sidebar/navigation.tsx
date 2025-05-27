@@ -129,15 +129,15 @@ export function Navigation() {
         isResetting && "transition-all ease-out duration-300",
         isMobile && "w-0"
       )} ref={sidebarRef}>
-        <div data-tauri-drag-region className="px-4 py-4.5 w-full flex items-center gap-x-2">
-          <div className="w-3 h-3 flex items-center justify-center text-primary font-bold rounded-lg bg-red-500" id="titlebar-close">
-            <X className="opacity-0 hover:opacity-100 transition w-2.5 h-2.5" role="button"/>
+        <div data-tauri-drag-region className="group px-4 py-4.5 w-full flex items-center gap-x-2">
+          <div className="w-3.5 h-3.5 flex items-center justify-center text-primary font-bold rounded-lg bg-red-500" id="titlebar-close">
+            <X className="opacity-0 group-hover:opacity-100 transition w-3 h-3" role="button"/>
           </div>
-          <div className="w-3 h-3 flex items-center justify-center text-primary font-bold rounded-lg bg-amber-300" id="titlebar-minimize">
-            <Minus className="opacity-0 hover:opacity-100 transition w-2.5 h-2.5" role="button"/>
+          <div className="w-3.5 h-3.5 flex items-center justify-center text-primary font-bold rounded-lg bg-amber-300" id="titlebar-minimize">
+            <Minus className="opacity-0 group-hover:opacity-100 transition w-3 h-3" role="button"/>
           </div>
-          <div className="w-3 h-3 flex items-center justify-center text-primary font-bold rounded-lg bg-green-500" id="titlebar-maximize">
-            <Maximize2 className="opacity-0 hover:opacity-100 transition w-2.5 h-2.5 rotate-90" role="button"/>
+          <div className="w-3.5 h-3.5 flex items-center justify-center text-primary font-bold rounded-lg bg-green-500" id="titlebar-maximize">
+            <Maximize2 className="opacity-0 group-hover:opacity-100 transition w-2.5 h-2.5 rotate-90" role="button"/>
           </div>
         </div>
         {/*折叠按钮*/}
