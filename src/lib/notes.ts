@@ -21,7 +21,6 @@ async function createDbDir(dbDir: string ) {
 }
 
 async function createTable() {
-
   const homeDir = await path.homeDir();
   const dbFile = await path.join(homeDir, `${DB_DIR_NAME}/${DB_FILE_NAME}`);
   const db = await Database.load("sqlite:" + dbFile);
@@ -42,22 +41,41 @@ async function createTable() {
          create_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
          update_at   DATETIME DEFAULT CURRENT_TIMESTAMP
      );`);
+  console.log("db创建索引: notes.parent")
+  await db.execute(`CREATE INDEX IF NOT EXISTS "by_parent" ON notes (parent)`);
 
   console.log("db创建表: properties")
   await db.execute(
     `CREATE TABLE IF NOT EXISTS "properties"
      (
          id      VARCHAR(64) PRIMARY KEY,
-         note_id VARCHAR(64),
          key     VARCHAR(255) NOT NULL,
-         type    VARCHAR(25),
-         value   VARCHAR(255),
-         FOREIGN KEY(note_id) REFERENCES notes(id)
+         type    SMALLINT DEFAULT 0
      );`);
 
+  console.log("db创建表: options")
+  await db.execute(
+    `CREATE TABLE IF NOT EXISTS "options"
+     (
+         property_id VARCHAR(64),
+         text        VARCHAR(255) NOT NULL,
+         color       VARCHAR(32) NOT NULL,
+         bg_color    VARCHAR(32) NOT NULL,
+         FOREIGN KEY (property_id) REFERENCES properties (id)
+     );`);
 
-  console.log("db创建索引: notes.parent")
-  await db.execute(`CREATE INDEX IF NOT EXISTS "by_parent" ON notes (parent)`);
+  console.log("db创建表: notes_properties")
+  await db.execute(
+    `CREATE TABLE IF NOT EXISTS "notes_properties"
+     (
+         property_id VARCHAR(64),
+         note_id     VARCHAR(64),
+         value       VARCHAR(255),
+         is_visible  BOOLEAN DEFAULT true,
+         FOREIGN KEY (property_id) REFERENCES properties (id),
+         FOREIGN KEY (note_id) REFERENCES notes (id)
+     );`);
+
   await db.close()
 }
 

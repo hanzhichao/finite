@@ -8,6 +8,8 @@ import {Skeleton} from "@/components/ui/skeleton";
 import {NoteHeader} from "@/components/main/note-header";
 import {cn} from "@/lib/utils"
 import {useWideMode} from "@/hooks/use-wide-mode";
+import NoteProperties from "@/components/main/note-properties";
+import {getProperties} from "@/lib/properties";
 
 
 interface NoteMainProps {
@@ -28,12 +30,12 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
     console.log(`加载Page页面: noteId=${noteId}`);
     const fetchData = async () => {
       const curNote: Note = await getNote(noteId);
-      console.log(curNote);
       if (typeof curNote === "undefined") {
         return;
       }
-      setActiveNote(curNote);
+      curNote.properties = await getProperties(noteId)
       setNote(curNote);
+      setActiveNote(curNote);
     };
     void fetchData();
   }, [noteId]);
@@ -73,6 +75,7 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
       <div className={cn("mx-auto", !wideMode && "md:max-w-3xl lg:md-max-w-4xl")}>
       {/*<div className="mx-auto">*/}
         <NoteHeader initialData={note} preview={isLocked==1}/>
+        <NoteProperties />
         {/*<Editor2 noteId={noteId} onChange={onContentChange} initialContent={note.content} editable={isLocked==0}/>*/}
         <Editor noteId={noteId} onChange={onContentChange} initialContent={note.content} editable={isLocked==0}/>
       </div>

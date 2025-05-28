@@ -24,7 +24,7 @@ export const NoteCover = ({url, preview}: CoverProps) => {
   }
 
   return (
-    <div className={cn("relative w-full h-[35vh] group"
+    <div className={cn("relative w-full h-[32vh] group"
       , !url && "h-[8vh]"
       , url && "bg-muted")}>
       {!!url && (

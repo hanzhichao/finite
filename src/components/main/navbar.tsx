@@ -5,7 +5,7 @@ import {NavbarMenu} from "@/components/main/navbar-menu";
 import {useActiveNote} from "@/hooks/use-active-note";
 import {NavbarFavorite} from "@/components/main/navbar-favorite";
 import {NavbarLock} from "@/components/main/navbar-lock";
-import {NavbarInfo} from "@/components/main/navbar-info";
+// import {NavbarInfo} from "@/components/main/navbar-info";
 import {cn} from "@/lib/utils";
 
 interface NavbarProps {
@@ -29,7 +29,7 @@ export const Navbar = ({isCollapsed, onResetWidth}: NavbarProps) => {
         <div data-tauri-drag-region className="flex items-center justify-between w-full">
           <NavbarTitle/>
           <div className="flex items-center">
-            <NavbarInfo />
+            {/*<NavbarInfo />*/}
             <NavbarLock />
             <NavbarFavorite />
             <NavbarMenu/>

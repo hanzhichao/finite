@@ -1,5 +1,6 @@
-import { Note, Property } from "@/lib/types";
-import { create } from "zustand";
+import {Note, Property, PropertyType} from "@/lib/types";
+import {create} from "zustand";
+import {generateUUID} from "@/lib/utils";
 
 interface activeNoteStore {
   activeNoteId?: string;
@@ -27,7 +28,7 @@ interface activeNoteStore {
   content: string,
   updateContent: (content: string) => void;
   properties: Property[];
-  addProperty: (key: string, value?: string) => void;
+  addProperty: (property: Property) => void;
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -71,5 +72,5 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   updateActiveNoteTags: (value: string[]) => { set({ tags: value }); },
   content: "",
   updateContent: (content: string) => {set({content: content})},
-  addProperty: (key: string, value?: string) => {set((store)=>({properties: [...store.properties, {id: "xxx", note_id: store.activeNoteId ?? "", key: key, type: "string", value: value}]}))},
+  addProperty: (property: Property) => {set((store)=>({properties: [...store.properties, property]}))},
   }));

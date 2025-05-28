@@ -7,7 +7,7 @@ import { useCoverImage } from "@/hooks/use-cover-image";
 import {updateNoteIcon, updateNoteTags, updateNoteTitle} from "@/lib/notes";
 import { Note } from "@/lib/types";
 import { useActiveNote } from "@/hooks/use-active-note";
-import {NoteTags} from "@/components/main/note-tags";
+// import {NoteTags} from "@/components/main/note-tags";
 
 interface NoteHeaderProps {
   initialData: Note;
@@ -134,9 +134,9 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
           {activeNoteTitle}
         </div>
       )}
-      <div className="mb-4">
-        <NoteTags tags={tags} onChange={handleTagsChange} suggestions={allTags} preview={preview}/>
-      </div>
+      {/*<div className="mb-4">*/}
+      {/*  <NoteTags tags={tags} onChange={handleTagsChange} suggestions={allTags} preview={preview}/>*/}
+      {/*</div>*/}
     </header>
   );
 };
