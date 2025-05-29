@@ -32,18 +32,17 @@ export enum PropertyType {
 }
 
 export interface Option {
-  text: string,
+  label: string,
   value: string,
-  color: string,
-  bg_color: string,
+  bg_color?: string,
 }
 
 
 export interface Property {
   id: string,
-  note_id?: string,
   key: string,
-  type: PropertyType,
+  type: string,
+  note_id?: string,
   value?: string,
   options?: Option[],
   is_readonly?: boolean,

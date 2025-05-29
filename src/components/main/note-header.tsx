@@ -121,7 +121,7 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
       </div>
       {isEditing && !preview ? (
         <TextAreaAutoSize
-          className="text-5xl bg-transparent font-bold break-words outline-none text-[#3F3F3F] dark:text-[#CFCFCF] resize-none"
+          className="text-5xl pb-1.5 bg-transparent font-bold break-words outline-none text-[#3F3F3F] dark:text-[#CFCFCF] resize-none"
           ref={inputRef}
           onBlur={disableInput}
           onKeyDown={onKeyDown}

@@ -1,12 +1,9 @@
 "use client"
 import {CalendarIcon, Clock, File, Hash, Link, LucideIcon, SquareChevronDown, SquareMousePointer, Text} from "lucide-react"
-import {Input} from "@/components/ui/input";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Property, PropertyType} from "@/lib/types";
-import {useEffect, useRef, useState} from "react";
-import {updateNotePropertyKey, updateNotePropertyValue} from "@/lib/properties";
+import {Option, Property, PropertyType} from "@/lib/types";
+import {useState} from "react";
+import {addOption, updatePropertyKey, updateNotePropertyValue, updatePropertyType} from "@/lib/properties";
 import {useActiveNote} from "@/hooks/use-active-note";
-import {MultiSelect} from "@/components/common/multi-select";
 import { Calendar } from "@/components/ui/calendar"
 import * as React from "react"
 import { format } from "date-fns"
@@ -21,13 +18,12 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {CustomSelect} from "@/components/common/costom-select";
+import {ClickInput} from "@/components/common/click-input";
+import {AddableSelect} from "@/components/common/addable-select";
 
 
 function getPropertyIcons() {
@@ -43,7 +39,6 @@ function getPropertyIcons() {
   return icons
 }
 
-
 interface NotePropertyItemProps {
   noteId?: string,
   preview?: boolean,
@@ -56,120 +51,75 @@ interface NotePropertyItemProps {
 
 export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAdding}: NotePropertyItemProps) => {
   const icons = getPropertyIcons()
-  // const icons2 = getPropertyIcons2()
-  const keyInputRef = useRef<HTMLInputElement>(null);
-  const valueInputRef = useRef<HTMLInputElement>(null);
-  const [keyIsEditing, setKeyIsEditing] = useState(false);
-  const [valueIsEditing, setValueIsEditing] = useState(false);
-  const [key, setKey] = useState(item.key)
-  const [value, setValue] = useState(item.value ?? "")
 
-  const [Icon, setIcon] = useState<LucideIcon>(icons.get(item.type) ?? Text)
-
-  const [selectedOption, setSelectedOption] = useState(item.value);
+  // const [selectedOption, setSelectedOption] = useState(item.value);
   const addProperty = useActiveNote((store) => store.addProperty)
-  const [propertyType, setPropertyType] = useState(item.type)
+  const [propertyType, setPropertyType] = useState<PropertyType>(item.type as PropertyType)
+  const [Icon, setIcon] = useState<LucideIcon>(icons.get(propertyType) ?? Text)
   const [date, setDate] = React.useState<Date>()
-
   const propertyTypes = Object.values(PropertyType)
-
   const [selectedTags, setSelectedTags] = useState<string[]>(["frontend"])
-  const [singleValue, setSingleValue] = useState<string[]>([])
+  const [optionValue, setOptionValue] = useState<string[]>(item.value? item.value.split(","):[])
+  const [options, setOptions] = useState(item.options ?? [])
 
-  // Example with predefined options (Chinese terms like in the image)
-  const options = [
-    { value: "frontend", label: "前端" },
-    { value: "backend", label: "后端" },
-    { value: "fullstack", label: "全栈" },
-    { value: "mobile", label: "移动端" },
-  ]
-
-
-  useEffect(() => {
-    console.log("property")
-    console.log(item)
-    if (isAdding) {
-      enableInput("key")
+  const onChangeKey = (key: string) => {
+    if (typeof noteId !== "undefined" && key !== "" && !keys.includes(key)) {
+      console.log(`更新属性Key为: ${key}`)
+      item.key = key
+      void updatePropertyKey(noteId, item.id, key).then((propertyId) => {
+        if (propertyId !== "") {
+          item.id = propertyId
+        }
+      })
+      if (isAdding) addProperty(item)
     }
-  }, []);
-
-  const enableInput = (which: string) => {
-    if (which === "key") {
-      setKeyIsEditing(true);
-      setTimeout(() => {
-        keyInputRef.current?.focus();
-        keyInputRef.current?.setSelectionRange(0, 0)
-      }, 20);
-    } else {
-      setValueIsEditing(true);
-      setTimeout(() => {
-        valueInputRef.current?.focus();
-        valueInputRef.current?.setSelectionRange(0, 0)
-      }, 20);
-    }
-  };
-
-  const disableInput = (which: string) => {
-    if (which === "key") {
-      setKeyIsEditing(false);
-      if (typeof noteId !== "undefined" && key !== "" && !keys.includes(key)) {
-        console.log(`更新属性Key为: ${key}`)
-        item.key = key
-        void updateNotePropertyKey(noteId, item.id, key).then((propertyId) => {
-          if (propertyId !== "") {
-            item.id = propertyId
-          }
-        })
-      }
-    } else {
-      setValueIsEditing(false)
-      if (typeof noteId !== "undefined") {
-        console.log(`更新属性值为: ${value}`)
-        void updateNotePropertyValue(noteId, item.id, value)
-        item.value = value
-      }
-    }
-    if (isAdding && typeof setIsAdding !== "undefined") {
-      if (key !== "" && !keys.includes(key)) {
-        addProperty(item)
-      }
-      setTimeout(() => {
-        enableInput("value")
-      }, 0);
-      setIsAdding(false)
-
-    }
+    setIsAdding?.(false)
   }
 
-  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, which: string) => {
-    if (event.key === "Enter") {
-      disableInput(which);
-    }
-  };
-
-  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>, which: string) => {
-    if (which === "key") {
-      setKey(event.target.value)
-    } else {
-      setValue(event.target.value)
-    }
-  };
-
-  const onSelectOption = (value: string) => {
-    console.log(`更新属性值为: ${value}`)
-    setSelectedOption((value))
+  const onChangeValue = (value: string) => {
     if (typeof noteId !== "undefined") {
+      console.log(`更新属性值为: ${value}`)
       void updateNotePropertyValue(noteId, item.id, value)
+      item.value = value
     }
   }
+
+  const onChangeSelect = (labels: string[]) => {
+    console.log("onSelectChange")
+    setOptionValue(labels)
+    if (labels.length === 0) return
+
+    const optionLabels = options.map(item=>item.label)
+    for (const label of labels){
+      if (!optionLabels.includes(label)) {
+        // const newOption: Option = {label: label, value: label.toLowerCase(), bg_color: ""}
+        console.log(`warn: not include: ${label}`)
+      }
+      if (typeof noteId !== "undefined") {
+        void updateNotePropertyValue(noteId, item.id, labels.join(","))
+      }
+    }
+  }
+
+  const onAddOption = (option: Option) => {
+    void addOption(item.id, option.label, option.value, option.bg_color)
+    setOptions([...options, option])
+  }
+
+
 
   const onChangePropertyType = (value: string) => {
     const newPropertyType:PropertyType = value as PropertyType
+
+    if (typeof noteId !== "undefined"){
+      void updatePropertyType(noteId, item.id, newPropertyType)
+    }
     setPropertyType(newPropertyType)
 
     if (typeof newPropertyType === "undefined") return
     const newIcon = icons.get(newPropertyType)
     if (typeof newIcon === "undefined") return;
+
 
     setIcon(newIcon)
     item.type = newPropertyType
@@ -178,154 +128,82 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
   return (
     <div className="flex items-center gap-1">
       <div className="flex items-center gap-1 text-gray-500 w-40">
+        {/*属性类型图标*/}
         <div className="flex w-6 h-6 rounded-xs hover:bg-accent dark:hover:bg-neutral-600 justify-center items-center">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Icon className="w-5 h-5"/>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-22">
-              {/*<DropdownMenuLabel>Property Type</DropdownMenuLabel>*/}
-              {/*<DropdownMenuSeparator/>*/}
+            <DropdownMenuContent className="w-10">
               <DropdownMenuRadioGroup value={propertyType} onValueChange={onChangePropertyType}>
                 {propertyTypes.map((item, index) => (
-                  <DropdownMenuRadioItem key={index} value={item}>{item}</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem key={index} value={item} className="text-xs pl-6 text-muted-foreground">{item}</DropdownMenuRadioItem>
                 ))}
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        {/*<span className="text-sm">{item.key}</span>*/}
-        <span>
-          {keyIsEditing && !preview ? (
-            <Input ref={keyInputRef}
-                   onClick={() => {
-                     enableInput("key")
-                   }}
-                   onBlur={() => {
-                     disableInput("key")
-                   }}
-                   onKeyDown={(e) => {
-                     onKeyDown(e, "key")
-                   }}
-                   onChange={(e) => {
-                     onChangeInput(e, "key")
-                   }}
-                   value={key}
-                   className="h-7 w-32 text-gray-800 focus-visible:ring-transparent rounded-sm px-1"/>
-          ) : (
-            <div onClick={() => {
-              enableInput("key")
-            }}
-                 className="h-7 font-normal hover:bg-accent text-sm py-1 px-1 rounded-sm w-32">
-              <span className="truncate text-gray-800">{key}</span>
-            </div>)}
-        </span>
+
+        {/*属性 Key*/}
+        <ClickInput initialValue={item.key} onValueChangeEnd={onChangeKey} isLocked={preview}
+                    inputClassName="h-8 w-32 text-gray-800 focus-visible:ring-transparent rounded-sm px-1"
+                    textClassName="h-8 font-normal hover:bg-accent text-sm py-1 px-1 rounded-sm w-32" isActive={isAdding}/>
       </div>
 
-      {(item.type === PropertyType.TEXT || item.type === PropertyType.DATETIME ) && (
-        <>
-          {valueIsEditing && !preview ? (
-            <Input ref={valueInputRef}
-                   onClick={() => {
-                     enableInput("value")
-                   }}
-                   onBlur={() => {
-                     disableInput("value")
-                   }}
-                   onKeyDown={(e) => {
-                     onKeyDown(e, "value")
-                   }}
-                   onChange={(e) => {
-                     onChangeInput(e, "value")
-                   }}
-                   value={value}
-                   className="h-7 focus-visible:ring-transparent rounded-sm px-1"/>
-          ) : (
-            <div onClick={() => {
-              enableInput("value")
-            }}
-                 className="h-7 w-full font-normal hover:bg-accent text-sm py-1 px-1 rounded-sm">
-              <span className="truncate">{value !== "" ? value : "-"}</span>
-            </div>)}
-        </>
+      {/*属性值*/}
+      {/*文本类型*/}
+      {propertyType === PropertyType.TEXT && (
+          <ClickInput initialValue={item.value?? "-"} onValueChangeEnd={onChangeValue} isLocked={preview} placeholder="Empty"
+                      inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-2"
+                      textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
       )}
 
-      {item.type === PropertyType.FILE && (
-        <>
-          {!preview ? (
-            <Input type="file"
-                   onChange={(e) => {}}
-                   value={value}
-                   className="focus-visible:ring-transparent rounded-sm"/>
-          ) : (
-            <div onClick={() => {
-              enableInput("value")
-            }}
-                 className="h-7 w-full font-normal hover:bg-accent text-sm py-1 px-3.5 rounded-sm">
-              <span className="truncate">{value !== "" ? value : "-"}</span>
-            </div>)}
-        </>
-
+      {/*文件类型*/}
+      {propertyType === PropertyType.FILE && (
+        <ClickInput initialValue={item.value?? "-"} onValueChangeEnd={onChangeValue} isLocked={preview} inputType="file"
+                    inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-2"
+                    textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
       )}
-
-      {item.type === PropertyType.LINK && (
-        <>
-          {valueIsEditing && !preview ? (
-            <Input ref={valueInputRef} type="url"
-                   onClick={() => {
-                     enableInput("value")
-                   }}
-                   onBlur={() => {
-                     disableInput("value")
-                   }}
-                   onKeyDown={(e) => {
-                     onKeyDown(e, "value")
-                   }}
-                   onChange={(e) => {
-                     onChangeInput(e, "value")
-                   }}
-                   value={value}
-                   className="h-7 focus-visible:ring-transparent rounded-sm"/>
-          ) : (
-            <div onClick={() => {
-              enableInput("value")
-            }}
-                 className="h-7 w-full font-normal hover:bg-accent text-sm py-1 px-3.5 rounded-sm">
-              <span className="truncate">{value !== "" ? value : "-"}</span>
-            </div>)}
-        </>
-
+      {/*链接类型*/}
+      {propertyType === PropertyType.LINK && (
+        <ClickInput initialValue={item.value?? "-"} onValueChangeEnd={onChangeValue} isLocked={preview} inputType="url" placeholder="https://"
+                    inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-2"
+                    textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
       )}
-
-      {item.type === PropertyType.NUMBER && (
-        <>
-          {valueIsEditing && !preview ? (
-            <Input ref={valueInputRef} type="number"
-                   onClick={() => {
-                     enableInput("value")
-                   }}
-                   onBlur={() => {
-                     disableInput("value")
-                   }}
-                   onKeyDown={(e) => {
-                     onKeyDown(e, "value")
-                   }}
-                   onChange={(e) => {
-                     onChangeInput(e, "value")
-                   }}
-                   value={value}
-                   className="h-7 focus-visible:ring-transparent rounded-sm"/>
-          ) : (
-            <div onClick={() => {
-              enableInput("value")
-            }} className="h-7 w-full font-normal hover:bg-accent text-sm py-1 px-3.5 rounded-sm">
-              <span className="truncate">{value !== "" ? value : "-"}</span>
-            </div>)}
-        </>
-
+      {/*数字类型*/}
+      {propertyType === PropertyType.NUMBER && (
+        <ClickInput initialValue={item.value?? "-"} onValueChangeEnd={onChangeValue} isLocked={preview} inputType="number" placeholder="0"
+                    inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-1"
+                    textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
       )}
-
-      {item.type === PropertyType.DATE && (
+      {/*日期类型*/}
+      {propertyType === PropertyType.DATE && (
+        <div className="h-8 w-full">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant={"outline"}
+              className={cn(
+                "h-8 w-full justify-start text-left font-normal rounded-sm",
+                !date && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon />
+              {date ? format(date, "PPP") : <span>Pick a date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+        </div>
+      )}
+      {/*时间类型*/}
+      {propertyType === PropertyType.DATETIME && (
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -349,48 +227,18 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
           </PopoverContent>
         </Popover>
       )}
-
-      {item.type === PropertyType.MULTI_SELECT && (
-        <CustomSelect
-          options={options}
-          value={selectedTags}
-          onChange={setSelectedTags}
-          placeholder="Select an option or create one"
-          allowMultiple={true}
-        />
+      {/*多选类型*/}
+      {propertyType === PropertyType.MULTI_SELECT && (
+        <AddableSelect options={options} value={selectedTags} onChange={setSelectedTags} onAdd={onAddOption} placeholder="Select an option or create one" allowMultiple={true}/>
       )}
-
-      {(item.type === PropertyType.SELECT ) && (
+      {/*单选类型*/}
+      {(propertyType === PropertyType.SELECT ) && (
         <>
           {!preview ? (
-            <CustomSelect
-              options={options}
-              value={singleValue}
-              onChange={setSingleValue}
-              placeholder="Choose one option"
-              allowMultiple={false}
-            />
-            // <Select value={selectedOption} onValueChange={onSelectOption}>
-            //   <SelectTrigger className="h-7 border-0 shadow-none hover:bg-accent w-full">
-            //     <SelectValue/>
-            //   </SelectTrigger>
-            //   <SelectContent>
-            //     {item.options?.map((option, index) => (
-            //       <SelectItem key={index} value={option.text}>
-            //         <div
-            //           className={cn("inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-neutral-200")}>
-            //           {option.text}
-            //         </div>
-            //       </SelectItem>
-            //     ))}
-            //   </SelectContent>
-            // </Select>
+            <AddableSelect options={options} value={optionValue} onChange={onChangeSelect} onAdd={onAddOption} placeholder="Choose one option" allowMultiple={false}/>
           ) : (
-            <div onClick={() => {
-              enableInput("value")
-            }}
-                 className="h-9 w-full font-normal hover:bg-accent text-sm py-1 px-3.5 rounded-sm">
-              <span className="truncate">{value}</span>
+            <div onClick={() => {}} className="h-9 w-full font-normal hover:bg-accent text-sm py-1 px-3.5 rounded-sm">
+              <span className="truncate">{item.value}</span>
             </div>)}
         </>
       )}

@@ -58,9 +58,9 @@ async function createTable() {
     `CREATE TABLE IF NOT EXISTS "options"
      (
          property_id VARCHAR(64),
-         text        VARCHAR(255) NOT NULL,
-         color       VARCHAR(32) NOT NULL,
-         bg_color    VARCHAR(32) NOT NULL,
+         label       VARCHAR(255) NOT NULL,
+         value       VARCHAR(255) NOT NULL,
+         bg_color    VARCHAR(32),
          FOREIGN KEY (property_id) REFERENCES properties (id)
      );`);
 
@@ -164,11 +164,14 @@ export async function getNote(id: string) {
   console.log(`db查询Note: id=${id}`);
   const db = await connDb();
   let note: Note = {id: "", title: "", icon: ""};
-  const result: Note[] = await db.select("SELECT * FROM notes WHERE id = $1", [id]);
+  const result = await db.select<Note[]>("SELECT * FROM notes WHERE id = $1", [id]);
   if (result.length > 0){
     note = result[0];
   }
+  console.log("note")
+  console.log(note)
   const properties = await getProperties(note.id)
+  console.log(properties)
   note.properties = properties
   return note
 }
