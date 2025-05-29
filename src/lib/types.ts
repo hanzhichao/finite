@@ -18,16 +18,16 @@ export interface Note {
 }
 
 export enum PropertyType {
-  TEXT,
-  NUMBER,
-  SELECT,  // circle-chevron-down
-  MULTI_SELECT,  // square-chevron-down
-  DATE,  // icon: calendar
-  DATATIME,  // clock
-  STATUS,  // loader
-  TAG,  // tags or tag
-  LINK,  // link or link2 or external-link
-  FILE,
+  TEXT= "Text",
+  NUMBER = "Number",
+  SELECT = "Select",  // circle-chevron-down
+  MULTI_SELECT = "Multi Select",  // square-chevron-down
+  DATE="Date",  // icon: calendar
+  DATETIME = "DateTime",  // clock
+  // STATUS = "Status",  // loader
+  // TAG = "Tag",  // tags or tag
+  LINK = "Link",  // link or link2 or external-link
+  FILE = "File",
   // BOOL,
 }
 

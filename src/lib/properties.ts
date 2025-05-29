@@ -24,14 +24,19 @@ export async function addNoteProperty(noteId: string, property_key: string, type
   const db = await connDb();
   let propertyId: string;
 
+  if (property_key === "") return ""
+
   const result = await db.select<Property[]>(`SELECT id,key,type FROM properties where key=$1`, [property_key])
-  if (result.length ===0 ){
+  console.log(result)
+  if (result.length === 0 ){
     propertyId = generateUUID();
     console.log(`db新建属性: ${property_key}`)
     await db.execute("INSERT INTO properties (id, key,type) VALUES ($1,$2,$3)", [propertyId, property_key, type]);
+  } else {
+    propertyId = result[0].id
   }
-  propertyId = result[0].id
   await db.execute("INSERT INTO notes_properties (property_id,note_id,value) VALUES ($1,$2,$3)", [propertyId, noteId, value]);
+  return propertyId
 }
 
 export async function updateNotePropertyValue(noteId: string, propertyId: string, value: string) {
@@ -40,8 +45,31 @@ export async function updateNotePropertyValue(noteId: string, propertyId: string
   await db.execute("UPDATE notes_properties SET value = CAST($1 AS VARCHAR) WHERE note_id = $2 AND property_id = $3", [value, noteId, propertyId]);
 }
 
-export async function updateNotePropertyKey(propertyId: string, key: string) {
-  console.log(`db更新Note属性值: propertyId=${propertyId}, key=${key}`);
+export async function updateNotePropertyKey(noteId: string, propertyId: string, key: string) {
+  if (typeof key==="undefined" || key === "") return ""
+
+  if (propertyId === ""){
+    return  await addNoteProperty(noteId, key, PropertyType.TEXT, "")
+  }
+
   const db = await connDb();
+
+  // const result = await db.select<Property[]>(`SELECT id,key,type FROM properties where id=$1`, [propertyId])
+  // if (result.length ===0 ){
+  //   propertyId = generateUUID();
+  //   console.log(`db新建属性: ${key}`)
+  //   await db.execute("INSERT INTO properties (id, key,type) VALUES ($1,$2,$3)", [propertyId, key, PropertyType.TEXT]);
+  // }
+  // propertyId = result[0].id
+
+  console.log(`db更新Note属性值: propertyId=${propertyId}, key=${key}`);
   await db.execute("UPDATE properties SET key = $1 WHERE id = $2", [key, propertyId]);
+  return propertyId
+
+  // const result2 = await db.select<string[]>(`SELECT property_id FROM notes_properties where note_id=$1 AND property_id=$2`, [noteId, propertyId])
+  // if (result2.length ===0 ){
+  //   propertyId = generateUUID();
+  //   console.log(`db新建属性: ${key}`)
+  //   await db.execute("INSERT INTO notes_properties (note_id, property_id,value) VALUES ($1,$2,$3)", [noteId, propertyId, "Empty"]);
+  // }
 }
