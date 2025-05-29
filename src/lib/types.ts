@@ -27,7 +27,7 @@ export enum PropertyType {
   // STATUS = "Status",  // loader
   // TAG = "Tag",  // tags or tag
   LINK = "Link",  // link or link2 or external-link
-  FILE = "File",
+  // FILE = "File",
   // BOOL,
 }
 

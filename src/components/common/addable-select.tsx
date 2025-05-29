@@ -133,7 +133,7 @@ export function AddableSelect(
         <PopoverTrigger asChild>
           <div
             className={cn(
-              "flex min-h-8 w-full items-center justify-between rounded-xs border-0 border-input hover:bg-accent bg-background px-2 py-1 text-sm ring-offset-background cursor-pointer",
+              "flex min-h-8 w-full items-center justify-between rounded-sm border-0 border-input hover:bg-accent bg-background px-2 py-1 text-sm ring-offset-background cursor-pointer",
               "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
               disabled && "cursor-not-allowed opacity-50",
             )}

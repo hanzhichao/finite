@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {ClickInput} from "@/components/common/click-input";
 import {AddableSelect} from "@/components/common/addable-select";
+import {DateTimePicker} from "@/components/common/date-time-picker";
 
 
 function getPropertyIcons() {
@@ -158,12 +159,13 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
                       textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
       )}
 
-      {/*文件类型*/}
-      {propertyType === PropertyType.FILE && (
-        <ClickInput initialValue={item.value?? "-"} onValueChangeEnd={onChangeValue} isLocked={preview} inputType="file"
-                    inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-2"
-                    textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
-      )}
+      {/*/!*文件类型*!/*/}
+      {/*{propertyType === PropertyType.FILE && (*/}
+      {/*  <ClickInput initialValue={item.value?? "-"} onValueChangeEnd={onChangeValue} isLocked={preview} inputType="file"*/}
+      {/*              inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-2"*/}
+      {/*              textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>*/}
+      {/*)}*/}
+
       {/*链接类型*/}
       {propertyType === PropertyType.LINK && (
         <ClickInput initialValue={item.value?? "-"} onValueChangeEnd={onChangeValue} isLocked={preview} inputType="url" placeholder="https://"
@@ -181,9 +183,9 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
         <div className="h-8 w-full">
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant={"outline"}
+            <Button variant="outline" size="sm"
               className={cn(
-                "h-8 w-full justify-start text-left font-normal rounded-sm",
+                "pl-0 ml-0 h-8 w-full justify-start text-left font-normal rounded-sm border-0 shadow-none",
                 !date && "text-muted-foreground"
               )}
             >
@@ -204,28 +206,9 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
       )}
       {/*时间类型*/}
       {propertyType === PropertyType.DATETIME && (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant={"outline"}
-              className={cn(
-                "w-full justify-start text-left font-normal rounded-sm",
-                !date && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon />
-              {date ? format(date, "PPP") : <span>Pick a date</span>}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              initialFocus
-            />
-          </PopoverContent>
-        </Popover>
+        <div className="h-8 w-full">
+        <DateTimePicker className="-8 w-full justify-start text-left font-normal rounded-sm border-0 shadow-none"/>
+        </div>
       )}
       {/*多选类型*/}
       {propertyType === PropertyType.MULTI_SELECT && (
