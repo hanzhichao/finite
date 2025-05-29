@@ -22,7 +22,7 @@ export const Navbar = ({isCollapsed, onResetWidth}: NavbarProps) => {
         isCollapsed && "rounded-tl-2xl")}>
         {/*展开sidebar按钮*/}
         {isCollapsed && (
-          <div className="cursor-pointer w-6 h-6 text-muted-foreground">
+          <div className="rounded-sm cursor-pointer w-6 h-6 text-muted-foreground hover:bg-neutral-300 dark:hover:bg-neutral-600">
             <MenuIcon role="button" onClick={onResetWidth} className="h-6 w-6"/>
           </div>
         )}
