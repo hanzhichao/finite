@@ -31,6 +31,7 @@ export function Navigation() {
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId);
   const settings = useSettings()
 
+
   useEffect(() => {
     console.log("加载Navigation组件")
     if (isMobile) {

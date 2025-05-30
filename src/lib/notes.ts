@@ -212,7 +212,10 @@ export async function restoreNote(id: string) {
 export async function deleteNote(id: string) {
   console.log(`db删除Note: id=${id}`);
   const db = await connDb();
-  await db.execute("DELETE FROM notes WHERE id = $1 OR parent = $1", [id]);
+  const result1 = await db.execute("DELETE FROM notes_properties WHERE note_id = $1", [id]);
+  console.log(result1)
+  const result2 = await db.execute("DELETE FROM notes WHERE id = $1 OR parent = $1", [id]);
+  console.log(result2)
 }
 
 export async function updateNoteTitle(id: string, title: string) {

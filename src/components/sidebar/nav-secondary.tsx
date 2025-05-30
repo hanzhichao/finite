@@ -19,7 +19,7 @@ export const NavSecondary = ({isMobile}: NavTrashProps) => {
         <PopoverTrigger className="w-full">
           <NavItem label="Trash" icon={Trash} />
         </PopoverTrigger>
-        <PopoverContent className="p-0 w-100 " side={isMobile ? "bottom" : "right"}>
+        <PopoverContent className="p-0 w-72 " side={isMobile ? "bottom" : "right"}>
           <TrashBox />
         </PopoverContent>
       </Popover>

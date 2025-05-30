@@ -5,6 +5,7 @@ import {FileIcon, Plus} from "lucide-react";
 import { useActiveNote } from "@/hooks/use-active-note";
 import { getNotes } from "@/lib/notes";
 import { Note } from "@/lib/types";
+import {useCount} from "@/hooks/use-count";
 
 interface NoteListProps {
   parentId?: string;
@@ -24,6 +25,8 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
   const updateActiveNoteTitle = useActiveNote((store) => store.updateActiveNoteTitle);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState<Note[]>();
+  const count = useCount((store)=>store.count)
+
 
   const onExpand = (noteId: string) => {
     setExpanded((prevExpanded) => ({
@@ -44,7 +47,7 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
       setNotes(notes);
     };
     void fetchData();
-  }, [activeNoteId, activeNoteTitle, activeNoteIcon]);
+  }, [activeNoteId, activeNoteTitle, activeNoteIcon, count]);
 
   // 选择笔记
   const onSelectNote = (noteId: string) => {

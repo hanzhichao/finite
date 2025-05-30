@@ -4,6 +4,7 @@ import { FileIcon } from "lucide-react";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {getFavoriteNotes, getNotes} from "@/lib/notes";
 import { Note } from "@/lib/types";
+import {useCount} from "@/hooks/use-count";
 
 
 export function NavFavorites() {
@@ -15,6 +16,7 @@ export function NavFavorites() {
     isFavorite: store.isFavorite,
   }))
   const [favoriteNotes, setFavoriteNotes] = useState<Note[]>();
+  const count = useCount((store)=>store.count)
 
   useEffect(() => {
     console.log("加载FavoriteNotes组件");
@@ -23,7 +25,7 @@ export function NavFavorites() {
       setFavoriteNotes(notes);
     };
     void fetchData();
-  }, [activeNoteId, activeNoteTitle, activeNoteIcon, isFavorite]);
+  }, [activeNoteId, activeNoteTitle, activeNoteIcon, isFavorite, count]);
 
   // 选择笔记
   const onSelectNote = (noteId: string) => {

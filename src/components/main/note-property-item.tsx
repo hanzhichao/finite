@@ -72,6 +72,7 @@ export const NotePropertyItem = ({
                                    noteId, item, preview=false, isAdding, keys, setIsAdding,
                                    onRemoveProperty
                                  }: NotePropertyItemProps) => {
+  const activeNoteId = useActiveNote((store)=>store.activeNoteId)
   const icons = getPropertyIcons()
   const addProperty = useActiveNote((store) => store.addProperty)
   const [propertyType, setPropertyType] = useState<PropertyType>(item.type as PropertyType)
@@ -85,14 +86,13 @@ export const NotePropertyItem = ({
     if (item.key.toLowerCase() === "tag" || item.key.toLowerCase() === "tags") {
       setIcon(Tag)
     }
-
     if (propertyType === PropertyType.DATE || propertyType === PropertyType.DATETIME) {
       if (typeof item.value !== "undefined" && item.value !== "") {
         const valueToDate = new Date(item.value)
         setDate(valueToDate)
       }
     }
-  }, []);
+  }, [activeNoteId]);
 
   const onChangeKey = (key: string) => {
     if (typeof noteId !== "undefined" && key !== "" && !keys.includes(key)) {
