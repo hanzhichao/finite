@@ -118,7 +118,12 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
             Add cover
           </Button>
         )}
+        {!activeNoteIcon && preview &&(
+          <div className="h-8">
+          </div>
+        )}
       </div>
+
       {isEditing && !preview ? (
         <TextAreaAutoSize
           className="text-5xl pb-1.5 bg-transparent font-bold break-words outline-none text-[#3F3F3F] dark:text-[#CFCFCF] resize-none"
@@ -129,7 +134,7 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
           onChange={(e) => { onInput(e.target.value); }}
         />
       ) : (
-        <div className="pb-[11.5px] text-5xl font-bold break-words outline-none text-[#3F3F3F] dark:text-[#CFCFCF]"
+        <div className="pb-[12.5px] text-5xl font-bold break-words outline-none text-[#3F3F3F] dark:text-[#CFCFCF]"
           onClick={enableInput}>
           {activeNoteTitle}
         </div>

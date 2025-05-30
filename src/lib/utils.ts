@@ -45,3 +45,11 @@ export async function readFile(file: File): Promise<string> {
     reader.readAsText(file);
   });
 }
+
+export function convertToISOString(dateString?: string) {
+  if(typeof dateString !== "undefined"){
+    const date = new Date(dateString);
+    return date.toISOString();
+  }
+  return dateString
+}

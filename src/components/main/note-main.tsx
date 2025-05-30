@@ -9,7 +9,6 @@ import {NoteHeader} from "@/components/main/note-header";
 import {cn} from "@/lib/utils"
 import {useWideMode} from "@/hooks/use-wide-mode";
 import NoteProperties from "@/components/main/note-properties";
-import {getProperties} from "@/lib/properties";
 
 
 interface NoteMainProps {
@@ -17,10 +16,12 @@ interface NoteMainProps {
 }
 
 export const NoteMain = ({noteId}: NoteMainProps)=> {
-  const {activeNoteCover,isLocked,setActiveNote} = useActiveNote((store) => (
+  const {activeNoteCover,isLocked,setActiveNote, properties} = useActiveNote((store) => (
   { activeNoteCover: store.activeNoteCover,
     isLocked: store.isLocked,
-    setActiveNote: store.setActiveNote}
+    setActiveNote: store.setActiveNote,
+    properties: store.properties,
+  }
   ));
   const wideMode = useWideMode((store)=>store.wideMode)
 
@@ -33,7 +34,6 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
       if (typeof curNote === "undefined") {
         return;
       }
-      curNote.properties = await getProperties(noteId)
       setNote(curNote);
       setActiveNote(curNote);
     };
@@ -70,7 +70,7 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
   }
 
   return (
-    <main className="pb-30">
+    <main className="pb-40">
       <NoteCover url={activeNoteCover} preview={isLocked==1}/>
       <div className={cn("mx-auto", !wideMode && "md:max-w-3xl lg:md-max-w-4xl")}>
       {/*<div className="mx-auto">*/}

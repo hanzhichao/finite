@@ -32,7 +32,7 @@ export default function NoteProperties() {
   useEffect(() => {
     console.log("加载 NoteProperties")
     console.log(properties)
-  }, [properties]);
+  }, [activeNoteId, properties]);
 
   const onRemoveProperty = (propertyId: string) => {
     if(typeof activeNoteId !== "undefined"){

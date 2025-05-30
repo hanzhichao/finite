@@ -33,7 +33,6 @@ export const ClickInput = ({
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    console.log(`加载 ClickInput组件：${initialValue}`)
     setValue(initialValue)
     if (isActive ) enableInput()
   }, reloadOn);

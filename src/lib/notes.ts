@@ -1,9 +1,9 @@
 import Database from "@tauri-apps/plugin-sql";
-import {Note} from "./types";
-import {generateUUID} from "./utils";
+import {Note, Property, PropertyType} from "./types";
+import {generateUUID, convertToISOString} from "./utils";
 import * as path from "@tauri-apps/api/path";
-import {exists, mkdir, BaseDirectory} from "@tauri-apps/plugin-fs";
-import {getProperties} from "@/lib/properties";
+import {BaseDirectory, exists, mkdir} from "@tauri-apps/plugin-fs";
+import {addNoteProperty, getProperties} from "@/lib/properties";
 
 const DB_DIR_NAME = "Finite"
 const DB_FILE_NAME = "notes.db"
@@ -168,11 +168,12 @@ export async function getNote(id: string) {
   if (result.length > 0){
     note = result[0];
   }
-  console.log("note")
-  console.log(note)
   const properties = await getProperties(note.id)
-  console.log(properties)
-  note.properties = properties
+  const createAt: Property = {id: generateUUID(), key: "createAt", type: "DateTime", value: convertToISOString(note.create_at), note_id: note.id, is_readonly: true}
+  // const updateAt: Property = {id: generateUUID(), key: "updateAt", type: "DateTime", value:  convertToISOString(note.update_at), note_id: note.id, is_readonly: true}
+  note.properties = [createAt, ...properties]
+  console.log("note.properties")
+  console.log(note.properties)
   return note
 }
 
@@ -187,6 +188,8 @@ export async function createNote(title: string, parent?: string) {
     await db.execute("INSERT INTO notes (id, title,parent) VALUES ($1,$2,$3)", [id, title, parent]
     );
   }
+  // 为每个 Note创建默认 tags 属性
+  await addNoteProperty(id, "tags", PropertyType.MULTI_SELECT, "")
   return id;
 }
 
@@ -250,7 +253,6 @@ export async function updateNoteContent(id: string, content: string) {
   await db.execute("UPDATE notes SET content = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [content, id]);
 }
 
-
 export async function updateNoteTags(id: string, tags: string[]) {
   console.log(`db更新Note内容: id=${id}`);
   const db = await connDb();
@@ -269,6 +271,9 @@ export async function createNoteWithContent(title: string, content: string, pare
     console.log(`db导入Note: title=${title}`);
     await db.execute("INSERT INTO notes (id, title, parent, content) VALUES ($1,$2,$3,$4)", [id, title, parent, content]);
   }
+
+  // 为每个 Note创建默认 tags 属性
+  await addNoteProperty(id, "tags", PropertyType.MULTI_SELECT, "")
   
   return id;
 }

@@ -42,14 +42,13 @@ export async function getProperties(noteId: string) {
 }
 
 
-
 export async function addNoteProperty(noteId: string, property_key: string, type: PropertyType, value: string) {
   console.log(`db添加笔记属性: noteId=${noteId}, property=${property_key}, type=${type}`);
   const db = await connDb();
   let propertyId: string;
 
   if (property_key === "") return ""
-
+  // 查询同名 key 是否存在
   const result = await db.select<Property[]>(`SELECT id,key,type FROM properties where key=$1`, [property_key])
   console.log(result)
   if (result.length === 0 ){
@@ -81,7 +80,6 @@ export async function updatePropertyKey(noteId: string, propertyId: string, key:
   await db.execute("UPDATE properties SET key = $1 WHERE id = $2", [key, propertyId]);
   return propertyId
 }
-
 
 export async function updatePropertyType(noteId: string, propertyId: string, type: PropertyType) {
   console.log(`db更新Note属性类型: noteId=${noteId}, propertyId=${propertyId}, type=${type}`);

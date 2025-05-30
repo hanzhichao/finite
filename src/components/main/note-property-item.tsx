@@ -3,13 +3,13 @@
 import {
   CalendarIcon,
   Clock,
-  File, GripVertical,
+  GripVertical,
   Hash,
   Link,
   LucideIcon, Minus,
   SquareChevronDown,
   SquareMousePointer,
-  Text, X
+  Text, Tag,
 } from "lucide-react"
 import {Option, Property, PropertyType} from "@/lib/types";
 import {useEffect, useState} from "react";
@@ -59,7 +59,7 @@ function getPropertyIcons() {
 
 interface NotePropertyItemProps {
   noteId?: string,
-  preview?: boolean,
+  preview: boolean,
   item: Property,
   keys: string[],
   isAdding?: boolean,
@@ -69,7 +69,7 @@ interface NotePropertyItemProps {
 
 
 export const NotePropertyItem = ({
-                                   noteId, item, preview, isAdding, keys, setIsAdding,
+                                   noteId, item, preview=false, isAdding, keys, setIsAdding,
                                    onRemoveProperty
                                  }: NotePropertyItemProps) => {
   const icons = getPropertyIcons()
@@ -82,6 +82,10 @@ export const NotePropertyItem = ({
   const [options, setOptions] = useState(item.options ?? [])
 
   useEffect(() => {
+    if (item.key.toLowerCase() === "tag" || item.key.toLowerCase() === "tags") {
+      setIcon(Tag)
+    }
+
     if (propertyType === PropertyType.DATE || propertyType === PropertyType.DATETIME) {
       if (typeof item.value !== "undefined" && item.value !== "") {
         const valueToDate = new Date(item.value)
@@ -146,7 +150,9 @@ export const NotePropertyItem = ({
     if (typeof newPropertyType === "undefined") return
     const newIcon = icons.get(newPropertyType)
     if (typeof newIcon === "undefined") return;
-    setIcon(newIcon)
+    if (item.key.toLowerCase() !== "tag" && item.key.toLowerCase() !== "tags") {
+      setIcon(newIcon)
+    }
     item.type = newPropertyType
   }
 
@@ -161,8 +167,8 @@ export const NotePropertyItem = ({
 
   return (
     <div className="flex items-center gap-1">
-      <div className={cn("flex items-center gap-1 text-gray-500 w-42", preview && "pl-[52px]")}>
-        {!preview && (
+      <div className={cn("flex items-center gap-1 text-gray-500 w-42", !(!preview && !item.is_readonly) && "pl-[52px]")}>
+        {!preview && !item.is_readonly&& (
           <div className="group flex items-center gap-0">
             <Button variant="ghost" size="icon" className="w-6 h-6 rounded-sm" onClick={() => {
               onRemoveProperty?.(item.id)
@@ -178,7 +184,7 @@ export const NotePropertyItem = ({
         {/*属性类型图标*/}
         <div className="flex w-6 h-6 rounded-sm hover:bg-accent dark:hover:bg-neutral-600 justify-center items-center">
           <>
-            {!preview?(
+            {!preview && !item.is_readonly ?(
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Icon className="w-5 h-5"/>
@@ -199,7 +205,7 @@ export const NotePropertyItem = ({
         </div>
 
         {/*属性 Key*/}
-        <ClickInput initialValue={item.key} onValueChangeEnd={onChangeKey} isLocked={preview}
+        <ClickInput initialValue={item.key} onValueChangeEnd={onChangeKey} isLocked={!(!preview && !item.is_readonly)}
                     inputClassName="h-8 w-32 text-gray-800 focus-visible:ring-transparent rounded-sm px-1"
                     textClassName="h-8 font-normal hover:bg-accent text-sm py-1 px-1 rounded-sm w-32"
                     isActive={isAdding}/>
@@ -210,8 +216,8 @@ export const NotePropertyItem = ({
 
       {propertyType === PropertyType.TEXT && (
         <>
-        {!preview ? (
-          <ClickInput initialValue={item.value ?? ""} onValueChangeEnd={onChangeValue} isLocked={preview}
+        {!preview && !item.is_readonly? (
+          <ClickInput initialValue={item.value ?? ""} onValueChangeEnd={onChangeValue} isLocked={!(!preview && !item.is_readonly)}
                       placeholder="Empty"
                       inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-2"
                       textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
@@ -236,7 +242,7 @@ export const NotePropertyItem = ({
       {/*链接类型*/}
       {propertyType === PropertyType.LINK && (
         <>
-          {!preview ? (
+          {!preview && !item.is_readonly? (
             <ClickInput initialValue={item.value ?? ""} onValueChangeEnd={onChangeValue}
                         inputType="url"
                         placeholder="https://"
@@ -251,13 +257,12 @@ export const NotePropertyItem = ({
               </a>
             </div>
           )}
-
         </>
 
       )}
       {/*数字类型*/}
       {propertyType === PropertyType.NUMBER && (
-        <ClickInput initialValue={item.value ?? ""} onValueChangeEnd={onChangeValue} isLocked={preview}
+        <ClickInput initialValue={item.value ?? ""} onValueChangeEnd={onChangeValue} isLocked={!(!preview && !item.is_readonly)}
                     inputType="number" placeholder="0"
                     inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-1"
                     textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
@@ -265,7 +270,7 @@ export const NotePropertyItem = ({
       {/*日期类型*/}
       {propertyType === PropertyType.DATE && (
         <>
-          {!preview ? (
+          {!preview && !item.is_readonly? (
             <div className="h-8 w-full">
               <Popover>
                 <PopoverTrigger asChild>
@@ -302,7 +307,7 @@ export const NotePropertyItem = ({
       {/*时间类型*/}
       {propertyType === PropertyType.DATETIME && (
         <>
-          {!preview ? (
+          {!preview && !item.is_readonly? (
             <div className="h-8 w-full">
               <DateTimePicker value={date} onChange={onChangeDate}
                               className="-8 w-full justify-start text-left font-normal rounded-sm border-0 shadow-none"/>
@@ -321,7 +326,7 @@ export const NotePropertyItem = ({
       {/*多选类型*/}
       {propertyType === PropertyType.MULTI_SELECT && (
         <>
-          {!preview ? (
+          {!preview && !item.is_readonly? (
             <AddableSelect options={options} value={optionValue} onChange={onChangeSelect} onAdd={onAddOption}
                            placeholder="Select an option or create one" allowMultiple={true}/>
           ) : (
@@ -340,7 +345,7 @@ export const NotePropertyItem = ({
       {/*单选类型*/}
       {(propertyType === PropertyType.SELECT) && (
         <>
-          {!preview ? (
+          {!preview && !item.is_readonly? (
             <AddableSelect options={options} value={optionValue} onChange={onChangeSelect} onAdd={onAddOption}
                            placeholder="Choose one option" allowMultiple={false}/>
           ) : (
