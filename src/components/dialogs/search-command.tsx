@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import {File} from "lucide-react"
+import {Clock, File} from "lucide-react"
 import { useSearch } from "@/hooks/use-search";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Note } from "@/lib/types";
@@ -56,9 +56,14 @@ export const SearchCommand = () => {
         <CommandEmpty>No Results found.</CommandEmpty>
         <CommandGroup heading="Notes">
           {notes.map((note)=>(
-            <CommandItem key={note.id} value={`${note.id}-${note.title}`} title={document.title} onSelect={onSelectNote}>
-              {note.icon ? (<p className="mr-2 text-[18px]">{note.icon}</p>): (<File className="mr-2 text-[18px] w-18 h-18"/>)}
-              <span>{note.title}</span>
+            <CommandItem key={note.id} value={`${note.id}-${note.title}`} title={document.title} onSelect={()=>{onSelectNote(note.id)}}>
+              {note.icon ? (<p className="mr-1 text-[15px]">{note.icon}</p>): (<File className="mr-2 text-[18px] w-18 h-18"/>)}
+              <div className="flex flex-1 justify-between items-center">
+                <span>{note.title}</span>
+                <span className="flex gap-x-1 text-muted-foreground text-xs">
+                  <Clock />
+                  {note.update_at}</span>
+              </div>
             </CommandItem>
           ))}
         </CommandGroup>
