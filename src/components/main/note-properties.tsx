@@ -3,10 +3,11 @@ import {
   Plus,
 } from "lucide-react"
 import {Property, PropertyType} from "@/lib/types";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useActiveNote} from "@/hooks/use-active-note";
 import {Separator} from "@/components/ui/separator";
 import {NotePropertyItem} from "@/components/main/note-property-item";
+import {removeNoteProperty} from "@/lib/properties";
 
 const generateNewProperty = (noteId: string) => {
   const newProperty: Property = {id: "", note_id: noteId, key: "", type: PropertyType.TEXT, value: ""}
@@ -17,10 +18,10 @@ export default function NoteProperties() {
   const activeNoteId = useActiveNote((store) => store.activeNoteId)
   const preview = useActiveNote((store) => store.isLocked) === 1
   const properties = useActiveNote((store) => store.properties)
+  const updateProperties = useActiveNote((store) => store.updateProperties)
 
   // 添加新属性
   const [isAdding, setIsAdding] = useState(false)
-
 
   const keys = properties.map(property => property.key);
 
@@ -28,13 +29,28 @@ export default function NoteProperties() {
     setIsAdding(true)
   }
 
+  useEffect(() => {
+    console.log("加载 NoteProperties")
+    console.log(properties)
+  }, [properties]);
+
+  const onRemoveProperty = (propertyId: string) => {
+    if(typeof activeNoteId !== "undefined"){
+      void removeNoteProperty(activeNoteId, propertyId)
+      const newProperties = properties.filter(item => item.id !== propertyId);
+      console.log(`remove property_id: ${propertyId}`)
+      console.log(newProperties)
+      updateProperties(newProperties)
+    }
+
+  }
   return (
-    <div className="px-[54px] py-2 my-2">
+    <div className="pl-1 py-2 my-2 pr-[54px]">
       {/*<Separator className="mb-4"/>*/}
       <div className="space-y-2">
         {properties.map((item, index) => (
           <div key={index}>
-            <NotePropertyItem noteId={activeNoteId} item={item} preview={preview} keys={keys}/>
+            <NotePropertyItem noteId={activeNoteId} item={item} preview={preview} keys={keys} onRemoveProperty={onRemoveProperty}/>
           </div>
         ))}
         {isAdding && (
@@ -47,13 +63,16 @@ export default function NoteProperties() {
       </div>
 
       {/* Add Property Button */}
-      <button className="flex items-center gap-2 text-gray-500 hover:text-gray-700 mt-4 text-sm" onClick={() => {
-        onAddProperty();
-      }}>
-        <Plus className="w-4 h-4"/>
-        <span>Add a property</span>
-      </button>
-      <Separator className="mt-4"/>
+      <div className="pl-[54px]">
+        <button className="flex items-center gap-2 text-gray-500 hover:text-gray-700 mt-4 text-sm" onClick={() => {
+          onAddProperty();
+        }}>
+          <Plus className="w-4 h-4"/>
+          <span>Add a property</span>
+        </button>
+        <Separator className="mt-4"/>
+      </div>
+
     </div>
   )
 }

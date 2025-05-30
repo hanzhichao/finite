@@ -88,3 +88,9 @@ export async function updatePropertyType(noteId: string, propertyId: string, typ
   const db = await connDb();
   await db.execute("UPDATE properties SET type = $1 WHERE id = $2", [type as string, propertyId]);
 }
+
+export async function removeNoteProperty(noteId: string, propertyId: string) {
+  console.log(`db删除Note属性: noteId=${noteId}, propertyId=${propertyId}}`);
+  const db = await connDb();
+  await db.execute("DELETE FROM notes_properties WHERE note_id = $1 AND property_id = $2", [noteId, propertyId]);
+}

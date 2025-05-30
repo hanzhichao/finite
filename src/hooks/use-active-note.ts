@@ -28,6 +28,7 @@ interface activeNoteStore {
   content: string,
   updateContent: (content: string) => void;
   properties: Property[];
+  updateProperties: (properties: Property[]) => void;
   addProperty: (property: Property) => void;
 }
 
@@ -73,4 +74,5 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   content: "",
   updateContent: (content: string) => {set({content: content})},
   addProperty: (property: Property) => {set((store)=>({properties: [...store.properties, property]}))},
+  updateProperties: (properties: Property[]) => {set({properties: properties})}
   }));
