@@ -17,14 +17,17 @@ export const SearchCommand = () => {
   const onClose = useSearch((store)=> store.onClose);
 
   useEffect(()=> {
-    console.log("加载SearchCommand组件");
+    setIsMounted(true)
+  }, []);
+
+  useEffect(()=> {
+    if (!isOpen) return;
     const fetchData = async () => {
       const notes: Note[] = await getRecentUpdatedNotes(20);
       setNotes(notes);
     };
     void fetchData();
-    setIsMounted(true)
-  }, []);
+  }, [isOpen]);
 
   useEffect(()=> {
     const down = (e: KeyboardEvent) => {

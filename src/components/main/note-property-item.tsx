@@ -9,7 +9,7 @@ import {
   LucideIcon, Minus,
   SquareChevronDown,
   SquareMousePointer,
-  Text
+  Text, X
 } from "lucide-react"
 import {Option, Property, PropertyType} from "@/lib/types";
 import {useEffect, useState} from "react";
@@ -41,6 +41,7 @@ import {
 import {ClickInput} from "@/components/common/click-input";
 import {AddableSelect} from "@/components/common/addable-select";
 import {DateTimePicker} from "@/components/common/date-time-picker";
+import {Badge} from "@/components/ui/badge";
 
 
 function getPropertyIcons() {
@@ -67,8 +68,10 @@ interface NotePropertyItemProps {
 }
 
 
-export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAdding,
-                                   onRemoveProperty}: NotePropertyItemProps) => {
+export const NotePropertyItem = ({
+                                   noteId, item, preview, isAdding, keys, setIsAdding,
+                                   onRemoveProperty
+                                 }: NotePropertyItemProps) => {
   const icons = getPropertyIcons()
   const addProperty = useActiveNote((store) => store.addProperty)
   const [propertyType, setPropertyType] = useState<PropertyType>(item.type as PropertyType)
@@ -79,7 +82,7 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
   const [options, setOptions] = useState(item.options ?? [])
 
   useEffect(() => {
-    if (propertyType === PropertyType.DATE || propertyType === PropertyType.DATETIME){
+    if (propertyType === PropertyType.DATE || propertyType === PropertyType.DATETIME) {
       if (typeof item.value !== "undefined" && item.value !== "") {
         const valueToDate = new Date(item.value)
         setDate(valueToDate)
@@ -115,6 +118,7 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
     if (labels.length === 0) return
 
     const optionLabels = options.map(item => item.label)
+
     for (const label of labels) {
       if (!optionLabels.includes(label)) {
         // const newOption: Option = {label: label, value: label.toLowerCase(), bg_color: ""}
@@ -148,7 +152,7 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
 
   const onChangeDate = (date: Date | undefined) => {
     console.log(`更新时间日期为: ${date?.toISOString()}`)
-    if (typeof noteId != "undefined" && typeof date != "undefined"){
+    if (typeof noteId != "undefined" && typeof date != "undefined") {
       void updateNotePropertyValue(noteId, item.id, date.toISOString())
     }
     item.value = date?.toISOString()
@@ -157,30 +161,41 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
 
   return (
     <div className="flex items-center gap-1">
-      <div className="flex items-center gap-1 text-gray-500 w-42">
-        <div className="group flex items-center gap-0">
-        <Button variant="ghost" size="icon" className="w-6 h-6 rounded-sm" onClick={()=> {onRemoveProperty?.(item.id)}}>
-          <Minus className="font-bold h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100"/>
-        </Button>
-        <Button variant="ghost" size="icon" className="w-6 h-6 rounded-sm" >
-          <GripVertical className="font-bold h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100"/>
-        </Button>
-        </div>
+      <div className={cn("flex items-center gap-1 text-gray-500 w-42", preview && "pl-[52px]")}>
+        {!preview && (
+          <div className="group flex items-center gap-0">
+            <Button variant="ghost" size="icon" className="w-6 h-6 rounded-sm" onClick={() => {
+              onRemoveProperty?.(item.id)
+            }}>
+              <Minus className="font-bold h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100"/>
+            </Button>
+            <Button variant="ghost" size="icon" className="w-6 h-6 rounded-sm">
+              <GripVertical className="font-bold h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100"/>
+            </Button>
+          </div>
+        )}
+
         {/*属性类型图标*/}
         <div className="flex w-6 h-6 rounded-sm hover:bg-accent dark:hover:bg-neutral-600 justify-center items-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <>
+            {!preview?(
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Icon className="w-5 h-5"/>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="">
+                  <DropdownMenuRadioGroup value={propertyType} onValueChange={onChangePropertyType}>
+                    {propertyTypes.map((item, index) => (
+                      <DropdownMenuRadioItem key={index} value={item}
+                                             className="text-xs pl-6 text-muted-foreground">{item}</DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ):(
               <Icon className="w-5 h-5"/>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="">
-              <DropdownMenuRadioGroup value={propertyType} onValueChange={onChangePropertyType} >
-                {propertyTypes.map((item, index) => (
-                  <DropdownMenuRadioItem key={index} value={item}
-                                         className="text-xs pl-6 text-muted-foreground">{item}</DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            )}
+          </>
         </div>
 
         {/*属性 Key*/}
@@ -192,11 +207,23 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
 
       {/*属性值*/}
       {/*文本类型*/}
+
       {propertyType === PropertyType.TEXT && (
-        <ClickInput initialValue={item.value ?? "-"} onValueChangeEnd={onChangeValue} isLocked={preview}
-                    placeholder="Empty"
-                    inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-2"
-                    textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
+        <>
+        {!preview ? (
+          <ClickInput initialValue={item.value ?? ""} onValueChangeEnd={onChangeValue} isLocked={preview}
+                      placeholder="Empty"
+                      inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-2"
+                      textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
+        ):(
+          <div
+            className="h-8 flex flex-1 flex-wrap items-center gap-1.5 w-full font-normal hover:bg-accent text-sm py-1 px-2.5 rounded-sm">
+            <span>
+              {item.value ?? ""}
+            </span>
+          </div>
+        ) }
+        </>
       )}
 
       {/*/!*文件类型*!/*/}
@@ -208,56 +235,107 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
 
       {/*链接类型*/}
       {propertyType === PropertyType.LINK && (
-        <ClickInput initialValue={item.value ?? "-"} onValueChangeEnd={onChangeValue} isLocked={preview} inputType="url"
-                    placeholder="https://"
-                    inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-2"
-                    textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
+        <>
+          {!preview ? (
+            <ClickInput initialValue={item.value ?? ""} onValueChangeEnd={onChangeValue}
+                        inputType="url"
+                        placeholder="https://"
+                        inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-2"
+                        textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
+          ) : (
+            <div
+              className="h-8 flex flex-1 flex-wrap items-center gap-1.5 w-full font-normal hover:bg-accent text-sm py-1 px-2.5 rounded-sm">
+              <Link className="w-4 h-4"/>
+              <a href={item.value ?? "#"}>
+                {item.value ?? "#"}
+              </a>
+            </div>
+          )}
+
+        </>
+
       )}
       {/*数字类型*/}
       {propertyType === PropertyType.NUMBER && (
-        <ClickInput initialValue={item.value ?? "-"} onValueChangeEnd={onChangeValue} isLocked={preview}
+        <ClickInput initialValue={item.value ?? ""} onValueChangeEnd={onChangeValue} isLocked={preview}
                     inputType="number" placeholder="0"
                     inputClassName="h-8 focus-visible:ring-transparent rounded-sm px-1"
                     textClassName="h-8 w-full font-normal hover:bg-accent text-sm text-muted-foreground py-1 px-2 rounded-sm"/>
       )}
       {/*日期类型*/}
       {propertyType === PropertyType.DATE && (
-        <div className="h-8 w-full">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm"
-                      className={cn(
-                        "w-full justify-start text-left font-normal rounded-sm border-0 shadow-none",
-                        !date && "text-muted-foreground"
-                      )}
-              >
-                <CalendarIcon/>
-                {date ? format(date, "PPP") : <span>Pick a date</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={onChangeDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
+        <>
+          {!preview ? (
+            <div className="h-8 w-full">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm"
+                          className={cn(
+                            "w-full justify-start text-left font-normal rounded-sm border-0 shadow-none",
+                            !date && "text-muted-foreground"
+                          )}
+                  >
+                    <CalendarIcon/>
+                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={onChangeDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          ) : (
+            <div
+              className="flex flex-1 flex-wrap items-center gap-1.5 w-full font-normal hover:bg-accent text-sm py-1 px-2.5 rounded-sm">
+              <CalendarIcon className="h-4 w-4"/>
+              {date ? format(date, "PPP") : <span>Empty</span>}
+            </div>
+          )}
+        </>
+
       )}
       {/*时间类型*/}
       {propertyType === PropertyType.DATETIME && (
-        <div className="h-8 w-full">
-          <DateTimePicker value={date} onChange={onChangeDate}
-            className="-8 w-full justify-start text-left font-normal rounded-sm border-0 shadow-none"/>
-        </div>
+        <>
+          {!preview ? (
+            <div className="h-8 w-full">
+              <DateTimePicker value={date} onChange={onChangeDate}
+                              className="-8 w-full justify-start text-left font-normal rounded-sm border-0 shadow-none"/>
+            </div>
+          ) : (
+            <div
+              className="flex flex-1 flex-wrap items-center gap-1.5 w-full font-normal hover:bg-accent text-sm py-1 px-2.5 rounded-sm">
+              <CalendarIcon className="h-4 w-4"/>
+              {date ? format(date, "PPP p") : <span>Empty</span>}
+            </div>
+          )}
+        </>
+
       )}
 
       {/*多选类型*/}
       {propertyType === PropertyType.MULTI_SELECT && (
-        <AddableSelect options={options} value={optionValue} onChange={onChangeSelect} onAdd={onAddOption}
-                       placeholder="Select an option or create one" allowMultiple={true}/>
+        <>
+          {!preview ? (
+            <AddableSelect options={options} value={optionValue} onChange={onChangeSelect} onAdd={onAddOption}
+                           placeholder="Select an option or create one" allowMultiple={true}/>
+          ) : (
+            <div
+              className="h-8 flex flex-1 flex-wrap items-center gap-1 w-full font-normal hover:bg-accent text-sm py-1 px-2 rounded-sm">
+              {options.filter((option) => optionValue.includes(option.value)).map((option) => (
+                <Badge key={option.value} className={cn("px-2 py-0.5 text-sm border rounded-xs", option.bg_color)}>
+                  {option.label}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </>
+
       )}
       {/*单选类型*/}
       {(propertyType === PropertyType.SELECT) && (
@@ -266,10 +344,15 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
             <AddableSelect options={options} value={optionValue} onChange={onChangeSelect} onAdd={onAddOption}
                            placeholder="Choose one option" allowMultiple={false}/>
           ) : (
-            <div onClick={() => {
-            }} className="h-9 w-full font-normal hover:bg-accent text-sm py-1 px-3.5 rounded-sm">
-              <span className="truncate">{item.value}</span>
-            </div>)}
+            <div
+              className="h-8 flex flex-1 flex-wrap items-center gap-1 w-full font-normal hover:bg-accent text-sm py-1 px-2 rounded-sm">
+              {options.filter((option) => optionValue.includes(option.value)).map((option) => (
+                <Badge key={option.value} className={cn("px-2 py-0.5 text-sm border rounded-xs", option.bg_color)}>
+                  {option.label}
+                </Badge>
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>
