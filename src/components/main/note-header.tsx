@@ -118,7 +118,7 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
             Add cover
           </Button>
         )}
-        {!activeNoteIcon && preview &&(
+        {(!activeNoteIcon || !activeNoteCover) && preview &&(
           <div className="h-8">
           </div>
         )}
