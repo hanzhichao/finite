@@ -13,6 +13,7 @@ interface ClickInputProps {
   isLocked?: boolean
   isActive?: boolean
   placeholder?: string
+  reloadOn?: any[]
 }
 
 export const ClickInput = ({
@@ -25,6 +26,7 @@ export const ClickInput = ({
                              isLocked = false,
                              isActive,
                              placeholder = "",
+                             reloadOn = [],
                            }: ClickInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState(initialValue)
@@ -34,7 +36,7 @@ export const ClickInput = ({
     console.log(`加载 ClickInput组件：${initialValue}`)
     setValue(initialValue)
     if (isActive ) enableInput()
-  }, []);
+  }, reloadOn);
 
   const enableInput = () => {
     setIsEditing(true);

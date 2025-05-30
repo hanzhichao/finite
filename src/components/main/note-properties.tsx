@@ -48,8 +48,8 @@ export default function NoteProperties() {
     <div className="pl-1 py-2 my-2 pr-[54px]">
       {/*<Separator className="mb-4"/>*/}
       <div className="space-y-2">
-        {properties.map((item, index) => (
-          <div key={index}>
+        {properties.map((item) => (
+          <div key={item.id}>
             <NotePropertyItem noteId={activeNoteId} item={item} preview={preview} keys={keys} onRemoveProperty={onRemoveProperty}/>
           </div>
         ))}

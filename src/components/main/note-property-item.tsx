@@ -12,7 +12,7 @@ import {
   Text
 } from "lucide-react"
 import {Option, Property, PropertyType} from "@/lib/types";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {
   addOption,
   updatePropertyKey,
@@ -75,9 +75,17 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
   const [Icon, setIcon] = useState<LucideIcon>(icons.get(propertyType) ?? Text)
   const [date, setDate] = React.useState<Date>()
   const propertyTypes = Object.values(PropertyType)
-  const [selectedTags, setSelectedTags] = useState<string[]>(["frontend"])
   const [optionValue, setOptionValue] = useState<string[]>(item.value ? item.value.split(",") : [])
   const [options, setOptions] = useState(item.options ?? [])
+
+  useEffect(() => {
+    if (propertyType === PropertyType.DATE || propertyType === PropertyType.DATETIME){
+      if (typeof item.value !== "undefined" && item.value !== "") {
+        const valueToDate = new Date(item.value)
+        setDate(valueToDate)
+      }
+    }
+  }, []);
 
   const onChangeKey = (key: string) => {
     if (typeof noteId !== "undefined" && key !== "" && !keys.includes(key)) {
@@ -136,6 +144,15 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
     if (typeof newIcon === "undefined") return;
     setIcon(newIcon)
     item.type = newPropertyType
+  }
+
+  const onChangeDate = (date: Date | undefined) => {
+    console.log(`更新时间日期为: ${date?.toISOString()}`)
+    if (typeof noteId != "undefined" && typeof date != "undefined"){
+      void updateNotePropertyValue(noteId, item.id, date.toISOString())
+    }
+    item.value = date?.toISOString()
+    setDate(date)
   }
 
   return (
@@ -210,7 +227,7 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
             <PopoverTrigger asChild>
               <Button variant="outline" size="sm"
                       className={cn(
-                        "pl-0 ml-0 h-8 w-full justify-start text-left font-normal rounded-sm border-0 shadow-none",
+                        "w-full justify-start text-left font-normal rounded-sm border-0 shadow-none",
                         !date && "text-muted-foreground"
                       )}
               >
@@ -222,7 +239,7 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
               <Calendar
                 mode="single"
                 selected={date}
-                onSelect={setDate}
+                onSelect={onChangeDate}
                 initialFocus
               />
             </PopoverContent>
@@ -232,12 +249,14 @@ export const NotePropertyItem = ({noteId, item, preview, isAdding, keys, setIsAd
       {/*时间类型*/}
       {propertyType === PropertyType.DATETIME && (
         <div className="h-8 w-full">
-          <DateTimePicker className="-8 w-full justify-start text-left font-normal rounded-sm border-0 shadow-none"/>
+          <DateTimePicker value={date} onChange={onChangeDate}
+            className="-8 w-full justify-start text-left font-normal rounded-sm border-0 shadow-none"/>
         </div>
       )}
+
       {/*多选类型*/}
       {propertyType === PropertyType.MULTI_SELECT && (
-        <AddableSelect options={options} value={selectedTags} onChange={setSelectedTags} onAdd={onAddOption}
+        <AddableSelect options={options} value={optionValue} onChange={onChangeSelect} onAdd={onAddOption}
                        placeholder="Select an option or create one" allowMultiple={true}/>
       )}
       {/*单选类型*/}

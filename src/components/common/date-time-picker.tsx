@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { format } from "date-fns"
-import { Clock } from "lucide-react"
+import {CalendarIcon, Clock} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -152,7 +152,7 @@ export function DateTimePicker({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="outline" size="sm"
           className={cn(
             "w-full justify-start text-left font-normal",
             !selectedDate && "text-muted-foreground",
@@ -160,6 +160,7 @@ export function DateTimePicker({
           )}
           disabled={disabled}
         >
+          <CalendarIcon/>
           {selectedDate ? format(selectedDate, dateFormat) : placeholder}
         </Button>
       </PopoverTrigger>

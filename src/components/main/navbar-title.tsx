@@ -22,6 +22,7 @@ export const NavbarTitle = () => {
     <div className="flex items-center gap-x-1">
       {!!activeNoteIcon && <p>{activeNoteIcon}</p>}
       <ClickInput initialValue={activeNoteTitle} onValueChange={onChangeTitle}
+                  reloadOn={[activeNoteTitle]}
                   inputClassName="h-7 px-2 focus-visible:ring-transparent"
                   textClassName="font-normal h-auto px-2 hover:bg-accent text-sm"/>
     </div>
