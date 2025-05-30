@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 import { archiveNote, createNote } from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
+import {useSettings} from "@/hooks/use-settings";
 
 interface NoteItemActionsProps {
   id?: string;
@@ -31,6 +32,7 @@ export const NoteItemActions = ({
 }: NoteItemActionsProps) => {
   const activeNoteId  = useActiveNote((store)=>store.activeNoteId)
   const setActiveNoteId  = useActiveNote((store)=>store.setActiveNoteId)
+  const settings = useSettings()
 
   // 归档笔记
   const onArchiveNote = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -51,7 +53,7 @@ export const NoteItemActions = ({
   const onCreateSubNote = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!id) return;
     event.stopPropagation();
-    const promise = createNote("Untitled", id).then(
+    const promise = createNote(settings.defaultTitle || "Untitled", id, settings.defaultIcon).then(
       (noteId) => {
         if (!expanded) {
           onExpand?.();

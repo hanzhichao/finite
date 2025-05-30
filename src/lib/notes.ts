@@ -177,15 +177,15 @@ export async function getNote(id: string) {
   return note
 }
 
-export async function createNote(title: string, parent?: string) {
+export async function createNote(title: string, parent?: string, icon?: string) {
   const db = await connDb();
   const id = generateUUID();
   if (typeof parent == "undefined") {
     console.log(`db创建Note: title=${title}`);
-    await db.execute("INSERT INTO notes (id, title) VALUES ($1,$2)", [id, title]);
+    await db.execute("INSERT INTO notes (id, title,icon) VALUES ($1,$2,$3)", [id, title, icon ?? ""]);
   } else {
     console.log(`db创建Note: title=${title}, parent=${parent}`);
-    await db.execute("INSERT INTO notes (id, title,parent) VALUES ($1,$2,$3)", [id, title, parent]
+    await db.execute("INSERT INTO notes (id, title,parent,icon) VALUES ($1,$2,$3,$4)", [id, title, parent, icon ?? ""]
     );
   }
   // 为每个 Note创建默认 tags 属性
@@ -259,17 +259,17 @@ export async function updateNoteTags(id: string, tags: string[]) {
   await db.execute("UPDATE notes SET tags = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [tags.join(","), id]);
 }
 
-export async function createNoteWithContent(title: string, content: string, parent?: string, id?: string) {
+export async function createNoteWithContent(title: string, content: string, parent?: string, id?: string, icon?: string) {
   const db = await connDb();
   if (typeof id === "undefined"){
     id = generateUUID();
   }
   if (typeof parent === "undefined"){
     console.log(`db导入Note: title=${title}`);
-    await db.execute("INSERT INTO notes (id, title, content) VALUES ($1,$2,$3)", [id, title, content]);
+    await db.execute("INSERT INTO notes (id, title, content,icon) VALUES ($1,$2,$3,$4)", [id, title, content, icon ?? ""]);
   } else {
     console.log(`db导入Note: title=${title}`);
-    await db.execute("INSERT INTO notes (id, title, parent, content) VALUES ($1,$2,$3,$4)", [id, title, parent, content]);
+    await db.execute("INSERT INTO notes (id, title, parent, content,icon) VALUES ($1,$2,$3,$4,$5)", [id, title, parent, content, icon ?? ""]);
   }
 
   // 为每个 Note创建默认 tags 属性

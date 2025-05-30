@@ -8,21 +8,25 @@ import { useActiveNote } from "@/hooks/use-active-note";
 import {toast} from "sonner";
 
 import { ScrollArea } from "@/components/ui/scroll-area"
+import {Shuffle} from "lucide-react";
+import {Button} from "@/components/ui/button";
 
 
-const COLOR_GRADIENTS = [
-  "linear-gradient(to right, #ff9a9e, #fad0c4)",
-  "linear-gradient(to right, #a1c4fd, #c2e9fb)",
-  "linear-gradient(to right, #ffecd2, #fcb69f)",
-  "linear-gradient(to right, #84fab0, #8fd3f4)",
-  "linear-gradient(to right, #cfd9df, #e2ebf0)",
-  "linear-gradient(to right, #a6c0fe, #f68084)",
-  "linear-gradient(to right, #fccb90, #d57eeb)",
-  "linear-gradient(to right, #e0c3fc, #8ec5fc)",
-]
+interface CoverPickerDialogProps {
+  gradients?: string[]
+}
 
-
-export function CoverPickerDialog() {
+export function CoverPickerDialog({gradients}: CoverPickerDialogProps) {
+  gradients = gradients ??  [
+    "linear-gradient(to right, #ff9a9e, #fad0c4)",
+    "linear-gradient(to right, #a1c4fd, #c2e9fb)",
+    "linear-gradient(to right, #ffecd2, #fcb69f)",
+    "linear-gradient(to right, #84fab0, #8fd3f4)",
+    "linear-gradient(to right, #cfd9df, #e2ebf0)",
+    "linear-gradient(to right, #a6c0fe, #f68084)",
+    "linear-gradient(to right, #fccb90, #d57eeb)",
+    "linear-gradient(to right, #e0c3fc, #8ec5fc)",
+  ]
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
   const updateActiveNoteCover = useActiveNote((store) => store.updateActiveNoteCover);
   const [file, setFile] = useState<File>();
@@ -79,6 +83,22 @@ export function CoverPickerDialog() {
     onClose();
   }
 
+  const onRandomColor = () => {
+
+    const gradient = gradients[Math.floor(Math.random() * gradients.length)];
+    const svg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='200' style='background:${encodeURIComponent(gradient)}'></svg>`;
+    if (typeof activeNoteId !== "undefined") {
+      updateActiveNoteCover(svg);
+      const promise = updateNoteCover(activeNoteId, svg);
+      toast.promise(promise, {
+        loading: "Upload cover...",
+        success: "Cover uploaded!",
+        error: "Failed to upload cover.",
+      });
+    }
+    onClose();
+  }
+
   return (
     <Dialog open={coverImage.isOpen} onOpenChange={coverImage.onClose}>
       <DialogTitle>
@@ -95,9 +115,18 @@ export function CoverPickerDialog() {
         />
 
         <ScrollArea className="h-60">
-          <h3 className="text-sm font-medium mt-4 mb-2">Gradients</h3>
+          <div className="flex mt-4 mb-2 justify-start items-center">
+            <h3 className="text-sm font-medium">
+              Gradients
+            </h3>
+            <Button variant="ghost" size="icon" className="ml-2 w-5 h-5 hover:bg-neutral-300 dark:hover:bg-neutral-600"
+            onClick={()=>{onRandomColor()}}>
+              <Shuffle className="w-4 h-4"/>
+            </Button>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
-            {COLOR_GRADIENTS.map((gradient, index) => (
+            {gradients.map((gradient, index) => (
               <div
                 key={`gradient-${index}`}
                 className="h-24 rounded-md overflow-hidden cursor-pointer hover:border-2"

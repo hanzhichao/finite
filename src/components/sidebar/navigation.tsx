@@ -17,7 +17,7 @@ import {NavNotes} from "@/components/sidebar/nav-notes";
 import {NavSecondary} from "@/components/sidebar/nav-secondary";
 import {createNote} from "@/lib/notes";
 import {toast} from "sonner";
-import {Button} from "@/components/ui/button";
+import {useSettings} from "@/hooks/use-settings";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -29,6 +29,7 @@ export function Navigation() {
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const activeNoteId = useActiveNote((store)=> store.activeNoteId);
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId);
+  const settings = useSettings()
 
   useEffect(() => {
     console.log("加载Navigation组件")
@@ -112,7 +113,7 @@ export function Navigation() {
   }, []);
 
   const onCreateNote = () => {
-    const promise = createNote("Untitled").then((noteId) =>
+    const promise = createNote(settings.defaultTitle||"Untitled", undefined, settings.defaultIcon).then((noteId) =>
       { setActiveNoteId(noteId); }
     );
     toast.promise(promise, {
@@ -149,7 +150,7 @@ export function Navigation() {
 
         <NavHeader />
         <NavMain onCreateNote={onCreateNote}/>
-        <NavFavorites />
+        {settings.showFavorites && <NavFavorites />}
         <NavNotes onCreateNote={onCreateNote}/>
         <NavSecondary isMobile={isMobile} />
 

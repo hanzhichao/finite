@@ -1,11 +1,12 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ImageIcon, X } from "lucide-react";
+import {Shuffle, ImageIcon, X} from "lucide-react";
 import { useCoverImage } from "@/hooks/use-cover-image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { updateNoteCover } from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
+import {gradients} from "@/lib/consts";
 
 interface CoverProps {
   url?: string;
@@ -23,8 +24,18 @@ export const NoteCover = ({url, preview}: CoverProps) => {
     }
   }
 
+  const onRandomColor = () => {
+    // 随机渐变色
+    const gradient = gradients[Math.floor(Math.random() * gradients.length)];
+    const svg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='200' style='background:${encodeURIComponent(gradient)}'></svg>`;
+    if (typeof activeNoteId !== "undefined") {
+      updateActiveNoteCover(svg);
+      void updateNoteCover(activeNoteId, svg);
+    }
+  }
+
   return (
-    <div className={cn("relative w-full h-[32vh] group"
+    <div className={cn("relative w-full h-[30vh] group"
       , !url && "h-[8vh]"
       , url && "bg-muted")}>
       {!!url && (
@@ -32,12 +43,16 @@ export const NoteCover = ({url, preview}: CoverProps) => {
       )}
       {url && !preview &&  (
         <div className="opacity-0 group-hover:opacity-100 absolute bottom-5 right-5 flex items-center gap-x-2">
+          <Button onClick={() => {onRandomColor()}} className="text-muted-foreground text-xs dark:text-neutral-600 dark:hover:dark:text-neutral-50" variant="outline" size="sm">
+            <Shuffle className="h-4 w-4 mr-1"/>
+            Random color
+          </Button>
           <Button onClick={() => { coverImage.onReplace(url) }} className="text-muted-foreground text-xs dark:text-neutral-600 dark:hover:dark:text-neutral-50" variant="outline" size="sm">
-            <ImageIcon className="h-4 w-4 mr-2"/>
+            <ImageIcon className="h-4 w-4 mr-1"/>
             Change cover
           </Button>
           <Button onClick={onRemoveCover} className="text-muted-foreground text-xs dark:text-neutral-600 dark:hover:dark:text-neutral-50" variant="outline" size="sm">
-            <X className="h-4 w-4 mr-2"/>
+            <X className="h-4 w-4 mr-1"/>
             Remove
           </Button>
         </div>

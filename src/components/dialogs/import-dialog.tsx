@@ -11,6 +11,7 @@ import * as path from "path";
 import {FileWithStatus, FileUploader} from "@/components/common/file-uploader";
 import {useActiveNote} from "@/hooks/use-active-note";
 import {generateUUID, readFile} from "@/lib/utils";
+import {useSettings} from "@/hooks/use-settings";
 
 export const ImportDialog = () => {
   const importDialog = useImport();
@@ -18,6 +19,7 @@ export const ImportDialog = () => {
   const activeNoteId = useActiveNote((store)=>(store.activeNoteId))
   const setActiveNoteId = useActiveNote((store)=>(store.setActiveNoteId))
   const noteIds:string[] = []
+  const settings = useSettings()
 
   const uploadFileCallback = (results: FileWithStatus[]) => {
     setTimeout(()=>{
@@ -47,7 +49,7 @@ export const ImportDialog = () => {
         content = JSON.stringify(blocks, null, 2)
       }
 
-      const promise = createNoteWithContent(title, content, activeNoteId, id)
+      const promise = createNoteWithContent(title, content, activeNoteId, id, settings.defaultIcon)
       toast.promise(promise, {
         loading: "Importing note...",
         success: `Note imported: ${title}!`,

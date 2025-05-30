@@ -9,6 +9,7 @@ import {NoteHeader} from "@/components/main/note-header";
 import {cn} from "@/lib/utils"
 import {useWideMode} from "@/hooks/use-wide-mode";
 import NoteProperties from "@/components/main/note-properties";
+import {useSettings} from "@/hooks/use-settings";
 
 
 interface NoteMainProps {
@@ -23,12 +24,15 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
     properties: store.properties,
   }
   ));
-  const wideMode = useWideMode((store)=>store.wideMode)
-
+  const {wideMode, toggleWideMode} = useWideMode()
+  const settings = useSettings()
   const [note, setNote] = useState<Note>();
 
   useEffect(() => {
     console.log(`加载Page页面: noteId=${noteId}`);
+    if (wideMode !== settings.wideMode){
+      toggleWideMode()
+    }
     const fetchData = async () => {
       const curNote: Note = await getNote(noteId);
       if (typeof curNote === "undefined") {
@@ -68,7 +72,6 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
       </main>
     );
   }
-
   return (
     <main className="pb-40">
       <NoteCover url={activeNoteCover} preview={isLocked==1}/>

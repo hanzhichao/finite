@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { SettingsDialog } from "@/components/dialogs/settings-dialog";
 import {CoverPickerDialog} from "@/components/dialogs/cover-picker-dialog";
 import {ImportDialog} from "@/components/dialogs/import-dialog";
+import {gradients} from "@/lib/consts"
 
 export const DialogProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -19,7 +20,7 @@ export const DialogProvider = () => {
   return (
     <>
       <SettingsDialog />
-      <CoverPickerDialog />
+      <CoverPickerDialog gradients={gradients} />
       <ImportDialog />
     </>
   );
