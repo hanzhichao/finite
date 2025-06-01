@@ -10,6 +10,7 @@ import { Note } from "@/lib/types";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {Button} from "@/components/ui/button";
 import {useCount} from "@/hooks/use-count";
+import {ScrollArea} from "@/components/ui/scroll-area";
 
 const TrashBox = () => {
   const [archiveNotes, setArchivedNotes] = useState<Note[]>([]);
@@ -76,7 +77,7 @@ const TrashBox = () => {
 
   return (
     <div className="text-sm">
-      <div className="flex items-center gap-x-1 p-5">
+      <div className="flex items-center gap-x-1 p-3">
         <Search className="h-5 w-5"/>
         <Input value={search} onChange={(e)=>{ setSearch(e.target.value); }}
         className="h-7 px-2 focus-visible:riging-transparent bg-secondary"
@@ -87,6 +88,7 @@ const TrashBox = () => {
           </Button>
         </ConfirmDialog>
       </div>
+      <ScrollArea className="h-72">
       <div className="mt-2 px-2 pb-5">
         <p className="hidden last:block text-xs text-center text-muted-foreground pb-2">
           No notes found.
@@ -110,6 +112,7 @@ const TrashBox = () => {
           </div>
         ))}
       </div>
+      </ScrollArea>
     </div>
   )
 }

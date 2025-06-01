@@ -3,12 +3,12 @@ import {Note, Property, PropertyType} from "./types";
 import {generateUUID, convertToISOString} from "./utils";
 import * as path from "@tauri-apps/api/path";
 import {BaseDirectory, exists, mkdir} from "@tauri-apps/plugin-fs";
-import {addNoteProperty, getProperties} from "@/lib/properties";
+import {addNoteProperty, copytNoteProperty, getProperties} from "@/lib/properties";
 
 const DB_DIR_NAME = "Finite"
 const DB_FILE_NAME = "notes.db"
 
-async function createDbDir(dbDir: string ) {
+async function createDbDir(dbDir: string) {
   const dbDirExists = await exists(DB_DIR_NAME, {
     baseDir: BaseDirectory.Home,
   });
@@ -38,6 +38,7 @@ async function createTable() {
          is_archived BOOLEAN  DEFAULT false,
          is_favorite BOOLEAN  DEFAULT false,
          is_locked   BOOLEAN  DEFAULT false,
+         is_template BOOLEAN  DEFAULT false,
          create_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
          update_at   DATETIME DEFAULT CURRENT_TIMESTAMP
      );`);
@@ -48,9 +49,9 @@ async function createTable() {
   await db.execute(
     `CREATE TABLE IF NOT EXISTS "properties"
      (
-         id      VARCHAR(64) PRIMARY KEY,
-         key     VARCHAR(255) NOT NULL,
-         type    SMALLINT DEFAULT 0
+         id   VARCHAR(64) PRIMARY KEY,
+         key  VARCHAR(255) NOT NULL,
+         type SMALLINT DEFAULT 0
      );`);
 
   console.log("db创建表: options")
@@ -98,12 +99,12 @@ export async function connDb(): Promise<Database> {
 export async function getRecentUpdatedNotes(limit?: number) {
   const db = await connDb();
   let result: Note[];
-  if (typeof limit !== "undefined"){
+  if (typeof limit !== "undefined") {
     console.log(`db查询最近更新Note列表: limit=${limit}`);
-    result = await db.select("SELECT id,title,icon,update_at,tags,cover FROM notes WHERE is_archived = 0 ORDER BY update_at DESC LIMIT $1;", [limit]);
+    result = await db.select("SELECT id,title,icon,update_at,tags,cover FROM notes WHERE is_archived = 0 AND is_template = 0 ORDER BY update_at DESC LIMIT $1;", [limit]);
   } else {
     console.log(`db查询最近更新Note列表`);
-    result = await db.select("SELECT id,title,icon,update_at,tags,cover FROM notes WHERE is_archived = 0 ORDER BY update_at DESC;");
+    result = await db.select("SELECT id,title,icon,update_at,tags,cover FROM notes WHERE is_archived = 0 AND is_template = 0 ORDER BY update_at DESC;");
   }
   return result;
 }
@@ -126,10 +127,10 @@ export async function getNotes(parent?: string) {
   let result: Note[] = [];
   if (typeof parent !== "undefined") {
     console.log(`db查询Note列表: parent=${parent}`);
-    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND parent = $1 ORDER BY create_at", [parent]);
+    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND is_template = 0 AND parent = $1 ORDER BY create_at", [parent]);
   } else {
     console.log(`db查询Note列表`);
-    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND parent IS NULL ORDER BY create_at;");
+    result = await db.select("SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND is_template = 0 AND parent IS NULL ORDER BY create_at;");
   }
   return result;
 }
@@ -152,10 +153,24 @@ export async function getFavoriteNotes(limit?: number) {
   let result: Note[] = [];
   if (typeof limit !== "undefined") {
     console.log("db查询收藏Note列表: limit=${limit}");
-    result = await db.select("SELECT id,title,icon FROM notes WHERE is_favorite = 1 ORDER BY update_at DESC LIMIT $1;", [limit])
+    result = await db.select("SELECT id,title,icon FROM notes WHERE is_favorite = 1 ORDER BY create_at DESC LIMIT $1;", [limit])
   } else {
     console.log("db查询收藏Note列表");
-    result = await db.select("SELECT id,title,icon FROM notes WHERE is_favorite = 1 ORDER BY update_at DESC;")
+    result = await db.select("SELECT id,title,icon FROM notes WHERE is_favorite = 1 ORDER BY create_at DESC;")
+  }
+  return result;
+}
+
+
+export async function getTemplates(limit?: number) {
+  const db = await connDb();
+  let result: Note[] = [];
+  if (typeof limit !== "undefined") {
+    console.log("db查询模板列表: limit=${limit}");
+    result = await db.select("SELECT id,title,icon FROM notes WHERE  is_template = 1 ORDER BY create_at DESC LIMIT $1;", [limit])
+  } else {
+    console.log("db查询收藏Note列表");
+    result = await db.select("SELECT id,title,icon FROM notes WHERE is_template = 1 ORDER BY create_at DESC;")
   }
   return result;
 }
@@ -165,16 +180,43 @@ export async function getNote(id: string) {
   const db = await connDb();
   let note: Note = {id: "", title: "", icon: ""};
   const result = await db.select<Note[]>("SELECT * FROM notes WHERE id = $1", [id]);
-  if (result.length > 0){
+  if (result.length > 0) {
     note = result[0];
   }
   const properties = await getProperties(note.id)
-  const createAt: Property = {id: generateUUID(), key: "createAt", type: "DateTime", value: convertToISOString(note.create_at), note_id: note.id, is_readonly: true}
+  const createAt: Property = {
+    id: generateUUID(),
+    key: "createAt",
+    type: "DateTime",
+    value: convertToISOString(note.create_at),
+    note_id: note.id,
+    is_readonly: true
+  }
   // const updateAt: Property = {id: generateUUID(), key: "updateAt", type: "DateTime", value:  convertToISOString(note.update_at), note_id: note.id, is_readonly: true}
   note.properties = [createAt, ...properties]
   console.log("note.properties")
   console.log(note.properties)
   return note
+}
+
+export async function copyNote(originId: string, subfix?: string, newParent?: string) {
+  const note = await getNote(originId)
+  const db = await connDb();
+  const id = generateUUID();
+  subfix = subfix ?? ""
+  const parent = newParent ?? note.parent
+  await db.execute("INSERT INTO notes (id,parent,title,icon,cover,content,is_archived,is_favorite,is_locked) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
+    [id, parent, note.title + subfix, note.icon, note.cover, note.content, note.is_archived, note.is_archived, note.is_locked])
+  for (const item of note.properties ?? []) {
+    if (item.key !== "createAt") {
+      await copytNoteProperty(id, item.id, item.value)
+    }
+  }
+  const subNotes = await getNotes(originId)
+  for (const item of subNotes) {
+    await copyNote(item.id, "", id)
+  }
+  return id;
 }
 
 export async function createNote(title: string, parent?: string, icon?: string) {
@@ -243,12 +285,17 @@ export async function updateNoteIsFavorite(id: string, is_favorite: number) {
   await db.execute("UPDATE notes SET is_favorite = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [is_favorite, id]);
 }
 
+export async function setNoteIsTemplate(id: string) {
+  console.log(`db更新Note为模板: id=${id}"`);
+  const db = await connDb();
+  await db.execute("UPDATE notes SET is_template = true, update_at = CURRENT_TIMESTAMP WHERE id = $1", [id]);
+}
+
 export async function updateNoteIsLocked(id: string, is_locked: number) {
   console.log(`db更新Note是否锁定: id=${id}, is_locked=${is_locked}"`);
   const db = await connDb();
   await db.execute("UPDATE notes SET is_locked = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [is_locked, id]);
 }
-
 
 export async function updateNoteContent(id: string, content: string) {
   console.log(`db更新Note内容: id=${id}`);
@@ -264,10 +311,10 @@ export async function updateNoteTags(id: string, tags: string[]) {
 
 export async function createNoteWithContent(title: string, content: string, parent?: string, id?: string, icon?: string) {
   const db = await connDb();
-  if (typeof id === "undefined"){
+  if (typeof id === "undefined") {
     id = generateUUID();
   }
-  if (typeof parent === "undefined"){
+  if (typeof parent === "undefined") {
     console.log(`db导入Note: title=${title}`);
     await db.execute("INSERT INTO notes (id, title, content,icon) VALUES ($1,$2,$3,$4)", [id, title, content, icon ?? ""]);
   } else {
@@ -277,6 +324,6 @@ export async function createNoteWithContent(title: string, content: string, pare
 
   // 为每个 Note创建默认 tags 属性
   await addNoteProperty(id, "tags", PropertyType.MULTI_SELECT, "")
-  
+
   return id;
 }

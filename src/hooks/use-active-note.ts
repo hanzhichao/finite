@@ -1,6 +1,5 @@
 import {Note, Property, PropertyType} from "@/lib/types";
 import {create} from "zustand";
-import {generateUUID} from "@/lib/utils";
 
 interface activeNoteStore {
   activeNoteId?: string;
@@ -30,6 +29,8 @@ interface activeNoteStore {
   properties: Property[];
   updateProperties: (properties: Property[]) => void;
   addProperty: (property: Property) => void;
+  contentChangeCount: number,
+  increaseContentChangeCount: () => void;
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -74,5 +75,7 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   content: "",
   updateContent: (content: string) => {set({content: content})},
   addProperty: (property: Property) => {set((store)=>({properties: [...store.properties, property]}))},
-  updateProperties: (properties: Property[]) => {set({properties: properties})}
+  updateProperties: (properties: Property[]) => {set({properties: properties})},
+  contentChangeCount: 0,
+  increaseContentChangeCount: () => {set((store)=>({contentChangeCount: store.contentChangeCount + 1}))},
   }));

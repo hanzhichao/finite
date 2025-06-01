@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveNote } from "@/hooks/use-active-note";
-import {archiveNote} from "@/lib/notes";
+import {archiveNote, setNoteIsTemplate} from "@/lib/notes";
 import {Download, MoreHorizontal, Trash} from "lucide-react";
 import { toast } from "sonner";
 import {BlockNoteEditor, PartialBlock} from "@blocknote/core";
@@ -69,6 +69,17 @@ export function NavbarMenu (){
     }
   }
 
+  const onSetTemplate = () => {
+    if (typeof activeNoteId !== "undefined"){
+      const promise = setNoteIsTemplate(activeNoteId)
+      toast.promise(promise, {
+        loading: "Set template...",
+        success: `Template is set`,
+        error: `Failed to set template`
+      })
+    }
+  }
+
   return (
     <div>
       <DropdownMenu>
@@ -81,6 +92,10 @@ export function NavbarMenu (){
           <DropdownMenuItem onClick={()=>{toggleWideMode()}}>
             <Trash className="h-4 w-4 mr-2"/>
             Toggle Wide Mode
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={()=>{onSetTemplate()}}>
+            <Trash className="h-4 w-4 mr-2"/>
+            Set Template
           </DropdownMenuItem>
           <DropdownMenuItem onClick={onArchiveNote}>
             <Trash className="h-4 w-4 mr-2"/>

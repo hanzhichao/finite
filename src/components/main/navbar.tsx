@@ -7,6 +7,7 @@ import {NavbarFavorite} from "@/components/main/navbar-favorite";
 import {NavbarLock} from "@/components/main/navbar-lock";
 // import {NavbarInfo} from "@/components/main/navbar-info";
 import {cn} from "@/lib/utils";
+import {NavbarTemplate} from "@/components/main/navbar-template";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -30,6 +31,7 @@ export const Navbar = ({isCollapsed, onResetWidth}: NavbarProps) => {
           <NavbarTitle/>
           <div className="flex items-center">
             {/*<NavbarInfo />*/}
+            <NavbarTemplate />
             <NavbarLock />
             <NavbarFavorite />
             <NavbarMenu/>

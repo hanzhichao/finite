@@ -18,6 +18,7 @@ import {NavSecondary} from "@/components/sidebar/nav-secondary";
 import {createNote} from "@/lib/notes";
 import {toast} from "sonner";
 import {useSettings} from "@/hooks/use-settings";
+import {NavTemplates} from "@/components/sidebar/nav-templates";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -153,6 +154,7 @@ export function Navigation() {
         <NavMain onCreateNote={onCreateNote}/>
         {settings.showFavorites && <NavFavorites />}
         <NavNotes onCreateNote={onCreateNote}/>
+        <NavTemplates />
         <NavSecondary isMobile={isMobile} />
 
         {/*sidebar可拖拽边界*/}

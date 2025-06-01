@@ -8,12 +8,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Copy,
   MoreHorizontal,
   Plus,
   Trash,
 } from "lucide-react";
 import { toast } from "sonner";
-import { archiveNote, createNote } from "@/lib/notes";
+import {archiveNote, copyNote, createNote} from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {useSettings} from "@/hooks/use-settings";
 
@@ -46,7 +47,19 @@ export const NoteItemActions = ({
     if (id === activeNoteId){
       setActiveNoteId(undefined)
     }
+  };
+
+  const onCopyNote = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!id) return;
     
+    void copyNote(id, "-Copy").then(
+      newId=>{ setActiveNoteId(newId); }
+    );
+    // toast.promise(promise, {
+    //   loading: "Copy note...",
+    //   success: "Note copied!",
+    //   error: "Failed to copy note."
+    // });
   };
 
   // 创建下级笔记
@@ -68,6 +81,7 @@ export const NoteItemActions = ({
     });
   };
 
+
   return (
     <div className="ml-auto flex items-center gap-x-2">
       <DropdownMenu>
@@ -80,6 +94,10 @@ export const NoteItemActions = ({
           <DropdownMenuItem onClick={onArchiveNote}>
             <Trash className="h-4 w-4 mr-2"/>
             Delete
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={onCopyNote}>
+            <Copy className="h-4 w-4 mr-2"/>
+            Duplicated
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <div className="text-sm text-muted-foreground p-2">

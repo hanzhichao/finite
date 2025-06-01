@@ -2,17 +2,20 @@ import {connDb} from "./notes";
 import {Option, Property, PropertyType} from "./types"
 import {generateUUID} from "./utils";
 
-export async function getOptions(propertyId: string){
+export async function getOptions(propertyId: string) {
   console.log(`db查询Options: property_id=${propertyId}`)
   const db = await connDb();
-  return await db.select<Option[]>(`SELECT label,value,bg_color FROM options WHERE property_id=$1`, [propertyId])
+  return await db.select<Option[]>(`SELECT label, value, bg_color
+                                    FROM options
+                                    WHERE property_id = $1`, [propertyId])
 }
 
-export async function addOption(propertyId: string, label: string, value?: string, bg_color?: string){
+export async function addOption(propertyId: string, label: string, value?: string, bg_color?: string) {
   value = typeof value != "undefined" ? value : label
   bg_color = typeof bg_color != "undefined" ? bg_color : ""
   const db = await connDb();
-  return await db.select<Option[]>(`INSERT INTO options (property_id, label, value, bg_color) VALUES ($1,$2,$3,$4)`, [propertyId, label,value, bg_color])
+  return await db.select<Option[]>(`INSERT INTO options (property_id, label, value, bg_color)
+                                    VALUES ($1, $2, $3, $4)`, [propertyId, label, value, bg_color])
 }
 
 
@@ -22,23 +25,31 @@ export async function getProperties(noteId: string) {
   const result = await db.select<Property[]>(`
       SELECT id, key, type, value
       FROM properties
-      LEFT JOIN notes_properties ON properties.id = notes_properties.property_id
+               LEFT JOIN notes_properties ON properties.id = notes_properties.property_id
       WHERE note_id = $1;`, [noteId]);
 
   console.log("properties")
   console.log(result)
 
   const properties: Property[] = [];
-  for (const property of result){
+  for (const property of result) {
     const result = await getOptions(property.id)
     console.log("options")
     console.log(result)
-    if(result.length > 0){
+    if (result.length > 0) {
       property.options = result
     }
     properties.push(property)
   }
   return properties;
+}
+
+
+export async function copytNoteProperty(noteId: string, propertyId: string, value?: string) {
+  console.log(`db复制笔记属性: noteId=${noteId}, property_id=${propertyId}`);
+  const db = await connDb();
+  await db.execute("INSERT INTO notes_properties (property_id,note_id,value) VALUES ($1,$2,$3)", [propertyId, noteId, value]);
+  return propertyId
 }
 
 
@@ -49,9 +60,11 @@ export async function addNoteProperty(noteId: string, property_key: string, type
 
   if (property_key === "") return ""
   // 查询同名 key 是否存在
-  const result = await db.select<Property[]>(`SELECT id,key,type FROM properties where key=$1`, [property_key])
+  const result = await db.select<Property[]>(`SELECT id, key, type
+                                              FROM properties
+                                              where key = $1`, [property_key])
   console.log(result)
-  if (result.length === 0 ){
+  if (result.length === 0) {
     propertyId = generateUUID();
     console.log(`db新建属性: ${property_key}`)
     await db.execute("INSERT INTO properties (id, key,type) VALUES ($1,$2,$3)", [propertyId, property_key, type]);
@@ -69,10 +82,10 @@ export async function updateNotePropertyValue(noteId: string, propertyId: string
 }
 
 export async function updatePropertyKey(noteId: string, propertyId: string, key: string) {
-  if (typeof key==="undefined" || key === "") return ""
+  if (typeof key === "undefined" || key === "") return ""
 
-  if (propertyId === ""){
-    return  await addNoteProperty(noteId, key, PropertyType.TEXT, "")
+  if (propertyId === "") {
+    return await addNoteProperty(noteId, key, PropertyType.TEXT, "")
   }
 
   const db = await connDb();

@@ -17,16 +17,17 @@ interface NoteMainProps {
 }
 
 export const NoteMain = ({noteId}: NoteMainProps)=> {
-  const {activeNoteCover,isLocked,setActiveNote, properties} = useActiveNote((store) => (
+  const {activeNoteCover,isLocked,setActiveNote, contentChangeCount} = useActiveNote((store) => (
   { activeNoteCover: store.activeNoteCover,
     isLocked: store.isLocked,
     setActiveNote: store.setActiveNote,
-    properties: store.properties,
+    contentChangeCount: store.contentChangeCount,
   }
   ));
   const {wideMode, toggleWideMode} = useWideMode()
   const settings = useSettings()
   const [note, setNote] = useState<Note>();
+
 
   useEffect(() => {
     console.log(`加载Page页面: noteId=${noteId}`);
@@ -42,11 +43,11 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
       setActiveNote(curNote);
     };
     void fetchData();
-  }, [noteId]);
+  }, [noteId,contentChangeCount]);
 
   const Editor = useMemo(
     () => dynamic(() => import("@/components/main/editor"), { ssr: false }),
-    [noteId]
+    [noteId,contentChangeCount]
   );
 
   const onContentChange = (content: string) => {
