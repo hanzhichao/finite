@@ -28,7 +28,6 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
   const settings = useSettings()
   const [note, setNote] = useState<Note>();
 
-
   useEffect(() => {
     console.log(`加载Page页面: noteId=${noteId}`);
     if (wideMode !== settings.wideMode){

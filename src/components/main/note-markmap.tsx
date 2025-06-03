@@ -10,30 +10,37 @@ interface NoteMarkMapProps {
 }
 
 export const NoteMarkMap = ({noteId}: NoteMarkMapProps) => {
-  // const markdown = useActiveNote(store=>store.markdown)
   const setActiveNote = useActiveNote(store=>store.setActiveNote)
+  // const markdown = useActiveNote(store=>store.markdown)
   const ref = useRef<SVGSVGElement>(null);
   const transformer = new Transformer()
   const [note, setNote] = useState<Note>();
+  const [markdown, setMarkdown] = useState("")
 
   useEffect(() => {
-    console.log(`加载Page页面: noteId=${noteId}`);
+    console.log(`加载NoteMarkMap组件: noteId=${noteId}`);
+
+    if (ref.current) {
+      ref.current.innerHTML = "";
+    }
+
     const fetchData = async () => {
       const curNote: Note = await getNote(noteId);
-      if (typeof curNote === "undefined") {
-        return;
+
+      const view = Markmap.create(ref.current);
+
+      if (typeof curNote.markdown !== "undefined" && curNote.markdown !== null && curNote.markdown !== ""){
+        console.log("markdown")
+        console.log(curNote.markdown)
+        const {root} = transformer.transform(curNote.markdown ?? "");
+        void view.setData(root)
+          .then(() => {void view.fit();});
       }
-      setNote(curNote);
       setActiveNote(curNote);
     };
-    void fetchData();
-  }, [noteId]);
 
-  useEffect(() => {
-    const view = Markmap.create(ref.current);
-    const {root} = transformer.transform(note?.markdown ?? "");
-    void view.setData(root)
-      .then(() => {void view.fit();});
+    void fetchData();
+
   }, [noteId]);
 
   return (
