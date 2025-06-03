@@ -35,6 +35,7 @@ import {
 import {getNotes} from "@/lib/notes";
 import {useEffect, useMemo, useState} from "react";
 import {Note} from "@/lib/types";
+import {useActiveNote} from "@/hooks/use-active-note";
 
 
 
@@ -47,10 +48,27 @@ export const columns: ColumnDef<Note>[] = [
   {
     accessorKey: "icon",
     header: "Icon",
+    cell: ({ row }) => row.original.icon || ""
   },
   {
     accessorKey: "title",
     header: "Title",
+    cell: ({ row }) => {
+      const setActiveNoteId = useActiveNote.getState().setActiveNoteId;
+      const setSubNotesView = useActiveNote.getState().setSubNotesView;
+      return (
+        <a
+          href="#"
+          className="text-primary hover:underline cursor-pointer"
+          onClick={() => {
+            setActiveNoteId(row.original.id)
+            setSubNotesView(false)
+          }}
+        >
+          {row.original.title}
+        </a>
+      );
+    },
   },
   {
     accessorKey: "update_at",
@@ -97,42 +115,7 @@ export const NoteSubNotes = ({noteId}: NoteSubNotesProps)=> {
   })
   return (
     <main className="pt-20 pb-40 px-54">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter notes..."
-          value=""
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                     {}
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <h2 className="text-4xl font-medium mb-5">Sub notes</h2>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -182,30 +165,6 @@ export const NoteSubNotes = ({noteId}: NoteSubNotesProps)=> {
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="text-muted-foreground flex-1 text-sm">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {}}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {}}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
       </div>
     </main>
   )
