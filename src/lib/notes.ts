@@ -205,8 +205,8 @@ export async function copyNote(originId: string, subfix?: string, newParent?: st
   const id = generateUUID();
   subfix = subfix ?? ""
   const parent = newParent ?? note.parent
-  await db.execute("INSERT INTO notes (id,parent,title,icon,cover,content,is_archived,is_favorite,is_locked) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
-    [id, parent, note.title + subfix, note.icon, note.cover, note.content, note.is_archived, note.is_archived, note.is_locked])
+  await db.execute("INSERT INTO notes (id,parent,title,icon,cover,content,is_archived,is_favorite,is_locked,markdown) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
+    [id, parent, note.title + subfix, note.icon, note.cover, note.content, note.is_archived, note.is_archived, note.is_locked,note.markdown])
   for (const item of note.properties ?? []) {
     if (item.key !== "createAt") {
       await copytNoteProperty(id, item.id, item.value)
@@ -297,10 +297,10 @@ export async function updateNoteIsLocked(id: string, is_locked: number) {
   await db.execute("UPDATE notes SET is_locked = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [is_locked, id]);
 }
 
-export async function updateNoteContent(id: string, content: string) {
+export async function updateNoteContent(id: string, content: string, markdown: string) {
   console.log(`db更新Note内容: id=${id}`);
   const db = await connDb();
-  await db.execute("UPDATE notes SET content = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [content, id]);
+  await db.execute("UPDATE notes SET content = $1, markdown= $2, update_at = CURRENT_TIMESTAMP WHERE id = $3", [content, markdown, id]);
 }
 
 export async function updateNoteTags(id: string, tags: string[]) {

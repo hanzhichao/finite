@@ -7,16 +7,20 @@ import {BlockNoteView} from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useTheme } from "next-themes";
 import { codeBlock } from "@blocknote/code-block";
+import {useState} from "react";
+import {useActiveNote} from "@/hooks/use-active-note";
 
 interface EditorProps {
   noteId?: string,
   initialContent?: string;
   editable?: boolean;
-  onChange: (value: string) => void;  // 笔记内容变动
+  onChange: (content: string, markdown: string) => void;  // 笔记内容变动
 }
 
 const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
   const {resolvedTheme} = useTheme();
+  // const setMarkdown = useActiveNote(store=>store.setMarkdown)
+  const [markdown, setMarkdown] = useState("")
 
   const handelUpload = async (file: File) => {
     return ""; // TODO
@@ -29,13 +33,20 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
     uploadFile: handelUpload
   });
 
+
+  const onContentChange = (value: string) => {
+    void editor.blocksToMarkdownLossy(editor.document).then(
+      markdown => {onChange(value, markdown)}
+    )
+  }
+
   return (
     <div>
       <BlockNoteView
       editor={editor}
       editable={editable}
       theme={resolvedTheme == "dark" ? "dark": "light"}
-      onChange={()=>{ onChange(JSON.stringify(editor.document, null)); }}
+      onChange={()=>{ onContentChange(JSON.stringify(editor.document, null)); }}
       />
     </div>
   )

@@ -17,11 +17,12 @@ interface NoteMainProps {
 }
 
 export const NoteMain = ({noteId}: NoteMainProps)=> {
-  const {activeNoteCover,isLocked,setActiveNote, contentChangeCount} = useActiveNote((store) => (
+  const {activeNoteCover,isLocked,setActiveNote, contentChangeCount, setMarkdown} = useActiveNote((store) => (
   { activeNoteCover: store.activeNoteCover,
     isLocked: store.isLocked,
     setActiveNote: store.setActiveNote,
     contentChangeCount: store.contentChangeCount,
+    setMarkdown: store.setMarkdown,
   }
   ));
   const {wideMode, toggleWideMode} = useWideMode()
@@ -50,10 +51,10 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
     [noteId,contentChangeCount]
   );
 
-  const onContentChange = (content: string) => {
+  const onContentChange = (content: string, markdown: string) => {
     setTimeout(()=> {
       console.log("处理Note内容更新");
-      void updateNoteContent(noteId, content)
+      void updateNoteContent(noteId, content, markdown)
     }, 300)
   };
 

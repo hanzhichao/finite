@@ -15,6 +15,7 @@ export interface Note {
   create_at?: string,
   update_at?: string,
   properties?: Property[]
+  markdown?: string
 }
 
 export enum PropertyType {

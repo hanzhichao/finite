@@ -17,6 +17,7 @@ import {
 import {Note} from "@/lib/types";
 import {Badge} from "@/components/ui/badge";
 import {useSettings} from "@/hooks/use-settings";
+import {NoteMarkmap} from "@/components/main/note-markmap";
 
 export const NoteEmpty = () => {
   const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId);

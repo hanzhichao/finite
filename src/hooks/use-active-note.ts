@@ -31,6 +31,10 @@ interface activeNoteStore {
   addProperty: (property: Property) => void;
   contentChangeCount: number,
   increaseContentChangeCount: () => void;
+  isMindView: boolean,
+  setMindView: (value: boolean) => void,
+  markdown: string,
+  setMarkdown: (markdown: string) => void
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -78,4 +82,8 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   updateProperties: (properties: Property[]) => {set({properties: properties})},
   contentChangeCount: 0,
   increaseContentChangeCount: () => {set((store)=>({contentChangeCount: store.contentChangeCount + 1}))},
+  isMindView: false,
+  markdown: "",
+  setMarkdown: (markdown: string) => {set({markdown: markdown})},
+  setMindView: (value: boolean) => {set({isMindView: value})}
   }));
