@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import {Button} from "@/components/ui/button";
-import {Clock, FileIcon, PlusCircle} from "lucide-react";
-import {createNote, getFavoriteNotes, getRecentUpdatedNotes} from "@/lib/notes";
+import {Clock, PlusCircle} from "lucide-react";
+import {createNote, getRecentUpdatedNotes} from "@/lib/notes";
 import {toast} from "sonner";
 import {useActiveNote} from "@/hooks/use-active-note";
 import React, {useEffect, useState} from "react";
@@ -17,7 +17,6 @@ import {
 import {Note} from "@/lib/types";
 import {Badge} from "@/components/ui/badge";
 import {useSettings} from "@/hooks/use-settings";
-import {NoteMarkmap} from "@/components/main/note-markmap";
 
 export const NoteEmpty = () => {
   const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId);

@@ -24,7 +24,7 @@ export const NavbarTemplate = () => {
         newContent = template.content.slice(0,-1).concat(",", content ? content.slice(1): "")
       }
       console.log(newContent)
-      await updateNoteContent(activeNoteId, newContent)
+      await updateNoteContent(activeNoteId, newContent, "")  // TODO
     }
     const propertyKeys = properties.map(item=>item.key)
     for (const item of template.properties ?? []){
