@@ -12,18 +12,6 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -33,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import {getNotes} from "@/lib/notes";
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useState} from "react";
 import {Note} from "@/lib/types";
 import {useActiveNote} from "@/hooks/use-active-note";
 

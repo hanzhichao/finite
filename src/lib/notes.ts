@@ -35,6 +35,7 @@ async function createTable() {
          tags        VARCHAR(255),
          cover       TEXT,
          content     TEXT,
+         markdown    TEXT,
          is_archived BOOLEAN  DEFAULT false,
          is_favorite BOOLEAN  DEFAULT false,
          is_locked   BOOLEAN  DEFAULT false,
@@ -326,4 +327,37 @@ export async function createNoteWithContent(title: string, content: string, pare
   await addNoteProperty(id, "tags", PropertyType.MULTI_SELECT, "")
 
   return id;
+}
+
+export async function getNoteParent(id: string) {
+  const db = await connDb();
+  const result = await db.select<Note[]>("SELECT id,title,parent FROM notes WHERE id = $1", [id]);
+  if (result.length > 0) {
+    return result[0].parent;
+  }
+  return null;
+}
+
+export async function getNoteParents(id: string) {
+  let parents: string[] = [];
+  let parent = await getNoteParent(id);
+  while (parent) {
+    parents.push(parent);
+    parent = await getNoteParent(parent);
+  }
+  return parents;
+}
+
+export async function updateNoteParent(id: string, parent: string | null) {
+  console.log(`db更新Note parent: id=${id}, parent=${parent}`);
+  if (parent === null) return;
+  const parents = await getNoteParents(parent);
+  if(parents.length > 0 && parents.includes(id)) return;
+  
+  const db = await connDb();
+  if (parent) {
+    await db.execute("UPDATE notes SET parent = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [parent, id]);
+  } else {
+    await db.execute("UPDATE notes SET parent = NULL, update_at = CURRENT_TIMESTAMP WHERE id = $1", [id]);
+  }
 }

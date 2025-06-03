@@ -8,14 +8,15 @@ export interface Note {
   cover?: string,
   tags?: string,
   content?: string,
-  parent?: number,
+  parent?:  string,
   is_archived?: number,
   is_favorite?: number,
   is_locked?: number,
   create_at?: string,
   update_at?: string,
-  properties?: Property[]
-  markdown?: string
+  properties?: Property[],
+  markdown?: string,
+  isDragging?: boolean
 }
 
 export enum PropertyType {

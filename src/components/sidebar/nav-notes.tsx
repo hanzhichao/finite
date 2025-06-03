@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { NoteItem } from "@/components/sidebar/note-item";
 import {FileIcon, Plus} from "lucide-react";
 import { useActiveNote } from "@/hooks/use-active-note";
-import { getNotes } from "@/lib/notes";
+import { getNotes, updateNoteParent } from "@/lib/notes";
 import { Note } from "@/lib/types";
 import {useCount} from "@/hooks/use-count";
 
@@ -26,6 +26,7 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState<Note[]>();
   const count = useCount((store)=>store.count)
+  const setCount = useCount((store)=>store.setCount)
 
 
   const onExpand = (noteId: string) => {
@@ -55,6 +56,15 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
     setActiveNoteId(noteId)
   };
 
+  // 拖拽更改 parent
+  const handleDrop = async (fromId: string, toId: string) => {
+    if (fromId && fromId !== toId) {
+      await updateNoteParent(fromId, toId);
+      setCount(count + 1);
+    }
+  };
+
+
   // 数据库没有笔记
   if (notes === undefined) {
     return (
@@ -72,21 +82,26 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
 
   return (
     <>
-      <p className={cn( `hidden text-sm font-medium text-muted-foreground/80`,expanded && "last:block",level === 0 && "hidden")} style={{ paddingLeft: level ? `${level * 12 + 25}px` : undefined }}>
+      <p
+        className={cn( `hidden text-sm font-medium text-muted-foreground/80`,expanded && "last:block",level === 0 && "hidden")}
+        style={{ paddingLeft: level ? `${level * 12 + 25}px` : undefined }}
+      >
         No pages available
       </p>
       {notes.map((note) => (
         <div key={note.id}>
-          <NoteItem id={note.id}
-                    onClick={() => { onSelectNote(note.id); }}
-                    label={note.title}
-                    icon={FileIcon}
-                    noteIcon={note.icon}
-                    active={activeNoteId === note.id}
-                    level={level}
-                    onExpand={() => { onExpand(note.id); }}
-                    expanded={expanded[note.id]}
-                    updateAt={note.update_at}
+          <NoteItem
+            id={note.id}
+            onClick={() => { onSelectNote(note.id); }}
+            label={note.title}
+            icon={FileIcon}
+            noteIcon={note.icon}
+            active={activeNoteId === note.id}
+            level={level}
+            onExpand={() => { onExpand(note.id); }}
+            expanded={expanded[note.id]}
+            updateAt={note.update_at}
+            onDrop={(fromId: string, toId: string) => handleDrop(fromId, toId)}
           />
           {expanded[note.id] && (
             <NoteList parentId={note.id} level={level + 1} />

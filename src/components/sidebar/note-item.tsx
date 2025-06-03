@@ -8,6 +8,7 @@ import {
   LucideIcon,
 } from "lucide-react";
 import {NoteItemActions} from "@/components/sidebar/note-item-actions";
+import React from "react";
 
 interface ItemProps {
   id?: string;
@@ -34,7 +35,8 @@ export const NoteItem = ({
   onExpand,
   expanded,
   updateAt,
-}: ItemProps) => {
+  onDrop,
+}: ItemProps & { onDrop?: (noteId: string, toParent: string) => void }) => {
   const handleExpand = (
     event: React.MouseEvent<HTMLDivElement>
   ) => {
@@ -44,14 +46,41 @@ export const NoteItem = ({
 
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
 
+  // 拖拽相关
+  const [isOver, setIsOver] = React.useState(false);
+
   return (
-    <a href="#" onClick={onClick}
+    <a
+      href="#"
+      onClick={onClick}
       role="button"
       style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
       className={cn(
         "group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
-        active && "bg-primary/5 text-primary"
+        active && "bg-primary/5 text-primary",
+        isOver && "bg-blue-100 dark:bg-blue-900"
       )}
+      draggable={!!id}
+      onDragStart={e => {
+        if (id) e.dataTransfer.setData("noteId", id);
+      }}
+      onDragOver={e => {
+        if (id) {
+          e.preventDefault();
+          setIsOver(true);
+        }
+      }}
+      onDragLeave={e => {
+        setIsOver(false);
+      }}
+      onDrop={e => {
+        setIsOver(false);
+        const fromId = e.dataTransfer.getData("noteId");
+        if (fromId && id && fromId !== id && onDrop) {
+          console.log("drap end: " + fromId + "-> " + id)
+          onDrop(fromId, id);
+        }
+      }}
     >
       {/* id存在-是笔记-显示折叠图标 */}
       {!!id && (
@@ -71,7 +100,6 @@ export const NoteItem = ({
       )}
       {/* 显示item文本--note标题 */}
       <span className="truncate">{label}</span>
-
 
       {/* id存在--是笔记-显示下拉菜单 */}
       {!!id && (
