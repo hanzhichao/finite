@@ -17,12 +17,11 @@ interface NoteMainProps {
 }
 
 export const NoteMain = ({noteId}: NoteMainProps)=> {
-  const {activeNoteCover,isLocked,setActiveNote, contentChangeCount, setMarkdown} = useActiveNote((store) => (
+  const {activeNoteCover,isLocked,setActiveNote, contentChangeCount} = useActiveNote((store) => (
   { activeNoteCover: store.activeNoteCover,
     isLocked: store.isLocked,
     setActiveNote: store.setActiveNote,
     contentChangeCount: store.contentChangeCount,
-    setMarkdown: store.setMarkdown,
   }
   ));
   const {wideMode, toggleWideMode} = useWideMode()

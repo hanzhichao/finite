@@ -10,6 +10,10 @@ interface activeNoteStore {
   isFavorite: number;
   isArchived: number;
   isLocked: number;
+  content: string,
+  markdown: string,
+  updateAt: string,
+  tags: string[],  // todo remove
   setActiveNoteId: (id?: string) => void;
   setActiveNote: (note: Note) => void;
   updateActiveNoteTitle: (title: string) => void;
@@ -18,13 +22,10 @@ interface activeNoteStore {
   updateActiveNoteContent: (content: string) => void;
   favoriteNote: () => void;
   unFavoriteNote: () => void;
-  updateAt: string,
   restoreActiveNote: () => void;
   lockNote: () => void;
   unLockNote: () => void;
-  tags: string[],
   updateActiveNoteTags: (tags: string[])=> void;
-  content: string,
   updateContent: (content: string) => void;
   properties: Property[];
   updateProperties: (properties: Property[]) => void;
@@ -32,9 +33,9 @@ interface activeNoteStore {
   contentChangeCount: number,
   increaseContentChangeCount: () => void;
   isMindView: boolean,
+  isSubNotesView: boolean,
   setMindView: (value: boolean) => void,
-  markdown: string,
-  setMarkdown: (markdown: string) => void
+  setSubNotesView: (value: boolean) => void,
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -64,6 +65,7 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
       tags: note.tags ? note.tags.split(",") : [],
       content: note.content,
       properties: note.properties,
+      markdown: note.markdown,
     }); },
   updateActiveNoteTitle: (title: string) => { set({ activeNoteTitle: title }); },
   updateActiveNoteIcon: (icon: string) => { set({ activeNoteIcon: icon }); },
@@ -83,7 +85,8 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   contentChangeCount: 0,
   increaseContentChangeCount: () => {set((store)=>({contentChangeCount: store.contentChangeCount + 1}))},
   isMindView: false,
+  isSubNotesView: false,
   markdown: "",
-  setMarkdown: (markdown: string) => {set({markdown: markdown})},
-  setMindView: (value: boolean) => {set({isMindView: value})}
+  setMindView: (value: boolean) => {set({isMindView: value})},
+  setSubNotesView: (value: boolean) => {set({isSubNotesView: value})}
   }));
