@@ -28,9 +28,6 @@ export async function getProperties(noteId: string) {
                LEFT JOIN notes_properties ON properties.id = notes_properties.property_id
       WHERE note_id = $1;`, [noteId]);
 
-  console.log("properties")
-  console.log(result)
-
   const properties: Property[] = [];
   for (const property of result) {
     const result = await getOptions(property.id)
@@ -56,21 +53,23 @@ export async function copytNoteProperty(noteId: string, propertyId: string, valu
 export async function addNoteProperty(noteId: string, property_key: string, type: PropertyType, value: string) {
   console.log(`db添加笔记属性: noteId=${noteId}, property=${property_key}, type=${type}`);
   const db = await connDb();
-  let propertyId: string;
+  // let propertyId: string;
 
   if (property_key === "") return ""
+  const propertyId = generateUUID();
+  await db.execute("INSERT INTO properties (id, key,type) VALUES ($1,$2,$3)", [propertyId, property_key, type]);
+
   // 查询同名 key 是否存在
-  const result = await db.select<Property[]>(`SELECT id, key, type
-                                              FROM properties
-                                              where key = $1`, [property_key])
-  console.log(result)
-  if (result.length === 0) {
-    propertyId = generateUUID();
-    console.log(`db新建属性: ${property_key}`)
-    await db.execute("INSERT INTO properties (id, key,type) VALUES ($1,$2,$3)", [propertyId, property_key, type]);
-  } else {
-    propertyId = result[0].id
-  }
+  // const result = await db.select<Property[]>(`SELECT id, key, type
+  //                                             FROM properties
+  //                                             where key = $1`, [property_key])
+  // if (result.length === 0) {
+  //   propertyId = generateUUID();
+  //   console.log(`db新建属性: ${property_key}`)
+  //   await db.execute("INSERT INTO properties (id, key,type) VALUES ($1,$2,$3)", [propertyId, property_key, type]);
+  // } else {
+  //   propertyId = result[0].id
+  // }
   await db.execute("INSERT INTO notes_properties (property_id,note_id,value) VALUES ($1,$2,$3)", [propertyId, noteId, value]);
   return propertyId
 }

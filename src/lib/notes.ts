@@ -60,8 +60,8 @@ async function createTable() {
     `CREATE TABLE IF NOT EXISTS "options"
      (
          property_id VARCHAR(64),
-         label       VARCHAR(255) NOT NULL,
-         value       VARCHAR(255) NOT NULL,
+         label       VARCHAR(255) UNIQUE NOT NULL,
+         value       VARCHAR(255) UNIQUE NOT NULL,
          bg_color    VARCHAR(32),
          FOREIGN KEY (property_id) REFERENCES properties (id)
      );`);
