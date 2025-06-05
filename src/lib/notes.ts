@@ -239,7 +239,7 @@ export async function createNote(title: string, parent?: string, icon?: string) 
 export async function archiveNote(id: string) {
   console.log(`db归档Note及子Note: id=${id}`);
   const db = await connDb();
-  await db.execute("UPDATE notes SET is_archived = 1 WHERE id = $1 OR parent = $1", [id]
+  await db.execute("UPDATE notes SET is_archived = 1, is_favorite = 0 WHERE id = $1 OR parent = $1", [id]
   );
 }
 
