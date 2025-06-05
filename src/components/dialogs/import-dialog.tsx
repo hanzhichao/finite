@@ -41,15 +41,19 @@ export const ImportDialog = () => {
       }
 
       let content: string;
+      let markdown: string;
       if (ext === "md"){
         const blocks = await editor.tryParseMarkdownToBlocks(fileBody);
-        content = JSON.stringify(blocks, null, 2);
+        content = JSON.stringify(blocks, null);
+        markdown = fileBody
+
       } else {
         const blocks = await editor.tryParseHTMLToBlocks(fileBody);
-        content = JSON.stringify(blocks, null, 2)
+        content = JSON.stringify(blocks, null)
+        markdown = await editor.blocksToMarkdownLossy(blocks)
       }
 
-      const promise = createNoteWithContent(title, content, activeNoteId, id, settings.defaultIcon)
+      const promise = createNoteWithContent(title, content, activeNoteId, id, settings.defaultIcon, markdown)
       toast.promise(promise, {
         loading: "Importing note...",
         success: `Note imported: ${title}!`,
@@ -65,7 +69,7 @@ export const ImportDialog = () => {
       <DialogContent>
         <DialogHeader className="border-b pb-3">
           <DialogTitle className="txt-lg font-medium">
-            Import Markdown file
+            Import Markdown or HTML file
           </DialogTitle>
         </DialogHeader>
         <FileUploader uploadFile={uploadFile} callback={uploadFileCallback}/>

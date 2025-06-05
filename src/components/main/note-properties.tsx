@@ -28,7 +28,6 @@ export default function NoteProperties() {
   const onAddProperty = () => {
     setIsAdding(true)
   }
-
   useEffect(() => {
     console.log("加载 NoteProperties")
     console.log(properties)

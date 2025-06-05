@@ -1,3 +1,5 @@
+"use client"
+
 import {LayoutTemplate, FileIcon} from "lucide-react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {useActiveNote} from "@/hooks/use-active-note";
@@ -7,12 +9,15 @@ import {Note, PropertyType} from "@/lib/types";
 import React, {useEffect, useState} from "react";
 import {NoteItem} from "@/components/sidebar/note-item";
 import {toast} from "sonner";
+import {BlockNoteEditor, PartialBlock} from "@blocknote/core";
+import {useCreateBlockNote} from "@blocknote/react";
 
 export const NavbarTemplate = () => {
   const properties = useActiveNote((store)=>store.properties)
   const activeNoteId = useActiveNote((store)=>store.activeNoteId)
   const increaseContentChangeCount = useActiveNote((store)=>store.increaseContentChangeCount)
   const content = useActiveNote((store)=>store.content)
+  const editor: BlockNoteEditor = useCreateBlockNote();
 
   const insertTemplate = async (templateId: string) => {
     const template = await getNote(templateId)
@@ -23,8 +28,9 @@ export const NavbarTemplate = () => {
       } else {
         newContent = template.content.slice(0,-1).concat(",", content ? content.slice(1): "")
       }
-      console.log(newContent)
-      await updateNoteContent(activeNoteId, newContent, "")  // TODO
+      const blocks = JSON.parse(newContent) as PartialBlock[];
+      const markdown = await editor.blocksToMarkdownLossy(blocks)
+      await updateNoteContent(activeNoteId, newContent, markdown)  // TODO
     }
     const propertyKeys = properties.map(item=>item.key)
     for (const item of template.properties ?? []){

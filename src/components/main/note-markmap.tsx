@@ -11,11 +11,8 @@ interface NoteMarkMapProps {
 
 export const NoteMarkMap = ({noteId}: NoteMarkMapProps) => {
   const setActiveNote = useActiveNote(store=>store.setActiveNote)
-  // const markdown = useActiveNote(store=>store.markdown)
   const ref = useRef<SVGSVGElement>(null);
   const transformer = new Transformer()
-  const [note, setNote] = useState<Note>();
-  const [markdown, setMarkdown] = useState("")
 
   useEffect(() => {
     console.log(`加载NoteMarkMap组件: noteId=${noteId}`);
@@ -26,13 +23,12 @@ export const NoteMarkMap = ({noteId}: NoteMarkMapProps) => {
 
     const fetchData = async () => {
       const curNote: Note = await getNote(noteId);
-
-      const view = Markmap.create(ref.current);
-
-      if (typeof curNote.markdown !== "undefined" && curNote.markdown !== null && curNote.markdown !== ""){
+      const view = Markmap.create(ref.current, {'initialExpandLevel': 3});
+      const markdown = curNote.markdown ?? ""
+      if (markdown !== ""){
         console.log("markdown")
-        console.log(curNote.markdown)
-        const {root} = transformer.transform(curNote.markdown ?? "");
+        console.log(markdown)
+        const {root} = transformer.transform(markdown);
         void view.setData(root)
           .then(() => {void view.fit();});
       }

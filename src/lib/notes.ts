@@ -310,17 +310,17 @@ export async function updateNoteTags(id: string, tags: string[]) {
   await db.execute("UPDATE notes SET tags = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [tags.join(","), id]);
 }
 
-export async function createNoteWithContent(title: string, content: string, parent?: string, id?: string, icon?: string) {
+export async function createNoteWithContent(title: string, content: string, parent?: string, id?: string, icon?: string, markdown?: string) {
   const db = await connDb();
   if (typeof id === "undefined") {
     id = generateUUID();
   }
   if (typeof parent === "undefined") {
     console.log(`db导入Note: title=${title}`);
-    await db.execute("INSERT INTO notes (id, title, content,icon) VALUES ($1,$2,$3,$4)", [id, title, content, icon ?? ""]);
+    await db.execute("INSERT INTO notes (id, title, content,icon,markdown) VALUES ($1,$2,$3,$4,$5)", [id, title, content, icon ?? "", markdown ?? ""]);
   } else {
     console.log(`db导入Note: title=${title}`);
-    await db.execute("INSERT INTO notes (id, title, parent, content,icon) VALUES ($1,$2,$3,$4,$5)", [id, title, parent, content, icon ?? ""]);
+    await db.execute("INSERT INTO notes (id, title, parent, content,icon,markdown) VALUES ($1,$2,$3,$4,$5,$6)", [id, title, parent, content, icon ?? "", markdown ?? ""]);
   }
 
   // 为每个 Note创建默认 tags 属性

@@ -83,6 +83,9 @@ export const NotePropertyItem = ({
   const [options, setOptions] = useState(item.options ?? [])
 
   useEffect(() => {
+    console.log(`加载NotePropertyItem: ${item.key}`)
+    console.log(item)
+    console.log(optionValue)
     if (item.key.toLowerCase() === "tag" || item.key.toLowerCase() === "tags") {
       setIcon(Tag)
     }
@@ -91,7 +94,11 @@ export const NotePropertyItem = ({
         const valueToDate = new Date(item.value)
         setDate(valueToDate)
       }
+    } else {
+      // setOptionValue(item.value ? item.value.split(",") : [])
     }
+
+
   }, [activeNoteId]);
 
   const onChangeKey = (key: string) => {
