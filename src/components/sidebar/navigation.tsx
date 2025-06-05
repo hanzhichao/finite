@@ -19,6 +19,7 @@ import {createNote} from "@/lib/notes";
 import {toast} from "sonner";
 import {useSettings} from "@/hooks/use-settings";
 import {NavTemplates} from "@/components/sidebar/nav-templates";
+import {ScrollArea} from "@/components/ui/scroll-area";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -152,9 +153,12 @@ export function Navigation() {
 
         <NavHeader />
         <NavMain onCreateNote={onCreateNote}/>
+        <ScrollArea className="h-142">
+
         {settings.showFavorites && <NavFavorites />}
         <NavNotes onCreateNote={onCreateNote}/>
         <NavTemplates />
+        </ScrollArea>
         <NavSecondary isMobile={isMobile} />
 
         {/*sidebar可拖拽边界*/}

@@ -13,7 +13,7 @@ interface NavTrashProps {
 export const NavSecondary = ({isMobile}: NavTrashProps) => {
   const importDialog = useImport();
   return (
-    <div className="mt-10">
+    <div className="">
       <NavItem label="Import" icon={Import} onClick={importDialog.onOpen}/>
       <Popover>
         <PopoverTrigger className="w-full">
