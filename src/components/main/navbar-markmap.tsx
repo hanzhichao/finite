@@ -4,10 +4,11 @@ import {Button} from "@/components/ui/button";
 import {updateNoteIsFavorite} from "@/lib/notes";
 
 export const NavbarMarkmap = () => {
-  const {activeNoteId, isMindView, setMindView} = useActiveNote((store) => ({
+  const {activeNoteId, isMindView, setMindView, setSubNotesView} = useActiveNote((store) => ({
     activeNoteId: store.activeNoteId,
     isMindView: store.isMindView,
     setMindView: store.setMindView,
+    setSubNotesView: store.setSubNotesView,
   }));
 
   const onSetMindView = () => {
@@ -15,6 +16,7 @@ export const NavbarMarkmap = () => {
       setTimeout(
         () => {
           setMindView(true)
+          setSubNotesView(false)
         }, 100
       )
     }

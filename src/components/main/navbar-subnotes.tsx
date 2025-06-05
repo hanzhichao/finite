@@ -4,11 +4,12 @@ import {Button} from "@/components/ui/button";
 import {updateNoteIsFavorite} from "@/lib/notes";
 
 export const NavbarSubNotes = () => {
-  const {activeNoteId, isMindView,isSubNotesView, setSubNotesView} = useActiveNote((store) => ({
+  const {activeNoteId, isMindView,isSubNotesView, setSubNotesView, setMindView} = useActiveNote((store) => ({
     activeNoteId: store.activeNoteId,
     isMindView: store.isMindView,
     isSubNotesView: store.isSubNotesView,
     setSubNotesView: store.setSubNotesView,
+    setMindView: store.setMindView,
   }));
 
   const onSetMindView = () => {
@@ -16,6 +17,7 @@ export const NavbarSubNotes = () => {
       setTimeout(
         () => {
           setSubNotesView(true)
+          setMindView(false)
         }, 100
       )
     }
