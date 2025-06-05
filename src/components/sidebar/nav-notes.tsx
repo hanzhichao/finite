@@ -24,6 +24,7 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
   const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId);
   const updateActiveNoteTitle = useActiveNote((store) => store.updateActiveNoteTitle);
   const updateActiveNoteIcon = useActiveNote((store) => store.updateActiveNoteIcon);
+  const setSubNotesView = useActiveNote((store) => store.setSubNotesView);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState<Note[]>();
   const count = useCount((store)=>store.count)
@@ -52,16 +53,12 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
   }, [activeNoteId, activeNoteTitle, activeNoteIcon, count]);
 
   // 选择笔记
-  const onSelectNote = (noteId: string, title?: string, icon?: string) => {
+  const onSelectNote = (noteId: string, title: string, icon: string) => {
     if(noteId != activeNoteId){
-      if (typeof title !== "undefined"){
-        updateActiveNoteTitle(title)
-      }
-      if (typeof icon !== "undefined"){
-        updateActiveNoteIcon(icon)
-      }
+      updateActiveNoteTitle(title)
+      updateActiveNoteIcon(icon)
+      setSubNotesView(false)
       setActiveNoteId(noteId)
-
     }
   };
 
@@ -101,7 +98,7 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
         <div key={note.id}>
           <NoteItem
             id={note.id}
-            onClick={() => { onSelectNote(note.id, note.title, note.icon); }}
+            onClick={() => { onSelectNote(note.id, note.title, note.icon??""); }}
             label={note.title}
             icon={FileIcon}
             noteIcon={note.icon}

@@ -16,6 +16,9 @@ const TrashBox = () => {
   const [archiveNotes, setArchivedNotes] = useState<Note[]>([]);
   const activeNoteId = useActiveNote((store)=> store.activeNoteId)
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
+  const setSubNotesView = useActiveNote((store)=> store.setSubNotesView)
+  const updateActiveNoteTitle = useActiveNote((store)=> store.updateActiveNoteTitle)
+  const updateActiveNoteIcon = useActiveNote((store)=> store.updateActiveNoteIcon)
   const { count, increase } = useCount()
   const [removeCount, setRemoveCount] = useState(0)
   const [search, setSearch] = useState("");
@@ -94,8 +97,13 @@ const TrashBox = () => {
           No notes found.
         </p>
         {filteredNotes.map((note, index)=>(
-          <div key={index} role="button" onClick={()=>{ setActiveNoteId(note.id); }}
-          className="text-sm rouned-sm w-full hover:bg-primary/5 flex items-center text-primary justify-between">
+          <div key={index} role="button" onClick={()=>{
+            updateActiveNoteTitle(note.title)
+            updateActiveNoteIcon(note.icon?? "")
+            setSubNotesView(false)
+            setActiveNoteId(note.id);
+          }}
+          className="text-sm rouned-sm w-full hover:bg-primary/5 flex items-center text-primary justify-between cursor-pointer">
             <span className="trancate pl-2">{note.title}</span>
             <div className="flex items-center">
               <div onClick={(e)=> { onRestore(e, note.id); }} role="button"

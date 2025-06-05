@@ -10,6 +10,9 @@ import { useActiveNote } from "@/hooks/use-active-note";
 
 export const SearchCommand = () => {
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
+  const updateActiveNoteIcon = useActiveNote((store)=> store.updateActiveNoteIcon)
+  const updateActiveNoteTitle = useActiveNote((store)=> store.updateActiveNoteTitle)
+  const setSubNotesView = useActiveNote((store)=> store.setSubNotesView)
   const [notes, setNotes] = useState<Note[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const toggle = useSearch((store)=> store.toggle);
@@ -40,7 +43,10 @@ export const SearchCommand = () => {
     return () => { document.removeEventListener("keydown", down); };
   }, [toggle]); 
 
-  const onSelectNote = (noteId: string) => {
+  const onSelectNote = (noteId: string, title: string, icon: string) => {
+    updateActiveNoteTitle(title)
+    updateActiveNoteIcon(icon)
+    setSubNotesView(false)
     setActiveNoteId(noteId)
     onClose();
   }
@@ -56,9 +62,9 @@ export const SearchCommand = () => {
         <CommandEmpty>No Results found.</CommandEmpty>
         <CommandGroup heading="Notes">
           {notes.map((note)=>(
-            <CommandItem key={note.id} value={`${note.id}-${note.title}`} title={document.title} onSelect={()=>{onSelectNote(note.id)}}>
+            <CommandItem key={note.id} value={`${note.id}-${note.title}`} title={document.title} onSelect={()=>{onSelectNote(note.id, note.title, note.icon??"")}}>
               {note.icon ? (<p className="mr-1 text-[15px]">{note.icon}</p>): (<File className="mr-2 text-[18px] w-18 h-18"/>)}
-              <div className="flex flex-1 justify-between items-center">
+              <div className="flex flex-1 justify-between items-center cursor-pointer">
                 <span>{note.title}</span>
                 <span className="flex gap-x-1 text-muted-foreground text-xs">
                   <Clock />

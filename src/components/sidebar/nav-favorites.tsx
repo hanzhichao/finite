@@ -8,11 +8,14 @@ import {useCount} from "@/hooks/use-count";
 
 
 export function NavFavorites() {
-  const {activeNoteId,activeNoteTitle,activeNoteIcon,setActiveNoteId,isFavorite} =  useActiveNote((store) => ({
+  const {activeNoteId,activeNoteTitle,activeNoteIcon,setActiveNoteId,isFavorite,updateActiveNoteIcon,updateActiveNoteTitle,setSubNotesView} =  useActiveNote((store) => ({
     activeNoteId: store.activeNoteId,
     activeNoteTitle: store.activeNoteTitle,
     activeNoteIcon: store.activeNoteIcon,
     setActiveNoteId: store.setActiveNoteId,
+    updateActiveNoteIcon: store.updateActiveNoteIcon,
+    updateActiveNoteTitle: store.updateActiveNoteTitle,
+    setSubNotesView: store.setSubNotesView,
     isFavorite: store.isFavorite,
   }))
   const [favoriteNotes, setFavoriteNotes] = useState<Note[]>();
@@ -28,8 +31,12 @@ export function NavFavorites() {
   }, [activeNoteId, activeNoteTitle, activeNoteIcon, isFavorite, count]);
 
   // 选择笔记
-  const onSelectNote = (noteId: string) => {
+  const onSelectNote = (noteId: string, title: string, icon: string) => {
+    updateActiveNoteTitle(title)
+    updateActiveNoteIcon(icon)
+    setSubNotesView(false)
     setActiveNoteId(noteId)
+
   };
 
   return (
@@ -38,7 +45,7 @@ export function NavFavorites() {
       {favoriteNotes?.map((note) => (
         <div key={note.id}>
           <NoteItem
-            onClick={() => { onSelectNote(note.id); }}
+            onClick={() => { onSelectNote(note.id, note.title, note.icon??""); }}
             label={note.title}
             icon={FileIcon}
             noteIcon={note.icon}

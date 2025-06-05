@@ -77,7 +77,6 @@ export const NoteItem = ({
         setIsOver(false);
         const fromId = e.dataTransfer.getData("noteId");
         if (fromId && id && fromId !== id && onDrop) {
-          console.log("drap end: " + fromId + "-> " + id)
           onDrop(fromId, id);
         }
       }}

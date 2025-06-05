@@ -1,4 +1,4 @@
-import {LayoutList, ChevronDown, ChevronRight} from "lucide-react";
+import {LayoutList, ChevronDown, ChevronRight, PanelTopOpen} from "lucide-react";
 import {useActiveNote} from "@/hooks/use-active-note";
 import {Button} from "@/components/ui/button";
 
@@ -39,13 +39,13 @@ export const NavbarSubNotes = () => {
         <Button size="sm" variant="ghost" className="cursor-pointer" onClick={() => {
           onUnSetMindView()
         }}>
-          <ChevronRight className="w-4 h-4"/>
+          <PanelTopOpen className="w-4 h-4 text-amber-400"/>
         </Button>
       ) : (
         <Button size="sm" variant="ghost" className="cursor-pointer" onClick={() => {
           onSetMindView()
         }}>
-          <ChevronDown className="w-4 h-4"/>
+          <PanelTopOpen className="w-4 h-4"/>
         </Button>
       )
       }
