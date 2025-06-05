@@ -53,10 +53,10 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   setActiveNoteId: (id?: string) => { set({ activeNoteId: id }); },
   setActiveNote: (note: Note) =>
     { set({
-      activeNoteId: note.id,
-      activeNoteTitle: note.title,
+      // activeNoteId: note.id,
+      // activeNoteTitle: note.title,
       activeNoteCover: note.cover,
-      activeNoteIcon: note.icon,
+      // activeNoteIcon: note.icon,
       activeNoteContent: note.content,
       isFavorite: note.is_favorite,
       isArchived: note.is_archived,

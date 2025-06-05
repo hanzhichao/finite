@@ -121,7 +121,7 @@ NoteItem.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
   );
 };
 
-if (typeof window !== "undefined" && !window.isSpace) {
+if (typeof window !== "undefined") {
   // @ts-ignore
   window.isSpace = function(ch) {
     return ch === 0x20 || ch === 0x09 || ch === 0x0a || ch === 0x0d || ch === 0x0c;
