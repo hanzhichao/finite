@@ -1,78 +1,25 @@
 "use client"
 import * as React from "react"
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-  VisibilityState,
-} from "@tanstack/react-table"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {getNotes} from "@/lib/notes";
+import {createNote, getNotes} from "@/lib/notes";
 import {useEffect, useState} from "react";
 import {Note} from "@/lib/types";
 import {useActiveNote} from "@/hooks/use-active-note";
+import {toast} from "sonner";
+import {useSettings} from "@/hooks/use-settings";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-
+import {NoteSubNotesTable} from "@/components/main/note-subnotes-table";
+import {NoteSubNotesCard} from "@/components/main/note-subnotes-card";
 
 interface NoteSubNotesProps {
   noteId: string;
 }
 
-
-export const columns: ColumnDef<Note>[] = [
-  {
-    accessorKey: "icon",
-    header: "Icon",
-    cell: ({ row }) => row.original.icon || ""
-  },
-  {
-    accessorKey: "title",
-    header: "Title",
-    cell: ({ row }) => {
-      const setActiveNoteId = useActiveNote.getState().setActiveNoteId;
-      const setSubNotesView = useActiveNote.getState().setSubNotesView;
-      return (
-        <a
-          href="#"
-          className="text-primary hover:underline cursor-pointer"
-          onClick={() => {
-            setActiveNoteId(row.original.id)
-            setSubNotesView(false)
-          }}
-        >
-          {row.original.title}
-        </a>
-      );
-    },
-  },
-  {
-    accessorKey: "update_at",
-    header: "Update At",
-  },
-]
-
 export const NoteSubNotes = ({noteId}: NoteSubNotesProps)=> {
   const [data, setData] = useState<Note[]>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+  const activeNoteId  = useActiveNote((store)=>store.activeNoteId)
+  const settings = useSettings()
+  const [count, setCount] = useState(0)
 
   useEffect(() => {
     console.log(`加载NoteSubNotes组件: parent=${noteId}`);
@@ -81,79 +28,40 @@ export const NoteSubNotes = ({noteId}: NoteSubNotesProps)=> {
       setData(result)
     };
     void fetchData();
-  }, [noteId]);
+  }, [noteId, count]);
 
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-  })
+  const onCreateSubNote = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!activeNoteId) return;
+    event.stopPropagation();
+    const promise = createNote(settings.defaultTitle || "Untitled", activeNoteId, settings.defaultIcon).then(
+      (noteId) => {
+        setCount(count+1)
+        // setActiveNoteId(noteId)
+      }
+    );
+    toast.promise(promise, {
+      loading: "Creating a new note...",
+      success: "New note created!",
+      error: "Failed to create a new note.",
+    });
+  };
+
+
   return (
-    <main className="pt-20 pb-40 px-54">
-      <h2 className="text-4xl font-medium mb-5">Sub notes</h2>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+    // <main className="pt-20 pb-40 px-54">
+    <main className="pt-20 pb-20 px-10">
+      <Tabs defaultValue="table" className="w-full">
+        <TabsList>
+          <TabsTrigger value="table">Table</TabsTrigger>
+          <TabsTrigger value="card">Card</TabsTrigger>
+        </TabsList>
+        <TabsContent value="table">
+          <NoteSubNotesTable data={data} onCreate={onCreateSubNote}/>
+        </TabsContent>
+        <TabsContent value="card">
+          <NoteSubNotesCard data={data} onCreate={onCreateSubNote}/>
+        </TabsContent>
+      </Tabs>
     </main>
   )
 }

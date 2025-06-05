@@ -1,7 +1,6 @@
-import {LayoutList, Map} from "lucide-react";
+import {LayoutList, ChevronDown, ChevronRight} from "lucide-react";
 import {useActiveNote} from "@/hooks/use-active-note";
 import {Button} from "@/components/ui/button";
-import {updateNoteIsFavorite} from "@/lib/notes";
 
 export const NavbarSubNotes = () => {
   const {activeNoteId, isMindView,isSubNotesView, setSubNotesView, setMindView} = useActiveNote((store) => ({
@@ -40,13 +39,13 @@ export const NavbarSubNotes = () => {
         <Button size="sm" variant="ghost" className="cursor-pointer" onClick={() => {
           onUnSetMindView()
         }}>
-          <LayoutList className="text-amber-400 w-4 h-4"/>
+          <ChevronRight className="w-4 h-4"/>
         </Button>
       ) : (
         <Button size="sm" variant="ghost" className="cursor-pointer" onClick={() => {
           onSetMindView()
         }}>
-          <LayoutList className="w-4 h-4"/>
+          <ChevronDown className="w-4 h-4"/>
         </Button>
       )
       }

@@ -1,7 +1,6 @@
-import {Map} from "lucide-react";
+import {ListTree} from "lucide-react";
 import {useActiveNote} from "@/hooks/use-active-note";
 import {Button} from "@/components/ui/button";
-import {updateNoteIsFavorite} from "@/lib/notes";
 
 export const NavbarMarkmap = () => {
   const {activeNoteId, isMindView, setMindView, setSubNotesView} = useActiveNote((store) => ({
@@ -38,13 +37,13 @@ export const NavbarMarkmap = () => {
         <Button size="sm" variant="ghost" className="cursor-pointer" onClick={() => {
           onUnSetMindView()
         }}>
-          <Map className="text-amber-400 w-4 h-4"/>
+          <ListTree className="text-amber-400 w-4 h-4"/>
         </Button>
       ) : (
         <Button size="sm" variant="ghost" className="cursor-pointer" onClick={() => {
           onSetMindView()
         }}>
-          <Map className="w-4 h-4"/>
+          <ListTree className="w-4 h-4"/>
         </Button>
       )
       }

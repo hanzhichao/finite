@@ -20,6 +20,8 @@ import {useSettings} from "@/hooks/use-settings";
 
 export const NoteEmpty = () => {
   const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId);
+  const updateActiveNoteIcon = useActiveNote.getState().updateActiveNoteIcon;
+  const updateActiveNoteTitle = useActiveNote.getState().updateActiveNoteTitle;
   const [notes, setNotes] = useState<Note[]>([])
   const settings = useSettings()
 
@@ -35,7 +37,9 @@ export const NoteEmpty = () => {
     });
   };
 
-  const onClick = (noteId: string) => {
+  const onClick = (noteId: string, title: string, icon?: string) => {
+    updateActiveNoteTitle(title)
+    updateActiveNoteIcon(icon?? "")
     setActiveNoteId(noteId);
   };
 
@@ -69,8 +73,8 @@ export const NoteEmpty = () => {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {notes.map((note) => (
-                <Card key={note.id} className="hover:bg-accent pt-0" onClick={() => {
-                  onClick(note.id);
+                <Card key={note.id} className="hover:bg-accent pt-0 cursor-pointer" onClick={() => {
+                  onClick(note.id, note.title, note.icon);
                 }}>
                   <CardHeader className="p-0">
                     {!!note.cover &&
@@ -79,7 +83,9 @@ export const NoteEmpty = () => {
                     }
                   </CardHeader>
                   <CardContent>
-                    <CardTitle>{note.title}</CardTitle>
+                    <CardTitle>
+                      {note.title}
+                    </CardTitle>
                     <div className="mt-2">
                       {!!note.tags && (
                         note.tags.split(",").map((tag, index) => (
