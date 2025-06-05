@@ -25,7 +25,7 @@ export const ImportDialog = () => {
     setTimeout(()=>{
       setActiveNoteId(noteIds[noteIds.length-1])
       importDialog.onClose()
-    }, 1000)
+    }, 3000)
   }
 
   const uploadFile = async (file?: File) => {
