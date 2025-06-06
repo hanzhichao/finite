@@ -2,91 +2,98 @@ import Database from "@tauri-apps/plugin-sql";
 import {Note, Property, PropertyType} from "./types";
 import {generateUUID, convertToISOString} from "./utils";
 import * as path from "@tauri-apps/api/path";
-import {BaseDirectory, exists, mkdir} from "@tauri-apps/plugin-fs";
+import {exists, mkdir} from "@tauri-apps/plugin-fs";
 import {addNoteProperty, copytNoteProperty, getProperties} from "@/lib/properties";
+import { platform } from '@tauri-apps/plugin-os';
 
 const DB_DIR_NAME = "Finite"
-const DB_FILE_NAME = "notes.db"
+const DB_FILE_NAME = "db.sqlite"
 
-async function createDbDir(dbDir: string) {
-  const dbDirExists = await exists(DB_DIR_NAME, {
-    baseDir: BaseDirectory.Home,
-  });
+
+async function getDbDir() {
+  const homeDir = await path.homeDir();
+  return await path.join(homeDir, DB_DIR_NAME);
+}
+async function getDbFile() {
+  const currentPlatform = platform();
+  if (currentPlatform === 'android') {
+    return path.join(await path.appDataDir(), DB_FILE_NAME);
+  }
+  const dbDir = await getDbDir()
+  return await path.join(dbDir, DB_FILE_NAME);
+}
+
+async function createDbDir() {
+  const currentPlatform = platform();
+  if (currentPlatform === 'android') {
+    return
+  }
+  const dbDir = await getDbDir()
+  const dbDirExists = await exists(dbDir);
   if (!dbDirExists) {
     console.log(`创建db目录：${dbDir}`)
-    await mkdir(DB_DIR_NAME, {
-      baseDir: BaseDirectory.Home,
-    });
+    await mkdir(dbDir);
   }
 }
 
 async function createTable() {
-  const homeDir = await path.homeDir();
-  const dbFile = await path.join(homeDir, `${DB_DIR_NAME}/${DB_FILE_NAME}`);
+  const dbFile = await getDbFile();
   const db = await Database.load("sqlite:" + dbFile);
   console.log("db创建表: notes")
   await db.execute(
     `CREATE TABLE IF NOT EXISTS "notes"
-     (
-         id          VARCHAR(64) PRIMARY KEY,
-         parent      VARCHAR(64),
-         title       VARCHAR(255) NOT NULL,
-         icon        CHAR(1),
-         tags        VARCHAR(255),
-         cover       TEXT,
-         content     TEXT,
-         markdown    TEXT,
-         is_archived BOOLEAN  DEFAULT false,
-         is_favorite BOOLEAN  DEFAULT false,
-         is_locked   BOOLEAN  DEFAULT false,
-         is_template BOOLEAN  DEFAULT false,
-         create_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
-         update_at   DATETIME DEFAULT CURRENT_TIMESTAMP
-     );`);
-  console.log("db创建索引: notes.parent")
-  await db.execute(`CREATE INDEX IF NOT EXISTS "by_parent" ON notes (parent)`);
+    (
+        id          VARCHAR(64) PRIMARY KEY,
+        parent      VARCHAR(64),
+        title       VARCHAR(255) NOT NULL,
+        icon        CHAR(1),
+        tags        VARCHAR(255),
+        cover       TEXT,
+        content     TEXT,
+        markdown    TEXT,
+        is_archived BOOLEAN  DEFAULT false,
+        is_favorite BOOLEAN  DEFAULT false,
+        is_locked   BOOLEAN  DEFAULT false,
+        is_template BOOLEAN  DEFAULT false,
+        create_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+        update_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
 
-  console.log("db创建表: properties")
-  await db.execute(
-    `CREATE TABLE IF NOT EXISTS "properties"
-     (
-         id   VARCHAR(64) PRIMARY KEY,
-         key  VARCHAR(255) NOT NULL,
-         type SMALLINT DEFAULT 0
-     );`);
+    CREATE INDEX IF NOT EXISTS "by_parent" ON notes (parent);
 
-  console.log("db创建表: options")
-  await db.execute(
-    `CREATE TABLE IF NOT EXISTS "options"
-     (
-         property_id VARCHAR(64),
-         label       VARCHAR(255) UNIQUE NOT NULL,
-         value       VARCHAR(255) UNIQUE NOT NULL,
-         bg_color    VARCHAR(32),
-         FOREIGN KEY (property_id) REFERENCES properties (id)
-     );`);
+    CREATE TABLE IF NOT EXISTS "properties"
+    (
+        id   VARCHAR(64) PRIMARY KEY,
+        key  VARCHAR(255) NOT NULL,
+        type SMALLINT DEFAULT 0
+        );
 
-  console.log("db创建表: notes_properties")
-  await db.execute(
-    `CREATE TABLE IF NOT EXISTS "notes_properties"
-     (
-         property_id VARCHAR(64),
-         note_id     VARCHAR(64),
-         value       VARCHAR(255),
-         is_visible  BOOLEAN DEFAULT true,
-         FOREIGN KEY (property_id) REFERENCES properties (id),
-         FOREIGN KEY (note_id) REFERENCES notes (id)
-     );`);
+    CREATE TABLE IF NOT EXISTS "options"
+    (
+        property_id VARCHAR(64),
+        label       VARCHAR(255) UNIQUE NOT NULL,
+        value       VARCHAR(255) UNIQUE NOT NULL,
+        bg_color    VARCHAR(32),
+        FOREIGN KEY (property_id) REFERENCES properties (id)
+        );
 
-  await db.close()
+    CREATE TABLE IF NOT EXISTS "notes_properties"
+    (
+        property_id VARCHAR(64),
+        note_id     VARCHAR(64),
+        value       VARCHAR(255),
+        is_visible  BOOLEAN DEFAULT true,
+        FOREIGN KEY (property_id) REFERENCES properties (id),
+        FOREIGN KEY (note_id) REFERENCES notes (id)
+        );`);
+
+  // await db.close()
 }
 
 export async function connDb(): Promise<Database> {
-  const homeDir = await path.homeDir();
-  const dbDir = await path.join(homeDir, DB_DIR_NAME);
-  await createDbDir(dbDir)
+  await createDbDir()
   let shouldInitTable = false;
-  const dbFile = await path.join(dbDir, DB_FILE_NAME);
+  const dbFile = await getDbFile();
   const dbFileExists = await exists(dbFile);
   if (!dbFileExists) {
     shouldInitTable = true

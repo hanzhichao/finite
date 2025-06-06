@@ -3,13 +3,13 @@
   all(not(debug_assertions), target_os = "windows"),
   windows_subsystem = "windows"
 )]
-
 use tauri::Manager;
 use window_vibrancy::{apply_blur, apply_vibrancy, NSVisualEffectMaterial};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
+    .plugin(tauri_plugin_os::init())
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_sql::Builder::default().build())
     .setup(|app| {

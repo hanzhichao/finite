@@ -48,7 +48,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      <Toaster position="bottom-center"/>
+      <Toaster/>
       <DialogProvider/>
       <div className="h-full flex dark:bg-[#1F1F1F] rounded-t-2xl">
         <Navigation/>
