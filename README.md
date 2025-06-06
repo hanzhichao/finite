@@ -1,6 +1,7 @@
 # Finite
 
-A notion like markdown note-taking app base on [Tauri2](https://v2.tauri.app/) and [Next.js](https://nextjs.org/).
+A notion like markdown note-taking a
+pp base on [Tauri2](https://v2.tauri.app/) and [Next.js](https://nextjs.org/).
 
 Inspired by [Antonio's notion-clone video](https://www.youtube.com/watch?v=0OaDyjB9Ib8)
 - template: [tauri-nextjs-template](https://github.com/kvnxiao/tauri-nextjs-template)
@@ -10,9 +11,28 @@ Inspired by [Antonio's notion-clone video](https://www.youtube.com/watch?v=0OaDy
 
 ## Shortcuts
 
-![finite-home](docs/finite-home.png)
-![finite-note](docs/finite-note.png)
+HomePage
+![homepage](docs/homepage.png)
 
+Settings
+![settings.png](docs/settings.png)
+
+Import
+![import.png](docs/import.png)
+
+Template
+![template.png](docs/template.png)
+
+Wide Mode
+![widemode.png](docs/widemode.png)
+
+Markmap View
+![markmap.png](docs/markmap.png)
+
+Subnotes View
+![subnotes-table.png](docs/subnotes-table.png)
+
+![subnotes-card.png](docs/subnotes-card.png)
 
 ## Getting Started
 
