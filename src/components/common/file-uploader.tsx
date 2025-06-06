@@ -3,6 +3,7 @@ import {useDropzone} from "react-dropzone"
 import {Upload, X, FileIcon, CheckCircle, AlertCircle} from "lucide-react"
 import {Progress} from "@/components/ui/progress"
 import {ScrollArea} from "@/components/ui/scroll-area";
+import { useTranslation } from "react-i18next";
 
 type FileStatus = "idle" | "uploading" | "success" | "error"
 
@@ -20,6 +21,7 @@ interface FileUploaderProps {
 
 export function FileUploader({uploadFile, callback}: FileUploaderProps) {
   const [files, setFiles] = useState<FileWithStatus[]>([])
+  const { t } = useTranslation();
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const newFiles = acceptedFiles.map((file) => ({
       file,
@@ -89,15 +91,15 @@ export function FileUploader({uploadFile, callback}: FileUploaderProps) {
         <div className="flex flex-col items-center justify-center gap-2">
           <Upload className="h-10 w-10 text-muted-foreground"/>
           <h3 className="text-lg font-medium mt-2">
-            {isDragActive ? "Drop the files here" : "Drag & drop files here"}
+            {isDragActive ? t("Drop the files here") : t("Drag & drop files here")}
           </h3>
-          <p className="text-sm text-muted-foreground">or click to browse files (max 10MB)</p>
+          <p className="text-sm text-muted-foreground">{t("or click to browse files (max 10MB)")}</p>
         </div>
       </div>
 
       {files.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-lg font-medium">Imported Files</h3>
+          <h3 className="text-lg font-medium">{t("Imported Files")}</h3>
           <ScrollArea className="h-60">
             {/*<div className="space-y-3">*/}
               {files.map((fileWithStatus) => (

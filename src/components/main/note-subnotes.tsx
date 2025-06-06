@@ -7,6 +7,7 @@ import {useActiveNote} from "@/hooks/use-active-note";
 import {toast} from "sonner";
 import {useSettings} from "@/hooks/use-settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useTranslation } from "react-i18next";
 
 import {NoteSubNotesTable} from "@/components/main/note-subnotes-table";
 import {NoteSubNotesCard} from "@/components/main/note-subnotes-card";
@@ -20,6 +21,7 @@ export const NoteSubNotes = ({noteId}: NoteSubNotesProps)=> {
   const activeNoteId  = useActiveNote((store)=>store.activeNoteId)
   const settings = useSettings()
   const [count, setCount] = useState(0)
+  const { t } = useTranslation();
 
   useEffect(() => {
     console.log(`加载NoteSubNotes组件: parent=${noteId}`);
@@ -40,20 +42,19 @@ export const NoteSubNotes = ({noteId}: NoteSubNotesProps)=> {
       }
     );
     toast.promise(promise, {
-      loading: "Creating a new note...",
-      success: "New note created!",
-      error: "Failed to create a new note.",
+      loading: t("Creating a new note..."),
+      success: t("New note created!"),
+      error: t("Failed to create a new note."),
     });
   };
-
 
   return (
     // <main className="pt-20 pb-40 px-54">
     <main className="pt-20 pb-20 px-10">
       <Tabs defaultValue="table" className="w-full">
         <TabsList>
-          <TabsTrigger value="table">Table</TabsTrigger>
-          <TabsTrigger value="card">Card</TabsTrigger>
+          <TabsTrigger value="table">{t("Table")}</TabsTrigger>
+          <TabsTrigger value="card">{t("Card")}</TabsTrigger>
         </TabsList>
         <TabsContent value="table">
           <NoteSubNotesTable data={data} onCreate={onCreateSubNote}/>

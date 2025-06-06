@@ -5,6 +5,7 @@ import { useActiveNote } from "@/hooks/use-active-note";
 import {getTemplates} from "@/lib/notes";
 import { Note } from "@/lib/types";
 import {useCount} from "@/hooks/use-count";
+import { useTranslation } from "react-i18next";
 
 
 export function NavTemplates() {
@@ -17,6 +18,7 @@ export function NavTemplates() {
   }))
   const [templates, setTemplates] = useState<Note[]>();
   const count = useCount((store)=>store.count)
+  const { t } = useTranslation();
 
   useEffect(() => {
     console.log("加载NavTemplates组件");
@@ -34,7 +36,7 @@ export function NavTemplates() {
 
   return (
     <div className="mt-4">
-      <span className="pl-3.5 min-h-[27px] text-xs py-1 pr-3 w-full flex items-center text-muted-foreground font-medium">Templates</span>
+      <span className="pl-3.5 min-h-[27px] text-xs py-1 pr-3 w-full flex items-center text-muted-foreground font-medium">{t("Templates")}</span>
       {templates?.map((note) => (
         <div key={note.id}>
           <NoteItem

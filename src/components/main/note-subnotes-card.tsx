@@ -1,54 +1,17 @@
 "use client"
 import * as React from "react"
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-  VisibilityState,
-} from "@tanstack/react-table"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {createNote, getNotes} from "@/lib/notes";
-import {useEffect, useState} from "react";
 import {Note} from "@/lib/types";
 import {useActiveNote} from "@/hooks/use-active-note";
-import {Clock, GalleryThumbnails, LayoutList, Plus, PlusCircle} from "lucide-react";
+import { GalleryThumbnails} from "lucide-react";
 import {Button} from "@/components/ui/button";
-import {toast} from "sonner";
-import {useSettings} from "@/hooks/use-settings";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import {
-  IconChevronDown,
-  IconChevronLeft, IconChevronRight,
-  IconChevronsLeft, IconChevronsRight,
-  IconDotsVertical,
-  IconLayoutColumns,
   IconPlus
 } from "@tabler/icons-react";
-import {Checkbox} from "@/components/ui/checkbox";
-import {Label} from "@/components/ui/label";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Image from "next/image";
 import {Badge} from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 interface NoteSubNotesCardProps {
   data: Note[];
@@ -61,18 +24,20 @@ export const NoteSubNotesCard = ({data, onCreate}: NoteSubNotesCardProps)=> {
   const setSubNotesView = useActiveNote.getState().setSubNotesView;
   const updateActiveNoteIcon = useActiveNote.getState().updateActiveNoteIcon;
   const updateActiveNoteTitle = useActiveNote.getState().updateActiveNoteTitle;
+  const { t } = useTranslation();
+
 
   return (
     <div>
       <div className="flex items-center justify-between gap-2 py-3">
         <div className="flex pl-1 gap-x-2 items-center text-muted-foreground">
           <GalleryThumbnails className="w-4 h-4"/>
-          <span className="text-muted-foreground">Sub notes</span>
+          <span className="text-muted-foreground">{t("Sub notes")}</span>
         </div>
         <div className="flex gap-x-2">
           <Button variant="outline" size="sm" onClick={onCreate}>
             <IconPlus />
-            <span className="hidden lg:inline">Add sub note</span>
+            <span className="hidden lg:inline">{t("Add sub note")}</span>
           </Button>
         </div>
       </div>
@@ -86,7 +51,7 @@ export const NoteSubNotesCard = ({data, onCreate}: NoteSubNotesCardProps)=> {
           }}>
             <CardHeader className="p-0">
               {!!note.cover &&
-                  <Image src={note.cover} alt="NoteCover" className="h-full w-full p-0 rounded-t-xl" width={500}
+                  <Image src={note.cover} alt={t("NoteCover")} className="h-full w-full p-0 rounded-t-xl" width={500}
                          height={300}/>
               }
             </CardHeader>
@@ -109,7 +74,7 @@ export const NoteSubNotesCard = ({data, onCreate}: NoteSubNotesCardProps)=> {
                 )}</div>
             </CardContent>
             <CardFooter>
-              <span className="text-xs text-muted-foreground">updated at: {note.update_at}</span>
+              <span className="text-xs text-muted-foreground">{t("updated at")}: {note.update_at}</span>
             </CardFooter>
           </Card>
         ))}

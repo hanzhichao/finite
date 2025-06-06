@@ -28,7 +28,7 @@ export function DateTimePicker({
                                  placeholder = "Pick a date and time",
                                  disabled = false,
                                  className,
-                                 format: dateFormat = "PPP p",
+                                 format: dateFormat = "yyyy/MM/dd HH:mm:SS",
                                  showTime = true,
                                  use24Hour = false,
                                }: DateTimePickerProps) {

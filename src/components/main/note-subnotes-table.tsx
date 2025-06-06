@@ -1,5 +1,6 @@
 "use client"
 import * as React from "react"
+import { useTranslation } from "react-i18next";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -20,15 +21,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {createNote, getNotes} from "@/lib/notes";
-import {useEffect, useState} from "react";
 import {Note} from "@/lib/types";
 import {useActiveNote} from "@/hooks/use-active-note";
-import {LayoutList, Plus, PlusCircle, TableIcon} from "lucide-react";
+import { TableIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
-import {toast} from "sonner";
-import {useSettings} from "@/hooks/use-settings";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -140,6 +136,7 @@ export const columns: ColumnDef<Note>[] = [
 
 export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
   const [sorting, setSorting] = React.useState<SortingState>([])
+  const { t } = useTranslation();
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -171,15 +168,15 @@ export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
       <div className="flex items-center justify-between gap-2 py-3">
         <div className="flex pl-1 gap-x-2 items-center text-muted-foreground">
           <TableIcon className="w-4 h-4"/>
-          <span className="text-muted-foreground">Sub notes</span>
+          <span className="text-muted-foreground">{t("Sub notes")}</span>
         </div>
         <div className="flex gap-x-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
               <IconLayoutColumns />
-              <span className="hidden lg:inline">Customize Columns</span>
-              <span className="lg:hidden">Columns</span>
+              <span className="hidden lg:inline">{t("Customize Columns")}</span>
+              <span className="lg:hidden">{t("Columns")}</span>
               <IconChevronDown />
             </Button>
           </DropdownMenuTrigger>
@@ -209,7 +206,7 @@ export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
         </DropdownMenu>
         <Button variant="outline" size="sm" onClick={onCreate}>
           <IconPlus />
-          <span className="hidden lg:inline">Add sub note</span>
+          <span className="hidden lg:inline">{t("Add sub note")}</span>
         </Button>
         </div>
       </div>
@@ -256,7 +253,7 @@ export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("No results.")}
                 </TableCell>
               </TableRow>
             )}
@@ -266,12 +263,12 @@ export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
       <div className="flex items-center justify-between py-3 ">
         <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredRowModel().rows.length} row(s) {t("selected.")}
         </div>
         <div className="flex w-full items-center gap-8 lg:w-fit">
           <div className="hidden items-center gap-2 lg:flex">
             <Label htmlFor="rows-per-page" className="text-sm font-medium">
-              Rows per page
+              {t("Rows per page")}
             </Label>
             <Select
               value={`${table.getState().pagination.pageSize}`}
@@ -294,7 +291,7 @@ export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
             </Select>
           </div>
           <div className="flex w-fit items-center justify-center text-sm font-medium">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {t("Page")} {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </div>
           <div className="ml-auto flex items-center gap-2 lg:ml-0">
@@ -304,7 +301,7 @@ export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
-              <span className="sr-only">Go to first page</span>
+              <span className="sr-only">{t("Go to first page")}</span>
               <IconChevronsLeft />
             </Button>
             <Button
@@ -314,7 +311,7 @@ export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              <span className="sr-only">Go to previous page</span>
+              <span className="sr-only">{t("Go to previous page")}</span>
               <IconChevronLeft />
             </Button>
             <Button
@@ -324,7 +321,7 @@ export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              <span className="sr-only">Go to next page</span>
+              <span className="sr-only">{t("Go to next page")}</span>
               <IconChevronRight />
             </Button>
             <Button
@@ -334,7 +331,7 @@ export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >
-              <span className="sr-only">Go to last page</span>
+              <span className="sr-only">{t("Go to last page")}</span>
               <IconChevronsRight />
             </Button>
           </div>

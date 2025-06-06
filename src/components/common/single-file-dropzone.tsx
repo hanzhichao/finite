@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useDropzone, type DropzoneOptions } from 'react-dropzone';
 import { twMerge } from 'tailwind-merge';
 import { Spinner } from '@/components/common/spinner';
+import { useTranslation } from "react-i18next";
 
 const variants = {
   base: 'relative rounded-md flex justify-center items-center flex-col cursor-pointer min-h-[150px] min-w-[200px] border border-dashed border-gray-400 dark:border-gray-300 transition-colors duration-200 ease-in-out',
@@ -25,18 +26,20 @@ interface InputProps {
   dropzoneOptions?: Omit<DropzoneOptions, 'disabled'>;
 }
 
+const { t } = useTranslation();
+
 const ERROR_MESSAGES = {
   fileTooLarge(maxSize: number) {
-    return `The file is too large. Max size is ${formatFileSize(maxSize)}.`;
+    return t("The file is too large. Max size is") +` ${formatFileSize(maxSize)}.`;
   },
   fileInvalidType() {
-    return 'Invalid file type.';
+    return t('Invalid file type.');
   },
   tooManyFiles(maxFiles: number) {
-    return `You can only add ${maxFiles} file(s).`;
+    return t("You can only add")+` ${maxFiles}` +t("file(s).");
   },
   fileNotSupported() {
-    return 'The file is not supported.';
+    return t('The file is not supported.');
   },
 };
 

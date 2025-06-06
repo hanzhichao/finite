@@ -9,6 +9,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
+import { useTranslation } from "react-i18next";
 
 interface ConfirmDialogProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ interface ConfirmDialogProps {
 }
 
 export const ConfirmDialog = ({ children, onConfirm }: ConfirmDialogProps) => {
+  const { t } = useTranslation();
   const handleConfirm = (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -32,14 +34,14 @@ export const ConfirmDialog = ({ children, onConfirm }: ConfirmDialogProps) => {
         <AlertDialogHeader>
           <AlertDialogTitle>Aure you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone.
+            {t("This action cannot be undone.")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={(e) => { e.stopPropagation(); }}>
-            Cancel
+            {t("Cancel")}
           </AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirm}>Confirm</AlertDialogAction>
+          <AlertDialogAction onClick={handleConfirm}>{t("Confirm")}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

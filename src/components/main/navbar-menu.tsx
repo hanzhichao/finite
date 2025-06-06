@@ -12,7 +12,7 @@ import {useCreateBlockNote} from "@blocknote/react";
 import {codeBlock} from "@blocknote/code-block";
 import {saveFile} from "@/lib/utils"
 import {useWideMode} from "@/hooks/use-wide-mode";
-
+import { useTranslation } from "react-i18next";
 
 enum ExportType {
   Markdown,
@@ -26,6 +26,8 @@ export function NavbarMenu (){
   const updateAt = useActiveNote((store)=> store.updateAt)
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
   const toggleWideMode  = useWideMode((store)=> store.toggleWideMode)
+  const { t } = useTranslation();
+
 
   const editor: BlockNoteEditor = useCreateBlockNote({codeBlock,
     initialContent: content ? JSON.parse(content) as PartialBlock[] : undefined,
@@ -35,9 +37,9 @@ export function NavbarMenu (){
     if (typeof activeNoteId !== "undefined"){
       const promise = archiveNote(activeNoteId)
       toast.promise(promise, {
-        loading: "Moving to trash...",
-        success: "Notes moved to trash!",
-        error: "Failed to archive note."
+        loading: t("Moving to trash..."),
+        success: t("Notes moved to trash!"),
+        error: t("Failed to archive note.")
       })
       setActiveNoteId(undefined)
     }
@@ -73,9 +75,9 @@ export function NavbarMenu (){
     if (typeof activeNoteId !== "undefined"){
       const promise = setNoteIsTemplate(activeNoteId)
       toast.promise(promise, {
-        loading: "Set template...",
-        success: `Template is set`,
-        error: `Failed to set template`
+        loading: t("Set template..."),
+        success: t("Template is set"),
+        error: t("Failed to set template")
       })
     }
   }
@@ -91,27 +93,27 @@ export function NavbarMenu (){
         <DropdownMenuContent className="w-60" align="end" alignOffset={8} forceMount>
           <DropdownMenuItem onClick={()=>{toggleWideMode()}}>
             <Trash className="h-4 w-4 mr-2"/>
-            Toggle Wide Mode
+            {t("Toggle Wide Mode")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={()=>{onSetTemplate()}}>
             <Trash className="h-4 w-4 mr-2"/>
-            Set Template
+            {t("Set Template")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={onArchiveNote}>
             <Trash className="h-4 w-4 mr-2"/>
-            Delete
+            {t("Delete")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={()=>{onExportNote(ExportType.HTML)}}>
             <Download className="h-4 w-4 mr-2"/>
-            Export as HTML
+            {t("Export as HTML")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={()=>{onExportNote(ExportType.Markdown)}}>
             <Download className="h-4 w-4 mr-2"/>
-            Export as Markdown
+            {t("Export as Markdown")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <div className="text-xs text-muted-foreground p-2">
-            updated at: {updateAt}
+            {t("updated at")}: {updateAt}
           </div>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -11,6 +11,7 @@ import {NoteItem} from "@/components/sidebar/note-item";
 import {toast} from "sonner";
 import {BlockNoteEditor, PartialBlock} from "@blocknote/core";
 import {useCreateBlockNote} from "@blocknote/react";
+import { useTranslation } from "react-i18next";
 
 export const NavbarTemplate = () => {
   const properties = useActiveNote((store)=>store.properties)
@@ -18,6 +19,7 @@ export const NavbarTemplate = () => {
   const increaseContentChangeCount = useActiveNote((store)=>store.increaseContentChangeCount)
   const content = useActiveNote((store)=>store.content)
   const editor: BlockNoteEditor = useCreateBlockNote();
+  const { t } = useTranslation();
 
   const insertTemplate = async (templateId: string) => {
     const template = await getNote(templateId)
@@ -55,9 +57,9 @@ export const NavbarTemplate = () => {
   const onInsertTemplate = (templateId: string) => {
     const promise =  insertTemplate(templateId).then(r=>{ increaseContentChangeCount(); })
     toast.promise(promise, {
-      loading: "Insert template...",
-      success: "Template inserted!",
-      error: (error) => `Failed to insert template: ${error}`
+      loading: t("Insert template..."),
+      success: t("Template inserted!"),
+      error: t("Failed to insert template.")
     });
   }
 
@@ -70,7 +72,7 @@ export const NavbarTemplate = () => {
       </PopoverTrigger>
       <PopoverContent className="p-0 w-42 " side="bottom">
         <div className="p-3">
-        <div className="pl-1 pb-1 mb-1 text-sm text-muted-foreground border-b-1">Insert template</div>
+        <div className="pl-1 pb-1 mb-1 text-sm text-muted-foreground border-b-1">{t("Insert template")}</div>
           {templates?.map((note) => (
             <div key={note.id}>
               <NoteItem

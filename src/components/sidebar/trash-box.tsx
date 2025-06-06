@@ -11,6 +11,7 @@ import { useActiveNote } from "@/hooks/use-active-note";
 import {Button} from "@/components/ui/button";
 import {useCount} from "@/hooks/use-count";
 import {ScrollArea} from "@/components/ui/scroll-area";
+import { useTranslation } from "react-i18next";
 
 const TrashBox = () => {
   const [archiveNotes, setArchivedNotes] = useState<Note[]>([]);
@@ -22,6 +23,7 @@ const TrashBox = () => {
   const { count, increase } = useCount()
   const [removeCount, setRemoveCount] = useState(0)
   const [search, setSearch] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     console.log("加载TrashBox组件")
@@ -41,18 +43,18 @@ const TrashBox = () => {
     event.stopPropagation();
     const promise = restoreNote(noteId).then(r=>{increase()});
     toast.promise(promise, {
-      loading: "Restoring notes...",
-      success: "Note restored!",
-      error: "Failed to restore note."
+      loading: t("Restoring notes..."),
+      success: t("Note restored!"),
+      error: t("Failed to restore note.")
     });
   };
 
   const onRemove = (noteId: string) => {
     const promise = deleteNote(noteId).then(r=>{setRemoveCount(removeCount+1)});
     toast.promise(promise, {
-      loading: "Deleting notes...",
-      success: "Note deleted!",
-      error: "Failed to delete note."
+      loading: t("Deleting notes..."),
+      success: t("Note deleted!"),
+      error: t("Failed to delete note.")
     });
 
     if (activeNoteId === noteId) {
@@ -72,9 +74,9 @@ const TrashBox = () => {
   const onRemoveAll = () => {
     const promise = removeAll().then(r=>{setRemoveCount(removeCount+1)});
     toast.promise(promise, {
-      loading: "Deleting notes...",
-      success: "Note deleted!",
-      error: "Failed to delete note."
+      loading: t("Deleting notes..."),
+      success: t("Note deleted!"),
+      error: t("Failed to delete note.")
     });
   };
 
@@ -84,7 +86,7 @@ const TrashBox = () => {
         <Search className="h-5 w-5"/>
         <Input value={search} onChange={(e)=>{ setSearch(e.target.value); }}
         className="h-7 px-2 focus-visible:riging-transparent bg-secondary"
-        placeholder="Filter by note title ..."/>
+        placeholder={t("Filter by note title...")}/>
         <ConfirmDialog onConfirm={()=> { onRemoveAll(); }}>
           <Button variant="outline" size="icon" className="rounded-sm ml-1 h-7 w-7 cursor-pointer ">
             <X />
@@ -94,7 +96,7 @@ const TrashBox = () => {
       <ScrollArea className="h-72">
       <div className="mt-2 px-2 pb-5">
         <p className="hidden last:block text-xs text-center text-muted-foreground pb-2">
-          No notes found.
+          {t("No notes found.")}
         </p>
         {filteredNotes.map((note, index)=>(
           <div key={index} role="button" onClick={()=>{

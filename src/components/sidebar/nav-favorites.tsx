@@ -5,6 +5,7 @@ import { useActiveNote } from "@/hooks/use-active-note";
 import {getFavoriteNotes, getNotes} from "@/lib/notes";
 import { Note } from "@/lib/types";
 import {useCount} from "@/hooks/use-count";
+import { useTranslation } from "react-i18next";
 
 
 export function NavFavorites() {
@@ -20,6 +21,7 @@ export function NavFavorites() {
   }))
   const [favoriteNotes, setFavoriteNotes] = useState<Note[]>();
   const count = useCount((store)=>store.count)
+  const { t } = useTranslation();
 
   useEffect(() => {
     console.log("加载FavoriteNotes组件");
@@ -41,7 +43,7 @@ export function NavFavorites() {
 
   return (
     <div className="mt-4">
-      <span className="pl-3.5 min-h-[27px] text-xs py-1 pr-3 w-full flex items-center text-muted-foreground font-medium">Favorites</span>
+      <span className="pl-3.5 min-h-[27px] text-xs py-1 pr-3 w-full flex items-center text-muted-foreground font-medium">{t("Favorites")}</span>
       {favoriteNotes?.map((note) => (
         <div key={note.id}>
           <NoteItem

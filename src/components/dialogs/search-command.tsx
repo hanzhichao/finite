@@ -7,6 +7,7 @@ import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, C
 import { Note } from "@/lib/types";
 import {getRecentUpdatedNotes} from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
+import { useTranslation } from "react-i18next";
 
 export const SearchCommand = () => {
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
@@ -18,6 +19,7 @@ export const SearchCommand = () => {
   const toggle = useSearch((store)=> store.toggle);
   const isOpen = useSearch((store)=> store.isOpen);
   const onClose = useSearch((store)=> store.onClose);
+  const { t } = useTranslation();
 
   useEffect(()=> {
     setIsMounted(true)
@@ -57,10 +59,10 @@ export const SearchCommand = () => {
 
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
-      <CommandInput placeholder={`Search Finite...`}/>
+      <CommandInput placeholder={t("Search Finite...")}/>
       <CommandList>
-        <CommandEmpty>No Results found.</CommandEmpty>
-        <CommandGroup heading="Notes">
+        <CommandEmpty>{t("No Results found.")}</CommandEmpty>
+        <CommandGroup heading={t("Notes")}>
           {notes.map((note)=>(
             <CommandItem key={note.id} value={`${note.id}-${note.title}`} title={document.title} onSelect={()=>{onSelectNote(note.id, note.title, note.icon??"")}}>
               {note.icon ? (<p className="mr-1 text-[15px]">{note.icon}</p>): (<File className="mr-2 text-[18px] w-18 h-18"/>)}

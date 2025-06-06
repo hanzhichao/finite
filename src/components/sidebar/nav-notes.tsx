@@ -6,6 +6,7 @@ import { useActiveNote } from "@/hooks/use-active-note";
 import { getNotes, updateNoteParent } from "@/lib/notes";
 import { Note } from "@/lib/types";
 import {useCount} from "@/hooks/use-count";
+import { useTranslation } from "react-i18next";
 
 interface NoteListProps {
   parentId?: string;
@@ -119,11 +120,12 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
 }
 
 export function NavNotes ({onCreateNote}: NavNotesProps) {
+  const { t } = useTranslation();
   return (
     <div className="mt-4">
-      <span className="pl-3.5 min-h-[27px] text-xs py-1 pr-3 w-full flex items-center text-muted-foreground font-medium">Notes</span>
+      <span className="pl-3.5 min-h-[27px] text-xs py-1 pr-3 w-full flex items-center text-muted-foreground font-medium">{t("Notes")}</span>
       <NoteList />
-      <NoteItem onClick={onCreateNote} icon={Plus} label="Add a page" />
+      <NoteItem onClick={onCreateNote} icon={Plus} label={t("Add a page")} />
     </div>
   )
 }

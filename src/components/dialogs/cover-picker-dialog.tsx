@@ -10,7 +10,7 @@ import {toast} from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {Shuffle} from "lucide-react";
 import {Button} from "@/components/ui/button";
-
+import { useTranslation } from "react-i18next";
 
 interface CoverPickerDialogProps {
   gradients?: string[]
@@ -32,6 +32,8 @@ export function CoverPickerDialog({gradients}: CoverPickerDialogProps) {
   const [file, setFile] = useState<File>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const coverImage = useCoverImage();
+  const { t } = useTranslation();
+  
 
   const onClose = () => {
     setFile(undefined);
@@ -75,9 +77,9 @@ export function CoverPickerDialog({gradients}: CoverPickerDialogProps) {
       updateActiveNoteCover(url)
       const promise = updateNoteCover(activeNoteId, url);
       toast.promise(promise, {
-        loading: "Upload cover...",
-        success: "Cover uploaded!",
-        error: "Failed to upload cover.",
+        loading: t("Upload cover..."),
+        success: t("Cover uploaded!"),
+        error: t("Failed to upload cover."),
       });
     }
     onClose();
@@ -91,9 +93,9 @@ export function CoverPickerDialog({gradients}: CoverPickerDialogProps) {
       updateActiveNoteCover(svg);
       const promise = updateNoteCover(activeNoteId, svg);
       toast.promise(promise, {
-        loading: "Upload cover...",
-        success: "Cover uploaded!",
-        error: "Failed to upload cover.",
+        loading: t("Upload cover..."),
+        success: t("Cover uploaded!"),
+        error: t("Failed to upload cover."),
       });
     }
     onClose();
@@ -117,7 +119,7 @@ export function CoverPickerDialog({gradients}: CoverPickerDialogProps) {
         <ScrollArea className="h-60">
           <div className="flex mt-4 mb-2 justify-start items-center">
             <h3 className="text-sm font-medium">
-              Gradients
+              {t("Gradients")}
             </h3>
             <Button variant="ghost" size="icon" className="ml-2 w-5 h-5 hover:bg-neutral-300 dark:hover:bg-neutral-600"
             onClick={()=>{onRandomColor()}}>

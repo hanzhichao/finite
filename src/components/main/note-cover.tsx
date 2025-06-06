@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { updateNoteCover } from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {gradients} from "@/lib/consts";
+import { useTranslation } from "react-i18next";
 
 interface CoverProps {
   url?: string;
@@ -17,6 +18,7 @@ export const NoteCover = ({url, preview}: CoverProps) => {
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
   const updateActiveNoteCover = useActiveNote((store) => store.updateActiveNoteCover);
   const coverImage = useCoverImage();
+  const { t } = useTranslation();
 
   const onRemoveCover = () => {
     if (typeof activeNoteId !== "undefined"){
@@ -45,15 +47,15 @@ export const NoteCover = ({url, preview}: CoverProps) => {
         <div className="opacity-0 group-hover:opacity-100 absolute bottom-5 right-5 flex items-center gap-x-2">
           <Button onClick={() => {onRandomColor()}} className="text-muted-foreground text-xs dark:text-neutral-600 dark:hover:dark:text-neutral-50" variant="outline" size="sm">
             <Shuffle className="h-4 w-4 mr-1"/>
-            Random color
+            {t("Random color")}
           </Button>
           <Button onClick={() => { coverImage.onReplace(url) }} className="text-muted-foreground text-xs dark:text-neutral-600 dark:hover:dark:text-neutral-50" variant="outline" size="sm">
             <ImageIcon className="h-4 w-4 mr-1"/>
-            Change cover
+            {t("Change cover")}
           </Button>
           <Button onClick={onRemoveCover} className="text-muted-foreground text-xs dark:text-neutral-600 dark:hover:dark:text-neutral-50" variant="outline" size="sm">
             <X className="h-4 w-4 mr-1"/>
-            Remove
+            {t("Remove")}
           </Button>
         </div>
       )}

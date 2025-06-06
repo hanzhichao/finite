@@ -20,6 +20,7 @@ import {toast} from "sonner";
 import {useSettings} from "@/hooks/use-settings";
 import {NavTemplates} from "@/components/sidebar/nav-templates";
 import {ScrollArea} from "@/components/ui/scroll-area";
+import { useTranslation } from "react-i18next";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -32,6 +33,7 @@ export function Navigation() {
   const activeNoteId = useActiveNote((store)=> store.activeNoteId);
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId);
   const settings = useSettings()
+  const { t } = useTranslation();
 
 
   useEffect(() => {
@@ -120,9 +122,9 @@ export function Navigation() {
       { setActiveNoteId(noteId); }
     );
     toast.promise(promise, {
-      loading: "Creating new note...",
-      success: "New note created!",
-      error: "Failed to create note.",
+      loading: t("Creating new note..."),
+      success: t("New note created!"),
+      error: t("Failed to create note."),
     });
   };
 
@@ -133,7 +135,7 @@ export function Navigation() {
         isResetting && "transition-all ease-out duration-300",
         isMobile && "w-0"
       )} ref={sidebarRef}>
-        <div data-tauri-drag-region className="group px-4 py-4.5 w-full flex items-center gap-x-2">
+        <div data-tauri-drag-region className="group px-4 py-4 w-full flex items-center gap-x-2">
           <div className="w-3.5 h-3.5 flex items-center justify-center text-primary font-bold rounded-lg bg-red-500" id="titlebar-close">
             <X className="opacity-0 group-hover:opacity-100 transition w-3 h-3" role="button"/>
           </div>

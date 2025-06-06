@@ -8,6 +8,7 @@ import {updateNoteIcon, updateNoteTags, updateNoteTitle} from "@/lib/notes";
 import { Note } from "@/lib/types";
 import { useActiveNote } from "@/hooks/use-active-note";
 // import {NoteTags} from "@/components/main/note-tags";
+import { useTranslation } from "react-i18next";
 
 interface NoteHeaderProps {
   initialData: Note;
@@ -17,6 +18,7 @@ interface NoteHeaderProps {
 export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
   const inputRef = useRef<ComponentRef<"textarea">>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const { t } = useTranslation();
 
   const {activeNoteId,activeNoteIcon,activeNoteCover,activeNoteTitle,updateActiveNoteTitle,updateActiveNoteIcon,updateActiveNoteTags,tags } = useActiveNote((store)=>({
     activeNoteId: store.activeNoteId,
@@ -103,7 +105,7 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
               size="sm"
             >
               <Smile className="h-4 w-4 mr-2" />
-              Add icon
+               {t("Add icon")}
             </Button>
           </IconPicker>
         )}
@@ -115,7 +117,7 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
             size="sm"
           >
             <ImageIcon className="h-4 w-4 mr-2" />
-            Add cover
+            {t("Add cover")}
           </Button>
         )}
         {(!activeNoteIcon || !activeNoteCover) && preview &&(

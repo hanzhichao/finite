@@ -12,6 +12,7 @@ import {FileWithStatus, FileUploader} from "@/components/common/file-uploader";
 import {useActiveNote} from "@/hooks/use-active-note";
 import {generateUUID, readFile} from "@/lib/utils";
 import {useSettings} from "@/hooks/use-settings";
+import { useTranslation } from "react-i18next";
 
 export const ImportDialog = () => {
   const importDialog = useImport();
@@ -20,6 +21,7 @@ export const ImportDialog = () => {
   const setActiveNoteId = useActiveNote((store)=>(store.setActiveNoteId))
   const noteIds:string[] = []
   const settings = useSettings()
+  const { t } = useTranslation();
 
   const uploadFileCallback = (results: FileWithStatus[]) => {
     setTimeout(()=>{
@@ -55,9 +57,9 @@ export const ImportDialog = () => {
 
       const promise = createNoteWithContent(title, content, activeNoteId, id, settings.defaultIcon, markdown)
       toast.promise(promise, {
-        loading: "Importing note...",
-        success: `Note imported: ${title}!`,
-        error: "Failed to import note.",
+        loading: t("Importing note..."),
+        success: t("Note imported")+ `: ${title}`,
+        error: t("Failed to import note."),
       });
       return id
     }
@@ -69,7 +71,7 @@ export const ImportDialog = () => {
       <DialogContent>
         <DialogHeader className="border-b pb-3">
           <DialogTitle className="txt-lg font-medium">
-            Import Markdown or HTML file
+            {t("Import Markdown or HTML file")}
           </DialogTitle>
         </DialogHeader>
         <FileUploader uploadFile={uploadFile} callback={uploadFileCallback}/>

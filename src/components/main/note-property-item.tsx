@@ -288,7 +288,7 @@ export const NotePropertyItem = ({
                           )}
                   >
                     <CalendarIcon/>
-                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    {date ? format(date, "yyyy/MM/dd") : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -305,7 +305,7 @@ export const NotePropertyItem = ({
             <div
               className="flex flex-1 flex-wrap items-center gap-1.5 w-full font-normal hover:bg-accent text-sm py-1 px-2.5 rounded-sm">
               <CalendarIcon className="h-4 w-4"/>
-              {date ? format(date, "PPP") : <span>Empty</span>}
+              {date ? format(date, "yyyy/MM/dd") : <span>Empty</span>}
             </div>
           )}
         </>
@@ -323,7 +323,7 @@ export const NotePropertyItem = ({
             <div
               className="flex flex-1 flex-wrap items-center gap-1.5 w-full font-normal hover:bg-accent text-sm py-1 px-2.5 rounded-sm">
               <CalendarIcon className="h-4 w-4"/>
-              {date ? format(date, "PPP p") : <span>Empty</span>}
+              {date ? format(date, "yyyy/MM/dd HH:mm:SS") : <span>Empty</span>}
             </div>
           )}
         </>

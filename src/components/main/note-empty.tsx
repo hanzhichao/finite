@@ -17,6 +17,7 @@ import {
 import {Note} from "@/lib/types";
 import {Badge} from "@/components/ui/badge";
 import {useSettings} from "@/hooks/use-settings";
+import { useTranslation } from "react-i18next";
 
 export const NoteEmpty = () => {
   const setActiveNoteId = useActiveNote((store) => store.setActiveNoteId);
@@ -24,6 +25,7 @@ export const NoteEmpty = () => {
   const updateActiveNoteTitle = useActiveNote.getState().updateActiveNoteTitle;
   const [notes, setNotes] = useState<Note[]>([])
   const settings = useSettings()
+  const { t } = useTranslation();
 
   const onCreateNote = () => {
     const promise = createNote(settings.defaultTitle || "Untitled", undefined, settings.defaultIcon).then((noteId) => {
@@ -62,14 +64,14 @@ export const NoteEmpty = () => {
           </div>
           <Button variant="outline" onClick={onCreateNote}>
             <PlusCircle className="h-4 w-4 mr-2"/>
-            Create a new note
+            {t("Create a new note")}
           </Button>
         </div>
         {settings.showRecent && (
           <>
             <div className="flex items-center gap-2 mb-4">
               <Clock className="h-4 w-4 text-gray-500"/>
-              <span className="text-sm text-gray-500">Updated recently</span>
+              <span className="text-sm text-gray-500">{t("Updated recently")}</span>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {notes.map((note) => (
@@ -96,7 +98,7 @@ export const NoteEmpty = () => {
                       )}</div>
                   </CardContent>
                   <CardFooter>
-                    <span className="text-xs text-muted-foreground">updated at: {note.update_at}</span>
+                    <span className="text-xs text-muted-foreground">{t("updated at")}: {note.update_at}</span>
                   </CardFooter>
                 </Card>
               ))}

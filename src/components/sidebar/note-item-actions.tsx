@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import {archiveNote, copyNote, createNote} from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {useSettings} from "@/hooks/use-settings";
+import { useTranslation } from "react-i18next";
 
 interface NoteItemActionsProps {
   id?: string;
@@ -34,15 +35,16 @@ export const NoteItemActions = ({
   const activeNoteId  = useActiveNote((store)=>store.activeNoteId)
   const setActiveNoteId  = useActiveNote((store)=>store.setActiveNoteId)
   const settings = useSettings()
+  const { t } = useTranslation();
 
   // 归档笔记
   const onArchiveNote = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!id) return;
     const promise = archiveNote(id);
     toast.promise(promise, {
-      loading: "Moving to trash...",
-      success: "Note moved to trash!",
-      error: "Failed to archive note."
+      loading: t("Moving to trash..."),
+      success: t("Note moved to trash!"),
+      error: t("Failed to archive note.")
     });
     if (id === activeNoteId){
       setActiveNoteId(undefined)
@@ -75,9 +77,9 @@ export const NoteItemActions = ({
       }
     );
     toast.promise(promise, {
-      loading: "Creating a new note...",
-      success: "New note created!",
-      error: "Failed to create a new note.",
+      loading: t("Creating a new note..."),
+      success: t("New note created!"),
+      error: t("Failed to create a new note."),
     });
   };
 
@@ -93,15 +95,15 @@ export const NoteItemActions = ({
         <DropdownMenuContent className="w-64" align="start" side="right" forceMount>
           <DropdownMenuItem onClick={onArchiveNote}>
             <Trash className="h-4 w-4 mr-2"/>
-            Delete
+            {t("Delete")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={onCopyNote}>
             <Copy className="h-4 w-4 mr-2"/>
-            Duplicated
+            {t("Duplicated")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <div className="text-sm text-muted-foreground p-2">
-            updated at: {updateAt}
+            {t("updated at")}: {updateAt}
           </div>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -8,7 +8,7 @@ import {useActiveNote} from "@/hooks/use-active-note";
 import {Separator} from "@/components/ui/separator";
 import {NotePropertyItem} from "@/components/main/note-property-item";
 import {removeNoteProperty} from "@/lib/properties";
-
+import { useTranslation } from "react-i18next";
 const generateNewProperty = (noteId: string) => {
   const newProperty: Property = {id: "", note_id: noteId, key: "", type: PropertyType.TEXT, value: ""}
   return newProperty
@@ -19,6 +19,7 @@ export default function NoteProperties() {
   const preview = useActiveNote((store) => store.isLocked) === 1
   const properties = useActiveNote((store) => store.properties)
   const updateProperties = useActiveNote((store) => store.updateProperties)
+  const { t } = useTranslation();
 
   // 添加新属性
   const [isAdding, setIsAdding] = useState(false)
@@ -68,7 +69,7 @@ export default function NoteProperties() {
             onAddProperty();
           }}>
             <Plus className="w-4 h-4"/>
-            <span>Add a property</span>
+            <span>{t("Add a property")}</span>
           </button>
         )}
         <Separator className="mt-4"/>

@@ -8,7 +8,6 @@ import "@blocknote/mantine/style.css";
 import { useTheme } from "next-themes";
 import { codeBlock } from "@blocknote/code-block";
 import {useState} from "react";
-import {useActiveNote} from "@/hooks/use-active-note";
 
 interface EditorProps {
   noteId?: string,
@@ -19,8 +18,6 @@ interface EditorProps {
 
 const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
   const {resolvedTheme} = useTheme();
-  // const setMarkdown = useActiveNote(store=>store.setMarkdown)
-  const [markdown, setMarkdown] = useState("")
 
   const handelUpload = async (file: File) => {
     return ""; // TODO
