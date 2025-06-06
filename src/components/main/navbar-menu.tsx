@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {archiveNote, setNoteIsTemplate} from "@/lib/notes";
-import {Download, MoreHorizontal, Trash} from "lucide-react";
+import {Download, MoreHorizontal, Trash, Fullscreen,LayoutTemplate} from "lucide-react";
 import { toast } from "sonner";
 import {BlockNoteEditor, PartialBlock} from "@blocknote/core";
 import {useCreateBlockNote} from "@blocknote/react";
@@ -92,11 +92,11 @@ export function NavbarMenu (){
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-60" align="end" alignOffset={8} forceMount>
           <DropdownMenuItem onClick={()=>{toggleWideMode()}}>
-            <Trash className="h-4 w-4 mr-2"/>
+            <Fullscreen className="h-4 w-4 mr-2"/>
             {t("Toggle Wide Mode")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={()=>{onSetTemplate()}}>
-            <Trash className="h-4 w-4 mr-2"/>
+            <LayoutTemplate className="h-4 w-4 mr-2"/>
             {t("Set Template")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={onArchiveNote}>

@@ -33,9 +33,9 @@ export const NoteEmpty = () => {
       }
     );
     toast.promise(promise, {
-      loading: "Creating a new note...",
-      success: "New note created!",
-      error: "Failed to create a new note.",
+      loading: t("Creating a new note..."),
+      success: t("New note created!"),
+      error: t("Failed to create a new note."),
     });
   };
 
