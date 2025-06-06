@@ -32,6 +32,8 @@ export function Navigation() {
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const activeNoteId = useActiveNote((store)=> store.activeNoteId);
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId);
+  const updateActiveNoteIcon = useActiveNote((store)=> store.updateActiveNoteIcon);
+  const updateActiveNoteTitle = useActiveNote((store)=> store.updateActiveNoteTitle);
   const settings = useSettings()
   const { t } = useTranslation();
 
@@ -118,8 +120,14 @@ export function Navigation() {
   }, []);
 
   const onCreateNote = () => {
-    const promise = createNote(settings.defaultTitle||"Untitled", undefined, settings.defaultIcon).then((noteId) =>
-      { setActiveNoteId(noteId); }
+    const title = settings.defaultTitle||"Untitled";
+    const icon = settings.defaultIcon
+    const promise = createNote(title, undefined, icon).then((noteId) =>
+      {
+        updateActiveNoteTitle(title)
+        updateActiveNoteIcon(icon)
+        setActiveNoteId(noteId);
+      }
     );
     toast.promise(promise, {
       loading: t("Creating new note..."),
