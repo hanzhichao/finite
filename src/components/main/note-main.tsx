@@ -8,6 +8,7 @@ import {Skeleton} from "@/components/ui/skeleton";
 import {NoteHeader} from "@/components/main/note-header";
 import {cn} from "@/lib/utils"
 import {useWideMode} from "@/hooks/use-wide-mode";
+import {useProperties} from "@/hooks/use-properties";
 import NoteProperties from "@/components/main/note-properties";
 import {useSettings} from "@/hooks/use-settings";
 
@@ -27,6 +28,7 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
   const {wideMode, toggleWideMode} = useWideMode()
   const settings = useSettings()
   const [note, setNote] = useState<Note>();
+  const showProperties = useProperties((store)=>store.showProperties)
 
   useEffect(() => {
     console.log(`加载Page页面: noteId=${noteId}`);
@@ -78,7 +80,7 @@ export const NoteMain = ({noteId}: NoteMainProps)=> {
       <div className={cn("mx-auto", !wideMode && "md:max-w-3xl lg:md-max-w-4xl")}>
       {/*<div className="mx-auto">*/}
         <NoteHeader initialData={note} preview={isLocked==1}/>
-        <NoteProperties />
+        {showProperties && <NoteProperties />}
         {/*<Editor2 noteId={noteId} onChange={onContentChange} initialContent={note.content} editable={isLocked==0}/>*/}
         <Editor noteId={noteId} onChange={onContentChange} initialContent={note.content} editable={isLocked==0}/>
       </div>

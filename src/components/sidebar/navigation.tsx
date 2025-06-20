@@ -151,7 +151,22 @@ export function Navigation() {
             <Minus className="opacity-0 group-hover:opacity-100 transition w-3 h-3" role="button"/>
           </div>
           <div className="w-3.5 h-3.5 flex items-center justify-center text-primary font-bold rounded-lg bg-green-500" id="titlebar-maximize">
-            <Maximize2 className="opacity-0 group-hover:opacity-100 transition w-2.5 h-2.5 rotate-90" role="button"/>
+            {/*<Maximize2 className="opacity-0 group-hover:opacity-100 transition w-2.5 h-2.5 rotate-90" role="button"/>*/}
+            <svg
+                viewBox="0 0 15 15"
+                className="opacity-0 group-hover:opacity-100 transition w-1.5 h-1.5 rotate-90"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clipPath="url(#clip0_20_2057)">
+                <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M3.53068 0.433838L15.0933 12.0409C15.0933 12.0409 15.0658 5.35028 15.0658 4.01784C15.0658 1.32095 14.1813 0.433838 11.5378 0.433838C10.6462 0.433838 3.53068 0.433838 3.53068 0.433838ZM12.4409 15.5378L0.87735 3.93073C0.87735 3.93073 0.905794 10.6214 0.905794 11.9538C0.905794 14.6507 1.79024 15.5378 4.43291 15.5378C5.32535 15.5378 12.4409 15.5378 12.4409 15.5378Z"
+                    fill="currentColor"
+                />
+              </g>
+            </svg>
           </div>
         </div>
         {/*折叠按钮*/}

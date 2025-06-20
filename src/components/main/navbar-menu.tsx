@@ -5,12 +5,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveNote } from "@/hooks/use-active-note";
 import {archiveNote, setNoteIsTemplate} from "@/lib/notes";
-import {Download, MoreHorizontal, Trash, Fullscreen,LayoutTemplate} from "lucide-react";
+import {Download, MoreHorizontal, Trash, Fullscreen, LayoutTemplate, TableProperties} from "lucide-react";
 import { toast } from "sonner";
 import {BlockNoteEditor, PartialBlock} from "@blocknote/core";
 import {useCreateBlockNote} from "@blocknote/react";
 import {codeBlock} from "@blocknote/code-block";
 import {saveFile} from "@/lib/utils"
+import {useProperties} from "@/hooks/use-properties";
 import {useWideMode} from "@/hooks/use-wide-mode";
 import { useTranslation } from "react-i18next";
 
@@ -26,6 +27,7 @@ export function NavbarMenu (){
   const updateAt = useActiveNote((store)=> store.updateAt)
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId)
   const toggleWideMode  = useWideMode((store)=> store.toggleWideMode)
+  const togglePropertiesVisibility  = useProperties((store)=> store.togglePropertiesVisibility)
   const { t } = useTranslation();
 
 
@@ -94,6 +96,10 @@ export function NavbarMenu (){
           <DropdownMenuItem onClick={()=>{toggleWideMode()}}>
             <Fullscreen className="h-4 w-4 mr-2"/>
             {t("Toggle Wide Mode")}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={()=>{togglePropertiesVisibility()}}>
+            <TableProperties className="h-4 w-4 mr-2"/>
+            {t("Show/Hide Properties")}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={()=>{onSetTemplate()}}>
             <LayoutTemplate className="h-4 w-4 mr-2"/>

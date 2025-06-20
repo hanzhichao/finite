@@ -58,8 +58,8 @@ export const NoteEmpty = () => {
     <>
       <div data-tauri-drag-region className="h-10">
       </div>
-      <main className="flex flex-col space-y-4 pt-10 px-10">
-        <div className="flex items-center justify-between w-full">
+      <main className="flex flex-col space-y-4 pt-10 px-10 bg-transparent">
+        <div className="flex items-center justify-between w-full bg-transparent">
           <div>
           </div>
           <Button variant="outline" onClick={onCreateNote}>
