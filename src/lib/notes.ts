@@ -150,6 +150,84 @@ export async function searchNotes(keyword: string, limit?: number) {
   return result;
 }
 
+interface AdvancedSearchParams {
+  keyword?: string;
+  tags?: string[];
+  propertyKey?: string;
+  propertyValue?: string;
+  limit?: number;
+}
+
+export async function searchNotesAdvanced(params: AdvancedSearchParams) {
+  const { keyword, tags = [], propertyKey, propertyValue, limit } = params;
+  const db = await connDb();
+
+  const where: string[] = ['n.is_archived = 0', 'n.is_template = 0'];
+  const values: unknown[] = [];
+
+  if (keyword && keyword.trim() !== "") {
+    const kw = `%${keyword.trim()}%`;
+    values.push(kw, kw, kw, kw);
+    where.push("(n.title LIKE $"+values.length+" OR n.content LIKE $"+(values.length-1)+" OR n.markdown LIKE $"+(values.length-2)+" OR n.tags LIKE $"+(values.length-3)+")");
+  }
+
+  if (tags.length > 0) {
+    tags.forEach((tag) => {
+      const like = `%${tag}%`;
+      values.push(like, like);
+      const notesTagsIdx = values.length - 1;
+      const propTagsIdx = values.length;
+      where.push(`
+        (
+          n.tags LIKE $${notesTagsIdx}
+          OR EXISTS (
+            SELECT 1
+            FROM properties p
+            JOIN notes_properties np ON np.property_id = p.id
+            WHERE np.note_id = n.id
+              AND p.key = 'tags'
+              AND np.value LIKE $${propTagsIdx}
+          )
+        )
+      `);
+    });
+  }
+
+  if (propertyKey && propertyValue) {
+    values.push(propertyKey, `%${propertyValue}%`);
+    where.push(`
+      EXISTS (
+        SELECT 1
+        FROM properties p
+        JOIN notes_properties np ON np.property_id = p.id
+        WHERE np.note_id = n.id
+          AND p.key = $${values.length-1}
+          AND np.value LIKE $${values.length}
+      )
+    `);
+  }
+
+  let sql = `
+    SELECT DISTINCT n.id, n.title, n.icon, n.update_at, n.tags
+    FROM notes n
+  `;
+
+  if (where.length > 0) {
+    sql += " WHERE " + where.join(" AND ");
+  }
+
+  sql += " ORDER BY n.update_at DESC";
+
+  if (typeof limit !== "undefined") {
+    values.push(limit);
+    sql += ` LIMIT $${values.length}`;
+  }
+
+  console.log(`db高级搜索笔记`);
+  const result = await db.select<Note[]>(sql, values);
+  return result;
+}
+
 export async function getNotes(parent?: string) {
   const db = await connDb();
   let result: Note[] = [];
@@ -334,7 +412,25 @@ export async function updateNoteContent(id: string, content: string, markdown: s
 export async function updateNoteTags(id: string, tags: string[]) {
   console.log(`db更新Note内容: id=${id}`);
   const db = await connDb();
-  await db.execute("UPDATE notes SET tags = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [tags.join(","), id]);
+  const tagsValue = tags.join(",");
+  await db.execute("UPDATE notes SET tags = $1, update_at = CURRENT_TIMESTAMP WHERE id = $2", [tagsValue, id]);
+
+  // 同步更新 properties 里的 tags（用于属性过滤/展示）
+  await db.execute(
+    `
+    UPDATE notes_properties
+    SET value = CAST($1 AS VARCHAR)
+    WHERE note_id = $2
+      AND property_id IN (
+        SELECT p.id
+        FROM properties p
+        JOIN notes_properties np ON np.property_id = p.id
+        WHERE np.note_id = $2
+          AND p.key = 'tags'
+      );
+    `,
+    [tagsValue, id]
+  );
 }
 
 export async function createNoteWithContent(title: string, content: string, parent?: string, id?: string, icon?: string, markdown?: string) {

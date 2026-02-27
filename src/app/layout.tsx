@@ -9,6 +9,8 @@ import { SearchCommand } from "@/components/dialogs/search-command";
 import { Navigation } from "@/components/sidebar/navigation";
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import {useEffect} from "react";
+import {useSettings} from "@/hooks/use-settings";
+import {useProperties} from "@/hooks/use-properties";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,6 +27,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const showPropertiesDefault = useSettings((s) => s.showProperties);
+  const initShowProperties = useProperties((s) => s.initShowProperties);
 
 
 
@@ -51,6 +55,10 @@ export default function RootLayout({
     }
     },
     [])
+
+  useEffect(() => {
+    initShowProperties(showPropertiesDefault);
+  }, [initShowProperties, showPropertiesDefault]);
 
   return (
     <html lang="en" suppressHydrationWarning>

@@ -5,7 +5,7 @@ import {Clock, File} from "lucide-react"
 import { useSearch } from "@/hooks/use-search";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Note } from "@/lib/types";
-import {getRecentUpdatedNotes} from "@/lib/notes";
+import {getRecentUpdatedNotes, searchNotesAdvanced} from "@/lib/notes";
 import { useActiveNote } from "@/hooks/use-active-note";
 import { useTranslation } from "react-i18next";
 
@@ -20,6 +20,7 @@ export const SearchCommand = () => {
   const isOpen = useSearch((store)=> store.isOpen);
   const onClose = useSearch((store)=> store.onClose);
   const { t } = useTranslation();
+  const [query, setQuery] = useState("");
 
   useEffect(()=> {
     setIsMounted(true)
@@ -27,12 +28,43 @@ export const SearchCommand = () => {
 
   useEffect(()=> {
     if (!isOpen) return;
+
     const fetchData = async () => {
-      const notes: Note[] = await getRecentUpdatedNotes(20);
-      setNotes(notes);
+      if (!query.trim()) {
+        const recent: Note[] = await getRecentUpdatedNotes(20);
+        setNotes(recent);
+        return;
+      }
+
+      const tokens = query.split(/\s+/).filter(Boolean);
+      const tagTokens = tokens.filter((t) => t.startsWith("#")).map((t) => t.slice(1));
+      const propToken = tokens.find((t) => t.includes(":") && !t.startsWith("#"));
+
+      let keywordTokens = tokens.filter((t) => !t.startsWith("#") && t !== propToken);
+      const keyword = keywordTokens.join(" ");
+
+      let propertyKey: string | undefined;
+      let propertyValue: string | undefined;
+      if (propToken) {
+        const [k, v] = propToken.split(":", 2);
+        if (k && v) {
+          propertyKey = k;
+          propertyValue = v;
+        }
+      }
+
+      const result = await searchNotesAdvanced({
+        keyword,
+        tags: tagTokens,
+        propertyKey,
+        propertyValue,
+        limit: 50,
+      });
+      setNotes(result);
     };
+
     void fetchData();
-  }, [isOpen]);
+  }, [isOpen, query]);
 
   useEffect(()=> {
     const down = (e: KeyboardEvent) => {
@@ -59,7 +91,11 @@ export const SearchCommand = () => {
 
   return (
     <CommandDialog open={isOpen} onOpenChange={onClose}>
-      <CommandInput placeholder={t("Search Finite...")}/>
+      <CommandInput
+        placeholder={t("Search Finite...")}
+        value={query}
+        onValueChange={setQuery}
+      />
       <CommandList>
         <CommandEmpty>{t("No Results found.")}</CommandEmpty>
         <CommandGroup heading={t("Notes")}>

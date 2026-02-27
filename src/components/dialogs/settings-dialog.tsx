@@ -7,10 +7,12 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import {LanguageToggle} from "@/components/common/language-toggle";
+import {useProperties} from "@/hooks/use-properties";
 
 export const SettingsDialog = () => {
   const settings = useSettings();
   const { t } = useTranslation();
+  const setShowProperties = useProperties((store) => store.setShowProperties);
   return (
     <Dialog open={settings.isOpen} onOpenChange={settings.onClose}>
       <DialogContent>
@@ -30,6 +32,16 @@ export const SettingsDialog = () => {
           <div className="flex items-center justify-between">
             <Label>{t("Default Wide mode")}</Label>
             <Switch checked={settings.wideMode} onCheckedChange={settings.setWideMode} />
+          </div>
+          <div className="flex items-center justify-between">
+            <Label>{t("Show Properties")}</Label>
+            <Switch
+              checked={settings.showProperties}
+              onCheckedChange={(v) => {
+                settings.setShowProperties(v);
+                setShowProperties(v);
+              }}
+            />
           </div>
           <div className="flex items-center justify-between">
             <Label>{t("Default Title")}</Label>
