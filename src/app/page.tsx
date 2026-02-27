@@ -5,11 +5,17 @@ import {NoteEmpty} from "@/components/main/note-empty";
 import {NoteMain} from "@/components/main/note-main";
 import {NoteMarkMap} from "@/components/main/note-markmap";
 import {NoteSubNotes} from "@/components/main/note-subnotes";
+import {NoteCalendar} from "@/components/main/note-calendar";
 
 const Page = () => {
   const activeNoteId = useActiveNote((store) => store.activeNoteId);
   const isMindView = useActiveNote((store) => store.isMindView);
   const isSubNotesView = useActiveNote((store) => store.isSubNotesView);
+  const isCalendarView = useActiveNote((store) => store.isCalendarView);
+
+  if (isCalendarView) return (
+    <NoteCalendar />
+  )
 
   if (!activeNoteId) return (
     <NoteEmpty/>

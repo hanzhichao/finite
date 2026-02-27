@@ -117,6 +117,26 @@ export async function getRecentUpdatedNotes(limit?: number) {
   return result;
 }
 
+export async function getNotesByDate(date: string) {
+  const db = await connDb();
+  console.log(`db查询指定日期Note列表: date=${date}`);
+  const result = await db.select<Note[]>(
+    "SELECT id,title,icon,update_at FROM notes WHERE is_archived = 0 AND is_template = 0 AND date(update_at) = date($1) ORDER BY update_at DESC;",
+    [date]
+  );
+  return result;
+}
+
+export async function getNoteDatesInRange(start: string, end: string) {
+  const db = await connDb();
+  console.log(`db查询日期范围内Note日期: start=${start}, end=${end}`);
+  const rows = await db.select<{ d: string }[]>(
+    "SELECT DISTINCT date(update_at) as d FROM notes WHERE is_archived = 0 AND is_template = 0 AND update_at >= $1 AND update_at < $2;",
+    [start, end]
+  );
+  return rows.map((row) => row.d);
+}
+
 export async function searchNotes(keyword: string, limit?: number) {
   const db = await connDb();
   let result: Note[];
@@ -334,6 +354,35 @@ export async function createNoteWithContent(title: string, content: string, pare
   await addNoteProperty(id, "tags", PropertyType.MULTI_SELECT, "")
 
   return id;
+}
+
+export async function getOrCreateDailyNote(title: string, icon?: string) {
+  const db = await connDb();
+  console.log(`db查询/创建每日Note: title=${title}`);
+
+  // 先确保存在名为 "Journal" 的父笔记
+  let journalId: string | undefined;
+  const journal = await db.select<Note[]>(
+    "SELECT id,title FROM notes WHERE is_archived = 0 AND is_template = 0 AND parent IS NULL AND title = $1 LIMIT 1;",
+    ["Journal"]
+  );
+  if (journal.length > 0) {
+    journalId = journal[0].id;
+  } else {
+    journalId = await createNote("Journal", undefined, "📔");
+  }
+
+  // 在 Journal 之下查找当天的日记
+  const existing = await db.select<Note[]>(
+    "SELECT id,title,icon FROM notes WHERE is_archived = 0 AND is_template = 0 AND parent = $1 AND title = $2 LIMIT 1;",
+    [journalId, title]
+  );
+  if (existing.length > 0) {
+    return existing[0].id;
+  }
+
+  // 不存在则在 Journal 下创建
+  return await createNote(title, journalId, icon);
 }
 
 export async function getNoteParent(id: string) {

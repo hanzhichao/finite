@@ -3,6 +3,7 @@
   "Add a page": "Add a page",
   "Favorites": "Favorites",
   "Templates": "Templates",
+  "Calendar": "Calendar",
   "No pages available": "No pages available",
   "Search": "Search",
   "Settings": "Settings",
@@ -48,6 +49,7 @@
   "Filter by note title...": "Filter by note title...",
   "Table": "Table",
   "Card": "Card",
+  "List": "List",
   "Sub notes": "Sub notes",
   "Customize Columns": "Customize Columns",
   "Columns": "Columns",
@@ -107,5 +109,8 @@
   "Toggle language": "Toggle language",
   "Import": "Import",
   "Duplicated": "Duplicated",
-  "Show/Hide Properties": "Show/Hide Properties"
+  "Show/Hide Properties": "Show/Hide Properties",
+  "Open daily note": "Open daily note",
+  "Pick a date": "Pick a date",
+  "No notes on this day.": "No notes on this day."
 }

@@ -26,6 +26,8 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
   const updateActiveNoteTitle = useActiveNote((store) => store.updateActiveNoteTitle);
   const updateActiveNoteIcon = useActiveNote((store) => store.updateActiveNoteIcon);
   const setSubNotesView = useActiveNote((store) => store.setSubNotesView);
+  const setMindView = useActiveNote((store) => store.setMindView);
+  const setCalendarView = useActiveNote((store) => store.setCalendarView);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [notes, setNotes] = useState<Note[]>();
   const count = useCount((store)=>store.count)
@@ -58,6 +60,8 @@ const NoteList = ({parentId,level = 0}: NoteListProps) => {
     if(noteId != activeNoteId){
       updateActiveNoteTitle(title)
       updateActiveNoteIcon(icon)
+      setCalendarView(false)
+      setMindView(false)
       setSubNotesView(false)
       setActiveNoteId(noteId)
     }

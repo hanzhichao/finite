@@ -34,6 +34,9 @@ export function Navigation() {
   const setActiveNoteId = useActiveNote((store)=> store.setActiveNoteId);
   const updateActiveNoteIcon = useActiveNote((store)=> store.updateActiveNoteIcon);
   const updateActiveNoteTitle = useActiveNote((store)=> store.updateActiveNoteTitle);
+  const setMindView = useActiveNote((store)=> store.setMindView);
+  const setSubNotesView = useActiveNote((store)=> store.setSubNotesView);
+  const setCalendarView = useActiveNote((store)=> store.setCalendarView);
   const settings = useSettings()
   const { t } = useTranslation();
 
@@ -126,6 +129,9 @@ export function Navigation() {
       {
         updateActiveNoteTitle(title)
         updateActiveNoteIcon(icon)
+        setCalendarView(false)
+        setMindView(false)
+        setSubNotesView(false)
         setActiveNoteId(noteId);
       }
     );

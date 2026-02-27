@@ -34,8 +34,10 @@ interface activeNoteStore {
   increaseContentChangeCount: () => void;
   isMindView: boolean,
   isSubNotesView: boolean,
+  isCalendarView: boolean,
   setMindView: (value: boolean) => void,
   setSubNotesView: (value: boolean) => void,
+  setCalendarView: (value: boolean) => void,
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -86,7 +88,9 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   increaseContentChangeCount: () => {set((store)=>({contentChangeCount: store.contentChangeCount + 1}))},
   isMindView: false,
   isSubNotesView: false,
+  isCalendarView: false,
   markdown: "",
   setMindView: (value: boolean) => {set({isMindView: value})},
-  setSubNotesView: (value: boolean) => {set({isSubNotesView: value})}
+  setSubNotesView: (value: boolean) => {set({isSubNotesView: value})},
+  setCalendarView: (value: boolean) => {set({isCalendarView: value})}
   }));

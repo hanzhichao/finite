@@ -131,3 +131,24 @@ aside {
     @apply bg-background text-foreground;
   }
 }
+
+/* 日历中有笔记/日记的日期标记小圆点 */
+.calendar-has-note {
+  position: relative;
+}
+
+.calendar-has-note::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background-color: oklch(0.556 0 0);
+}
+
+.dark .calendar-has-note::after {
+  background-color: oklch(0.922 0 0);
+}

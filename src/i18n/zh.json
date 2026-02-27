@@ -3,6 +3,7 @@
   "Add a page": "新建页面",
   "Favorites": "收藏",
   "Templates": "模板",
+  "Calendar": "日历",
   "No pages available": "暂无页面",
   "Search": "搜索",
   "Settings": "设置",
@@ -48,6 +49,7 @@
   "Filter by note title...": "通过笔记标题过滤...",
   "Table": "表格",
   "Card": "卡片",
+  "List": "列表",
   "Sub notes": "子笔记",
   "Customize Columns": "定制列",
   "Columns": "列",
@@ -106,5 +108,8 @@
   "Toggle language": "切换语言",
   "Import": "导入",
   "Duplicated": "复制",
-  "Show/Hide Properties": "显示/隐藏属性"
+  "Show/Hide Properties": "显示/隐藏属性",
+  "Open daily note": "打开当日日记",
+  "Pick a date": "选择日期",
+  "No notes on this day.": "这一天没有笔记。"
 }
