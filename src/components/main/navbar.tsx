@@ -10,6 +10,7 @@ import {cn} from "@/lib/utils";
 import {NavbarTemplate} from "@/components/main/navbar-template";
 import {NavbarMarkmap} from "@/components/main/navbar-markmap";
 import {NavbarSubNotes} from "@/components/main/navbar-subnotes";
+import {NavbarPresent} from "@/components/main/navbar-present";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -33,6 +34,7 @@ export const Navbar = ({isCollapsed, onResetWidth}: NavbarProps) => {
           <NavbarTitle/>
           <div className="flex items-center">
             {/*<NavbarInfo />*/}
+            <NavbarPresent />
             <NavbarSubNotes />
             <NavbarMarkmap />
             <NavbarTemplate />

@@ -35,9 +35,11 @@ interface activeNoteStore {
   isMindView: boolean,
   isSubNotesView: boolean,
   isCalendarView: boolean,
+  isPresentView: boolean,
   setMindView: (value: boolean) => void,
   setSubNotesView: (value: boolean) => void,
   setCalendarView: (value: boolean) => void,
+  setPresentView: (value: boolean) => void,
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -89,8 +91,10 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   isMindView: false,
   isSubNotesView: false,
   isCalendarView: false,
+  isPresentView: false,
   markdown: "",
   setMindView: (value: boolean) => {set({isMindView: value})},
   setSubNotesView: (value: boolean) => {set({isSubNotesView: value})},
-  setCalendarView: (value: boolean) => {set({isCalendarView: value})}
+  setCalendarView: (value: boolean) => {set({isCalendarView: value})},
+  setPresentView: (value: boolean) => {set({isPresentView: value})}
   }));

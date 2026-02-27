@@ -7,15 +7,13 @@ import { useActiveNote } from "@/hooks/use-active-note";
 import {archiveNote, setNoteIsTemplate} from "@/lib/notes";
 import {Download, MoreHorizontal, Trash, Fullscreen, LayoutTemplate, TableProperties} from "lucide-react";
 import { toast } from "sonner";
-import {BlockNoteEditor, PartialBlock} from "@blocknote/core";
+import {BlockNoteEditor} from "@blocknote/core";
 import {useCreateBlockNote} from "@blocknote/react";
-// import {codeBlock} from "@blocknote/code-block";
 import {saveFile} from "@/lib/utils"
 import {useProperties} from "@/hooks/use-properties";
 import {useWideMode} from "@/hooks/use-wide-mode";
 import { useTranslation } from "react-i18next";
-import { createCodeBlockSpec } from "@blocknote/core";
-import { codeBlockOptions } from "@blocknote/code-block";
+import { finiteBlockNoteSchema, parseInitialContent } from "@/lib/blocknote-schema";
 
 enum ExportType {
   Markdown,
@@ -32,9 +30,9 @@ export function NavbarMenu (){
   const togglePropertiesVisibility  = useProperties((store)=> store.togglePropertiesVisibility)
   const { t } = useTranslation();
 
-  const codeBlock = createCodeBlockSpec(codeBlockOptions);
-  const editor: BlockNoteEditor = useCreateBlockNote({codeBlock,
-    initialContent: content ? JSON.parse(content) as PartialBlock[] : undefined,
+  const editor: BlockNoteEditor = useCreateBlockNote({
+    schema: finiteBlockNoteSchema,
+    initialContent: parseInitialContent(content),
   });
 
   const onArchiveNote = () => {
