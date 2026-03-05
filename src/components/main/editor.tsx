@@ -7,7 +7,8 @@ import {BlockNoteView} from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useTheme } from "next-themes";
 import { codeBlock } from "@blocknote/code-block";
-import {useState} from "react";
+import { saveNoteAttachment } from "@/lib/attachments";
+import { convertFileSrc } from "@tauri-apps/api/core";
 
 interface EditorProps {
   noteId?: string,
@@ -20,7 +21,11 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
   const {resolvedTheme} = useTheme();
 
   const handelUpload = async (file: File) => {
-    return ""; // TODO
+    if (typeof noteId == "string") {
+      const filePath = await saveNoteAttachment(noteId, file);
+      return convertFileSrc(filePath);
+    }
+    return file.name
   }
 
   const editor: BlockNoteEditor = useCreateBlockNote({

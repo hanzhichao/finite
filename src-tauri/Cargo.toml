@@ -20,7 +20,7 @@ tauri-build = { version = "2", features = [] }
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "2", features = [ "macos-private-api", "devtools"] }
+tauri = { version = "2", features = [ "protocol-asset", "macos-private-api", "devtools"] }
 tauri-plugin-opener = "2"
 tauri-plugin-sql = { version = "2", features = ["sqlite"] }
 tauri-plugin-fs = "2"
