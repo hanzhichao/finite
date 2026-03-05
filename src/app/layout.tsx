@@ -26,15 +26,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
+
+
   useEffect(()=>{
     if (!(window === undefined)){
       const appWindow = getCurrentWindow();
+      const onMaximize = async () => {
+        const isFullscreen = await appWindow.isFullscreen();
+        if (isFullscreen) {
+          void appWindow.setFullscreen(false);
+        } else {
+          void appWindow.setFullscreen(true);
+        }
+      };
       document
         .getElementById('titlebar-minimize')
         ?.addEventListener('click', () => appWindow.minimize());
       document
         .getElementById('titlebar-maximize')
-        ?.addEventListener('click', () => appWindow.toggleMaximize());
+        ?.addEventListener('click', () => onMaximize());
       document
         .getElementById('titlebar-close')
         ?.addEventListener('click', () => appWindow.close());
