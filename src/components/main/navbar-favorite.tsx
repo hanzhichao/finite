@@ -1,15 +1,16 @@
 import {Star} from "lucide-react";
 import {useActiveNote} from "@/hooks/use-active-note";
+import { useShallow } from "zustand/react/shallow";
 import {Button} from "@/components/ui/button";
 import {updateNoteIsFavorite} from "@/lib/notes";
 
 export const NavbarFavorite = () => {
-  const {activeNoteId, isFavorite, favoriteNote, unFavoriteNote} = useActiveNote((store) => ({
+  const {activeNoteId, isFavorite, favoriteNote, unFavoriteNote} = useActiveNote(useShallow((store) => ({
     activeNoteId: store.activeNoteId,
     isFavorite: store.isFavorite,
     favoriteNote: store.favoriteNote,
     unFavoriteNote: store.unFavoriteNote,
-  }));
+  })));
 
   const onFavoriteNote = () => {
     if (typeof activeNoteId !== "undefined") {

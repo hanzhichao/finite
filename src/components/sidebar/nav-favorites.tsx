@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NoteItem } from "@/components/sidebar/note-item";
 import { FileIcon } from "lucide-react";
 import { useActiveNote } from "@/hooks/use-active-note";
+import { useShallow } from "zustand/react/shallow";
 import {getFavoriteNotes, getNotes} from "@/lib/notes";
 import { Note } from "@/lib/types";
 import {useCount} from "@/hooks/use-count";
@@ -9,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 
 export function NavFavorites() {
-  const {activeNoteId,activeNoteTitle,activeNoteIcon,setActiveNoteId,isFavorite,updateActiveNoteIcon,updateActiveNoteTitle,setSubNotesView} =  useActiveNote((store) => ({
+  const {activeNoteId,activeNoteTitle,activeNoteIcon,setActiveNoteId,isFavorite,updateActiveNoteIcon,updateActiveNoteTitle,setSubNotesView} =  useActiveNote(useShallow((store) => ({
     activeNoteId: store.activeNoteId,
     activeNoteTitle: store.activeNoteTitle,
     activeNoteIcon: store.activeNoteIcon,
@@ -18,7 +19,7 @@ export function NavFavorites() {
     updateActiveNoteTitle: store.updateActiveNoteTitle,
     setSubNotesView: store.setSubNotesView,
     isFavorite: store.isFavorite,
-  }))
+  })))
   const [favoriteNotes, setFavoriteNotes] = useState<Note[]>();
   const count = useCount((store)=>store.count)
   const { t } = useTranslation();

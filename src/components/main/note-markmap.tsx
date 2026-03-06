@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef} from "react";
 import {Markmap} from 'markmap-view';
 import {Transformer} from "markmap-lib";
 import {useActiveNote} from "@/hooks/use-active-note";

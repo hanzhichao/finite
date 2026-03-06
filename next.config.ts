@@ -7,9 +7,6 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   distDir: "out",
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
 };
 
 export default nextConfig;

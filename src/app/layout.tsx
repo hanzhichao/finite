@@ -30,8 +30,6 @@ export default function RootLayout({
   const showPropertiesDefault = useSettings((s) => s.showProperties);
   const initShowProperties = useProperties((s) => s.initShowProperties);
 
-
-
   useEffect(()=>{
     if (!(window === undefined)){
       const appWindow = getCurrentWindow();

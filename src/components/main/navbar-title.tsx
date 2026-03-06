@@ -14,7 +14,7 @@ export const NavbarTitle = () => {
   const onChangeTitle = (value: string) => {
     if (typeof activeNoteId !== "undefined"){
       void updateNoteTitle(activeNoteId, value)
-        .then(r => {updateActiveNoteTitle(value)})
+        .then(() => {updateActiveNoteTitle(value)})
     }
   };
 

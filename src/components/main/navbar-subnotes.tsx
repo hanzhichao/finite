@@ -1,15 +1,16 @@
-import {LayoutList, ChevronDown, ChevronRight, PanelTopOpen} from "lucide-react";
+import {PanelTopOpen} from "lucide-react";
 import {useActiveNote} from "@/hooks/use-active-note";
+import { useShallow } from "zustand/react/shallow";
 import {Button} from "@/components/ui/button";
 
 export const NavbarSubNotes = () => {
-  const {activeNoteId, isMindView,isSubNotesView, setSubNotesView, setMindView} = useActiveNote((store) => ({
+  const {activeNoteId, isSubNotesView, setSubNotesView, setMindView} = useActiveNote(useShallow((store) => ({
     activeNoteId: store.activeNoteId,
     isMindView: store.isMindView,
     isSubNotesView: store.isSubNotesView,
     setSubNotesView: store.setSubNotesView,
     setMindView: store.setMindView,
-  }));
+  })));
 
   const onSetMindView = () => {
     if (typeof activeNoteId !== "undefined") {

@@ -28,14 +28,13 @@ import {Button} from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
-  DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator,
+  DropdownMenuContent,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {
   IconChevronDown,
   IconChevronLeft, IconChevronRight,
   IconChevronsLeft, IconChevronsRight,
-  IconDotsVertical,
   IconLayoutColumns,
   IconPlus
 } from "@tabler/icons-react";
@@ -195,7 +194,7 @@ export const NoteSubNotesTable = ({data, onCreate}: NoteSubNotesTableProps)=> {
                     className="capitalize"
                     checked={column.getIsVisible()}
                     onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
+                      column.toggleVisibility(value)
                     }
                   >
                     {column.id}

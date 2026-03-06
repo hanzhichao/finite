@@ -1,12 +1,13 @@
 import { IconPicker } from "../dialogs/icon-picker";
 import { Button } from "../ui/button";
 import { ImageIcon, Smile, X } from "lucide-react";
-import React, {ComponentRef, useEffect, useRef, useState} from "react";
+import React, {ComponentRef, useRef, useState} from "react";
 import TextAreaAutoSize from "react-textarea-autosize";
 import { useCoverImage } from "@/hooks/use-cover-image";
 import {updateNoteIcon, updateNoteTags, updateNoteTitle} from "@/lib/notes";
 import { Note } from "@/lib/types";
 import { useActiveNote } from "@/hooks/use-active-note";
+import { useShallow } from "zustand/react/shallow";
 // import {NoteTags} from "@/components/main/note-tags";
 import { useTranslation } from "react-i18next";
 
@@ -20,7 +21,7 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const { t } = useTranslation();
 
-  const {activeNoteId,activeNoteIcon,activeNoteCover,activeNoteTitle,updateActiveNoteTitle,updateActiveNoteIcon,updateActiveNoteTags,tags } = useActiveNote((store)=>({
+  const {activeNoteId,activeNoteIcon,activeNoteCover,activeNoteTitle,updateActiveNoteTitle,updateActiveNoteIcon,updateActiveNoteTags,tags } = useActiveNote(useShallow((store)=>({
     activeNoteId: store.activeNoteId,
     activeNoteIcon: store.activeNoteIcon,
     activeNoteCover: store.activeNoteCover,
@@ -29,7 +30,7 @@ export const NoteHeader = ({ initialData, preview }: NoteHeaderProps) => {
     updateActiveNoteTitle: store.updateActiveNoteTitle,
     updateActiveNoteIcon: store.updateActiveNoteIcon,
     updateActiveNoteTags: store.updateActiveNoteTags,
-  }))
+  })))
 
   const [allTags, setAllTags] = useState<string[]>([])
   const [value, setValue] = useState(activeNoteTitle);

@@ -2,15 +2,16 @@
 
 import { CalendarDays } from "lucide-react";
 import { useActiveNote } from "@/hooks/use-active-note";
+import { useShallow } from "zustand/react/shallow";
 import { Button } from "@/components/ui/button";
 
 export const NavbarCalendar = () => {
-  const { isCalendarView, setCalendarView, setMindView, setSubNotesView } = useActiveNote((store) => ({
+  const { isCalendarView, setCalendarView, setMindView, setSubNotesView } = useActiveNote(useShallow((store) => ({
     isCalendarView: store.isCalendarView,
     setCalendarView: store.setCalendarView,
     setMindView: store.setMindView,
     setSubNotesView: store.setSubNotesView,
-  }));
+  })));
 
   const toggleCalendarView = () => {
     setTimeout(() => {

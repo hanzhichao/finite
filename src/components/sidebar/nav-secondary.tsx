@@ -6,6 +6,7 @@ import {NavItem} from "@/components/sidebar/nav-item";
 import {useImport} from "@/hooks/use-import";
 import TrashBox from "@/components/sidebar/trash-box";
 import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
 
 interface NavTrashProps {
   isMobile: boolean
@@ -14,17 +15,25 @@ interface NavTrashProps {
 export const NavSecondary = ({isMobile}: NavTrashProps) => {
   const importDialog = useImport();
   const { t } = useTranslation();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className="">
       <NavItem label={t("Import")} icon={Import} onClick={importDialog.onOpen}/>
-      <Popover>
-        <PopoverTrigger className="w-full">
-          <NavItem label={t("Trash")} icon={Trash} />
-        </PopoverTrigger>
-        <PopoverContent className="p-0 w-72 " side={isMobile ? "bottom" : "right"}>
-          <TrashBox />
-        </PopoverContent>
-      </Popover>
+      {mounted && (
+        <Popover>
+          <PopoverTrigger className="w-full">
+            <NavItem label={t("Trash")} icon={Trash} />
+          </PopoverTrigger>
+          <PopoverContent className="p-0 w-72 " side={isMobile ? "bottom" : "right"}>
+            <TrashBox />
+          </PopoverContent>
+        </Popover>
+      )}
     </div>
   )
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NoteItem } from "@/components/sidebar/note-item";
 import { FileIcon } from "lucide-react";
 import { useActiveNote } from "@/hooks/use-active-note";
+import { useShallow } from "zustand/react/shallow";
 import {getTemplates} from "@/lib/notes";
 import { Note } from "@/lib/types";
 import {useCount} from "@/hooks/use-count";
@@ -9,13 +10,13 @@ import { useTranslation } from "react-i18next";
 
 
 export function NavTemplates() {
-  const {activeNoteId,activeNoteTitle,activeNoteIcon,setActiveNoteId,isFavorite} =  useActiveNote((store) => ({
+  const {activeNoteId,activeNoteTitle,activeNoteIcon,setActiveNoteId,isFavorite} =  useActiveNote(useShallow((store) => ({
     activeNoteId: store.activeNoteId,
     activeNoteTitle: store.activeNoteTitle,
     activeNoteIcon: store.activeNoteIcon,
     setActiveNoteId: store.setActiveNoteId,
     isFavorite: store.isFavorite,
-  }))
+  })))
   const [templates, setTemplates] = useState<Note[]>();
   const count = useCount((store)=>store.count)
   const { t } = useTranslation();

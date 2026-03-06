@@ -6,9 +6,11 @@ import {useCreateBlockNote} from "@blocknote/react";
 import {BlockNoteView} from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useTheme } from "next-themes";
-import { codeBlock } from "@blocknote/code-block";
+// import { codeBlock } from "@blocknote/code-block";
 import { saveNoteAttachment } from "@/lib/attachments";
 import { convertFileSrc } from "@tauri-apps/api/core";
+import { createCodeBlockSpec } from "@blocknote/core";
+import { codeBlockOptions } from "@blocknote/code-block";
 
 interface EditorProps {
   noteId?: string,
@@ -28,6 +30,7 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
     return file.name
   }
 
+  const codeBlock = createCodeBlockSpec(codeBlockOptions);
   const editor: BlockNoteEditor = useCreateBlockNote({
     codeBlock,
     animations: false,
@@ -37,9 +40,8 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
 
 
   const onContentChange = (value: string) => {
-    void editor.blocksToMarkdownLossy(editor.document).then(
-      markdown => {onChange(value, markdown)}
-    )
+    const markdown = editor.blocksToMarkdownLossy(editor.document);
+    onChange(value, markdown);
   }
 
   return (

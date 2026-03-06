@@ -1,15 +1,16 @@
 import {Lock, LockOpen} from "lucide-react";
 import {useActiveNote} from "@/hooks/use-active-note";
+import { useShallow } from "zustand/react/shallow";
 import {Button} from "@/components/ui/button";
 import {updateNoteIsLocked} from "@/lib/notes";
 
 export const NavbarLock = () => {
-  const {activeNoteId, isLocked, lockNote, unLockNote} = useActiveNote((store) => ({
+  const {activeNoteId, isLocked, lockNote, unLockNote} = useActiveNote(useShallow((store) => ({
     activeNoteId: store.activeNoteId,
     isLocked: store.isLocked,
     lockNote: store.lockNote,
     unLockNote: store.unLockNote,
-  }));
+  })));
 
   return (
     <>

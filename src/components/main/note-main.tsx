@@ -1,5 +1,6 @@
 import {getNote, updateNoteContent} from "@/lib/notes";
 import {useActiveNote} from "@/hooks/use-active-note";
+import { useShallow } from "zustand/react/shallow";
 import {useEffect, useMemo, useState} from "react";
 import {Note} from "@/lib/types";
 import dynamic from "next/dynamic";
@@ -18,13 +19,12 @@ interface NoteMainProps {
 }
 
 export const NoteMain = ({noteId}: NoteMainProps)=> {
-  const {activeNoteCover,isLocked,setActiveNote, contentChangeCount} = useActiveNote((store) => (
-  { activeNoteCover: store.activeNoteCover,
+  const {activeNoteCover,isLocked,setActiveNote, contentChangeCount} = useActiveNote(useShallow((store) => ({
+    activeNoteCover: store.activeNoteCover,
     isLocked: store.isLocked,
     setActiveNote: store.setActiveNote,
     contentChangeCount: store.contentChangeCount,
-  }
-  ));
+  })));
   const {wideMode, toggleWideMode} = useWideMode()
   const settings = useSettings()
   const [note, setNote] = useState<Note>();
