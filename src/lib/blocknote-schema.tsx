@@ -1,9 +1,12 @@
 import { BlockNoteSchema, createCodeBlockSpec, PartialBlock } from "@blocknote/core";
 import { codeBlockOptions } from "@blocknote/code-block";
+import { MermaidBlock } from "@/components/main/blocks/mermaid-block";
+import { Calculator, ListTree } from "lucide-react";
 
 export const finiteBlockNoteSchema = BlockNoteSchema.create().extend({
   blockSpecs: {
     codeBlock: createCodeBlockSpec(codeBlockOptions),
+    mermaid: MermaidBlock(),
   },
 });
 
@@ -30,4 +33,15 @@ export function parseInitialContent(json: string | undefined): PartialBlock[] | 
     return undefined;
   }
 }
+
+export const insertMermaid = (editor: typeof finiteBlockNoteSchema.BlockNoteEditor) => ({
+  title: "Mermaid Diagram",
+  onItemClick: () => {
+    const block = editor.getTextCursorPosition().block;
+    editor.updateBlock(block, { type: "mermaid" });
+  },
+  aliases: ["mermaid", "diagram", "graph", "chart"],
+  group: "Other",
+  icon: <ListTree size={18} />,
+});
 

@@ -152,3 +152,8 @@ aside {
 .dark .calendar-has-note::after {
   background-color: oklch(0.922 0 0);
 }
+
+/* Mermaid block: ensure full width */
+.bn-block-content[data-content-type="mermaid"] {
+  width: 100%;
+}

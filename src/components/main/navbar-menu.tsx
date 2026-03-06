@@ -17,7 +17,7 @@ import {
   TableProperties
 } from "lucide-react";
 import { toast } from "sonner";
-import {BlockNoteEditor, PartialBlock} from "@blocknote/core";
+import {PartialBlock} from "@blocknote/core";
 import {useCreateBlockNote} from "@blocknote/react";
 import {saveFile} from "@/lib/utils"
 import {useProperties} from "@/hooks/use-properties";
@@ -47,7 +47,7 @@ export function NavbarMenu (){
   const togglePropertiesVisibility  = useProperties((store)=> store.togglePropertiesVisibility)
   const { t } = useTranslation();
 
-  const editor: BlockNoteEditor = useCreateBlockNote({
+  const editor = useCreateBlockNote({
     schema: finiteBlockNoteSchema,
     initialContent: parseInitialContent(content),
   });

@@ -23,7 +23,7 @@ export const NoteMarkMap = ({noteId}: NoteMarkMapProps) => {
 
     const fetchData = async () => {
       const curNote: Note = await getNote(noteId);
-      const view = Markmap.create(ref.current, {'initialExpandLevel': 3});
+      const view = Markmap.create(ref.current!, {'initialExpandLevel': 3});
       const markdown = curNote.markdown ?? ""
       if (markdown !== ""){
         console.log("markdown")

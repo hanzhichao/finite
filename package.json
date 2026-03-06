@@ -54,6 +54,7 @@
     "markmap-lib": "^0.18.12",
     "markmap-toolbar": "^0.18.12",
     "markmap-view": "^0.18.12",
+    "mermaid": "^11.12.3",
     "next": "^16.1.6",
     "next-themes": "^0.4.6",
     "react": "^19.2.4",

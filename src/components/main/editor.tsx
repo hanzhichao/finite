@@ -1,14 +1,15 @@
 "use client"
 
 import "@blocknote/core/fonts/inter.css";
-import { BlockNoteEditor } from "@blocknote/core";
+import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/mantine/style.css";
 import { useTheme } from "next-themes";
 import { saveNoteAttachment } from "@/lib/attachments";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { finiteBlockNoteSchema, parseInitialContent } from "@/lib/blocknote-schema";
+import { finiteBlockNoteSchema, parseInitialContent,insertMermaid } from "@/lib/blocknote-schema";
+import { SuggestionMenuController, getDefaultReactSlashMenuItems } from "@blocknote/react";
 
 interface EditorProps {
   noteId?: string,
@@ -28,13 +29,12 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
     return file.name
   }
 
-  const editor: BlockNoteEditor = useCreateBlockNote({
+  const editor = useCreateBlockNote({
     animations: false,
     schema: finiteBlockNoteSchema,
-    initialContent: parseInitialContent(initialContent),
+    initialContent: initialContent ? JSON.parse(initialContent) as PartialBlock[] : undefined,
     uploadFile: handelUpload
   });
-
 
   const onContentChange = (value: string) => {
     const markdown = editor.blocksToMarkdownLossy(editor.document);
@@ -44,13 +44,28 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
   return (
     <div>
       <BlockNoteView
-      editor={editor}
-      editable={editable}
-      theme={resolvedTheme == "dark" ? "dark": "light"}
-      onChange={()=>{ onContentChange(JSON.stringify(editor.document, null)); }}
-      />
+        editor={editor as any}
+        editable={editable}
+        theme={resolvedTheme === "dark" ? "dark" : "light"}
+        onChange={() => { onContentChange(JSON.stringify(editor.document, null)); }}
+        slashMenu={false}
+      >
+        <SuggestionMenuController
+          triggerCharacter={"/"}
+          getItems={async (query) => {
+            const items = [
+              ...getDefaultReactSlashMenuItems(editor as any),
+              insertMermaid(editor),
+            ];
+            return items.filter((item) =>
+              item.title.toLowerCase().includes(query.toLowerCase()) ||
+              item.aliases?.some((a) => a.toLowerCase().includes(query.toLowerCase()))
+            );
+          }}
+        />
+      </BlockNoteView>
     </div>
-  )
-}
+  );
+};
 
 export default Editor;
