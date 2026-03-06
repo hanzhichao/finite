@@ -40,6 +40,8 @@ interface activeNoteStore {
   setSubNotesView: (value: boolean) => void,
   setCalendarView: (value: boolean) => void,
   setPresentView: (value: boolean) => void,
+  noteHistory: string[],
+  goBack: () => void,
 }
 
 export const useActiveNote = create<activeNoteStore>((set, get) => ({
@@ -54,13 +56,19 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   isLocked: 0,
   tags: [],
   properties: [],
-  setActiveNoteId: (id?: string) => { set({ activeNoteId: id }); },
+  noteHistory: [],
+  setActiveNoteId: (id?: string) => {
+    const prev = get().activeNoteId;
+    if (prev && prev !== id) {
+      set((s) => ({ noteHistory: [...s.noteHistory, prev] }));
+    }
+    set({ activeNoteId: id });
+  },
   setActiveNote: (note: Note) =>
     { set({
-      // activeNoteId: note.id,
-      // activeNoteTitle: note.title,
+      activeNoteTitle: note.title,
       activeNoteCover: note.cover,
-      // activeNoteIcon: note.icon,
+      activeNoteIcon: note.icon || "",
       activeNoteContent: note.content,
       isFavorite: note.is_favorite,
       isArchived: note.is_archived,
@@ -96,5 +104,17 @@ export const useActiveNote = create<activeNoteStore>((set, get) => ({
   setMindView: (value: boolean) => {set({isMindView: value})},
   setSubNotesView: (value: boolean) => {set({isSubNotesView: value})},
   setCalendarView: (value: boolean) => {set({isCalendarView: value})},
-  setPresentView: (value: boolean) => {set({isPresentView: value})}
+  setPresentView: (value: boolean) => {set({isPresentView: value})},
+  goBack: () => {
+    const history = get().noteHistory;
+    if (history.length === 0) return;
+    const prevId = history[history.length - 1];
+    set({
+      noteHistory: history.slice(0, -1),
+      activeNoteId: prevId,
+      isMindView: false,
+      isSubNotesView: false,
+      isPresentView: false,
+    });
+  },
   }));

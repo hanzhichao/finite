@@ -500,6 +500,22 @@ export async function getNoteParents(id: string) {
   return parents;
 }
 
+/** Get ancestor chain for a note (from root to direct parent), with id/title/icon. */
+export async function getNoteAncestors(id: string): Promise<Pick<Note, "id" | "title" | "icon">[]> {
+  const db = await connDb();
+  const ancestors: Pick<Note, "id" | "title" | "icon">[] = [];
+  // First get the parent id of the current note
+  const current = await db.select<Note[]>("SELECT parent FROM notes WHERE id = $1", [id]);
+  let parentId = current.length > 0 ? current[0].parent : null;
+  while (parentId) {
+    const result = await db.select<Note[]>("SELECT id,title,icon,parent FROM notes WHERE id = $1", [parentId]);
+    if (result.length === 0) break;
+    ancestors.unshift({ id: result[0].id, title: result[0].title, icon: result[0].icon });
+    parentId = result[0].parent;
+  }
+  return ancestors;
+}
+
 export async function updateNoteParent(id: string, parent: string | null) {
   console.log(`db更新Note parent: id=${id}, parent=${parent}`);
   if (parent === null) return;
