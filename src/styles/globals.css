@@ -153,7 +153,8 @@ aside {
   background-color: oklch(0.922 0 0);
 }
 
-/* Mermaid block: ensure full width */
-.bn-block-content[data-content-type="mermaid"] {
+/* Custom blocks: ensure full width */
+.bn-block-content[data-content-type="mermaid"],
+.bn-block-content[data-content-type="math"] {
   width: 100%;
 }

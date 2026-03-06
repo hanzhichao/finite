@@ -2,11 +2,13 @@ import { BlockNoteSchema, createCodeBlockSpec, PartialBlock } from "@blocknote/c
 import { codeBlockOptions } from "@blocknote/code-block";
 import { MermaidBlock } from "@/components/main/blocks/mermaid-block";
 import { Calculator, ListTree } from "lucide-react";
+import { MathBlock } from "@/components/main/blocks/math-block";
 
 export const finiteBlockNoteSchema = BlockNoteSchema.create().extend({
   blockSpecs: {
     codeBlock: createCodeBlockSpec(codeBlockOptions),
     mermaid: MermaidBlock(),
+    math: MathBlock(),
   },
 });
 
@@ -43,5 +45,16 @@ export const insertMermaid = (editor: typeof finiteBlockNoteSchema.BlockNoteEdit
   aliases: ["mermaid", "diagram", "graph", "chart"],
   group: "Other",
   icon: <ListTree size={18} />,
+});
+
+export const insertMath = (editor: typeof finiteBlockNoteSchema.BlockNoteEditor) => ({
+  title: "Math Formula",
+  onItemClick: () => {
+    const block = editor.getTextCursorPosition().block;
+    editor.updateBlock(block, { type: "math" });
+  },
+  aliases: ["math", "formula", "katex", "latex", "equation"],
+  group: "Other",
+  icon: <Calculator size={18} />,
 });
 

@@ -49,6 +49,7 @@
     "emoji-picker-react": "^4.18.0",
     "highlight.js": "^11.11.1",
     "i18next": "^25.8.14",
+    "katex": "^0.16.35",
     "lucide-react": "^0.577.0",
     "markmap-common": "^0.18.9",
     "markmap-lib": "^0.18.12",

@@ -8,7 +8,7 @@ import "@blocknote/mantine/style.css";
 import { useTheme } from "next-themes";
 import { saveNoteAttachment } from "@/lib/attachments";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { finiteBlockNoteSchema, parseInitialContent,insertMermaid } from "@/lib/blocknote-schema";
+import { finiteBlockNoteSchema, parseInitialContent,insertMermaid,insertMath } from "@/lib/blocknote-schema";
 import { SuggestionMenuController, getDefaultReactSlashMenuItems } from "@blocknote/react";
 
 interface EditorProps {
@@ -56,6 +56,7 @@ const Editor = ({noteId, onChange,initialContent, editable}: EditorProps) => {
             const items = [
               ...getDefaultReactSlashMenuItems(editor as any),
               insertMermaid(editor),
+              insertMath(editor),
             ];
             return items.filter((item) =>
               item.title.toLowerCase().includes(query.toLowerCase()) ||
