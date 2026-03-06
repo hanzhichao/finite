@@ -1,6 +1,8 @@
 import * as React from "react"
+import { ThemeProvider as NextThemesProvider } from "next-themes"
 
-function ensureLocalStorage() {
+// Ensure localStorage exists before next-themes accesses it (SSR/Tauri).
+;(function ensureLocalStorage() {
   const g = globalThis as unknown as { localStorage?: unknown };
   const ls = g.localStorage as { getItem?: unknown; setItem?: unknown; removeItem?: unknown; clear?: unknown } | undefined;
   if (
@@ -24,15 +26,11 @@ function ensureLocalStorage() {
   };
 
   g.localStorage = shim;
-}
+})();
 
 export function ThemeProvider({
                                 children,
                                 ...props
-                              }: React.ComponentProps<any>) {
-  ensureLocalStorage();
-  // Defer loading next-themes until after localStorage is valid.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { ThemeProvider: NextThemesProvider } = require("next-themes") as typeof import("next-themes");
+                              }: React.ComponentProps<typeof NextThemesProvider>) {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }
